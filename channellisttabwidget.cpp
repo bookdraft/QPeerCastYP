@@ -1,0 +1,125 @@
+/*
+ *  Copyright (C) 2008 by ciao <ciao@users.sourceforge.jp>
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ */
+#include "channellisttabwidget.h"
+#include "channellistwidget.h"
+#include "yellowpage.h"
+#include "application.h"
+#include "actions.h"
+#include "mainwindow.h"
+
+class ChannelListTabBar : public QTabBar
+{
+    Q_OBJECT
+public:
+    ChannelListTabBar(QWidget *parent = 0) : QTabBar(parent) { }
+
+protected:
+    void contextMenuEvent(QContextMenuEvent *event)
+    {
+        QMenu menu;
+        menu.addAction(qApp->actions()->updateYellowPageAction());
+        menu.addSeparator();
+        for (int i = 0; i < count(); ++i) {
+            ChannelListWidget *list = qobject_cast<ChannelListTabWidget *>(parentWidget())->widget(i);
+            if (list and !list->yellowPage()->isManager()) {
+                QAction *action = menu.addAction(QIcon(),
+                        tr("%1 をウェブ・ブラウザで開く").arg(list->yellowPage()->name()));
+                action->setProperty("url", list->yellowPage()->url());
+            }
+        }
+        menu.addSeparator();
+        QAction *hideTabBar = menu.addAction(tr("タブバーを隠す(&H)"));
+        if (QAction *action = menu.exec(event->globalPos())) {
+            if (!action->property("url").isNull())
+                qApp->actions()->openUrl(action->property("url").toUrl());
+            else if (action == hideTabBar)
+                qApp->actions()->showTabBarAction()->trigger();
+        }
+    }
+
+    void wheelEvent(QWheelEvent *event)
+    {
+        if (event->delta() > 0) {
+            if (currentIndex() == 0)
+                setCurrentIndex(count() - 1);
+            else
+                setCurrentIndex(currentIndex() - 1);
+        } else {
+            if (currentIndex() == count() - 1)
+                setCurrentIndex(0);
+            else
+                setCurrentIndex(currentIndex() + 1);
+        }
+    }
+};
+
+ChannelListTabWidget::ChannelListTabWidget(QWidget *parent)
+    : QTabWidget(parent), m_currentIndex(-1)
+{
+    setTabBar(new ChannelListTabBar(this));
+    connect(this, SIGNAL(currentChanged(int)), SLOT(currentChanged(int)));
+}
+
+ChannelListTabWidget::~ChannelListTabWidget()
+{
+}
+
+ChannelListWidget *ChannelListTabWidget::currentWidget()
+{
+    return qobject_cast<ChannelListWidget *>(QTabWidget::currentWidget());
+}
+
+ChannelListWidget *ChannelListTabWidget::widget(int index)
+{
+    return qobject_cast<ChannelListWidget *>(QTabWidget::widget(index));
+}
+
+void ChannelListTabWidget::setCurrentWidget(ChannelListWidget *widget)
+{
+    m_currentIndex = indexOf(widget);
+    currentChanged(m_currentIndex);
+    QTabWidget::setCurrentWidget(widget);
+}
+
+void ChannelListTabWidget::currentChanged(int index)
+{
+    ChannelListWidget *current = widget(index);
+    if (!current)
+        return;
+    if (m_currentIndex != -1 and widget(m_currentIndex)) {
+        widget(m_currentIndex)->setActive(false);
+        m_currentIndex = index;
+    }
+    current->setActive(true);
+    if (current->yellowPage()->lastUpdatedTime() > current->lastUpdatedTime()) {
+        current->updateItems();
+    }
+    qApp->mainWindow()->updateStatusBar();
+}
+
+void ChannelListTabWidget::findRequest(QString text, Qt::MatchFlags flags)
+{
+    if (currentWidget()) {
+        currentWidget()->filterItems(text, flags);
+        qApp->mainWindow()->updateStatusBar();
+    }
+}
+
+void ChannelListTabWidget::setTabBarVisible(bool shown)
+{
+    tabBar()->setVisible(shown);
+}
+
+bool ChannelListTabWidget::tabBarIsVisible() const
+{
+    return tabBar()->isVisible();
+}
+
+#include "channellisttabwidget.moc"

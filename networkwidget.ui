@@ -1,0 +1,326 @@
+<ui version="4.0" >
+ <class>NetworkWidget</class>
+ <widget class="QWidget" name="NetworkWidget" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>609</width>
+    <height>405</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" >
+   <item>
+    <widget class="QGroupBox" name="groupBox_2" >
+     <property name="title" >
+      <string>PeerCast</string>
+     </property>
+     <property name="flat" >
+      <bool>true</bool>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label_2" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>PeerCast サーバ (ホスト:ポート)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QLineEdit" name="peerCastServerHostEdit" />
+      </item>
+      <item row="0" column="2" >
+       <widget class="QLabel" name="label_3" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Preferred" hsizetype="Maximum" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>:</string>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3" >
+       <widget class="QSpinBox" name="peerCastServerPortSpinBox" >
+        <property name="maximum" >
+         <number>65535</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QCheckBox" name="runPeerCastAtStartupCheckBox" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>PeerCast サーバを起動する</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QLineEdit" name="peerCastProgramEdit" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" colspan="2" >
+       <widget class="QPushButton" name="selectPeerCastProgramButton" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>選択...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="4" >
+       <widget class="Line" name="line" >
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" >
+       <widget class="QLabel" name="label_5" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>PCRaw プロキシサーバ (ホスト:ポート)</string>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" >
+       <widget class="QLineEdit" name="pcrawProxyServerHostEdit" />
+      </item>
+      <item row="3" column="2" >
+       <widget class="QLabel" name="label_4" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Preferred" hsizetype="Maximum" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>:</string>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3" >
+       <widget class="QSpinBox" name="pcrawProxyServerPortSpinBox" >
+        <property name="maximum" >
+         <number>65535</number>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" >
+       <widget class="QCheckBox" name="runPCRawProxyAtStartup" >
+        <property name="text" >
+         <string>PCRaw プロキシサーバを起動する</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1" >
+       <widget class="QLineEdit" name="pcrawProxyProgramEdit" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2" colspan="2" >
+       <widget class="QPushButton" name="selectPCRawProxyProgramButton" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>選択...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>HTTP 接続</string>
+     </property>
+     <property name="flat" >
+      <bool>true</bool>
+     </property>
+     <layout class="QHBoxLayout" >
+      <item>
+       <widget class="QLabel" name="label" >
+        <property name="text" >
+         <string>タイムアウトまでの時間</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Preferred</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="httpTimeoutIntervalSpinBox" >
+        <property name="suffix" >
+         <string>秒</string>
+        </property>
+        <property name="minimum" >
+         <number>2</number>
+        </property>
+        <property name="maximum" >
+         <number>9999</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>20</width>
+       <height>159</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>peerCastServerHostEdit</tabstop>
+  <tabstop>peerCastServerPortSpinBox</tabstop>
+  <tabstop>runPeerCastAtStartupCheckBox</tabstop>
+  <tabstop>peerCastProgramEdit</tabstop>
+  <tabstop>selectPeerCastProgramButton</tabstop>
+  <tabstop>pcrawProxyServerHostEdit</tabstop>
+  <tabstop>pcrawProxyProgramEdit</tabstop>
+  <tabstop>selectPCRawProxyProgramButton</tabstop>
+  <tabstop>runPCRawProxyAtStartup</tabstop>
+  <tabstop>httpTimeoutIntervalSpinBox</tabstop>
+  <tabstop>pcrawProxyServerPortSpinBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>runPeerCastAtStartupCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>peerCastProgramEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>162</x>
+     <y>161</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>337</x>
+     <y>163</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>runPeerCastAtStartupCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>selectPeerCastProgramButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>133</x>
+     <y>164</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>514</x>
+     <y>156</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>runPCRawProxyAtStartup</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>pcrawProxyProgramEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>145</x>
+     <y>235</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>338</x>
+     <y>231</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>runPCRawProxyAtStartup</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>selectPCRawProxyProgramButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>191</x>
+     <y>224</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>527</x>
+     <y>233</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
