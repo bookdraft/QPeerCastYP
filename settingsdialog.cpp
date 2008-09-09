@@ -118,7 +118,7 @@ void SettingsDialog::accept()
     if (m_playerEdit->isDirty())
         m_playerEdit->write();
     if (m_networkWidget->isDirty())
-        m_playerEdit->write();
+        m_networkWidget->write();
     m_settings->sync();
     QDialog::accept();
 }

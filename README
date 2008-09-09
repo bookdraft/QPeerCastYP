@@ -1,3 +1,36 @@
-ソースコード入手:
-http://mosax.sakura.ne.jp/fswiki.cgi?page=PeerCast+Qt
-http://mosax.sakura.ne.jp/
+QPeerCastYP - PeerCast 視聴補助プログラム
+
+* ビルド方法
+
+    Ubuntu:
+        $ sudo apt-get install build-essential libqt4-dev
+        $ tar jxvf qpeercastyp-VERSION.tar.bz2
+        $ cd qpeercastyp-VERSION
+        $ ./configure
+        $ make
+        $ sudo make install
+
+    Windows:
+        Qt 4 をインストール (要静的ライブラリのコンパイル)
+            必要なら MinGW もインストール
+        NSIS をインストール
+        Qt Command Prompt を起動
+        QPeerCastYP があるディレクトリに移動
+        > qmake
+        > make
+        > make installer
+
+* ソースコード、ツールの入手
+
+    QPeerCastYP
+      http://code.google.com/p/qpeercastyp/
+
+    Qt
+      http://trolltech.com/downloads/opensource
+
+    PCRaw
+      http://mosax.sakura.ne.jp/fswiki.cgi?page=PCRaw
+
+    NSIS
+      http://nsis.sourceforge.net/
+

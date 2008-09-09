@@ -24,7 +24,7 @@ public:
 
 public slots:
     virtual bool isDirty() const;
-    virtual void setDirty(bool dirty = false);
+    virtual void setDirty(bool dirty = true);
 
 protected:
     bool m_dirty;

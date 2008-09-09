@@ -12,7 +12,7 @@
 
 #include <QtGui>
 
-// Vim と Emacs っぽいキーバンドを提供するイベントフィルタ。
+// Vim と Emacs っぽいキーバインドを提供するイベントフィルタ。
 class ViEmacsBindings : public QObject
 {
     Q_OBJECT

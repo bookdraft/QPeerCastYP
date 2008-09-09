@@ -15,7 +15,7 @@ NotificationWidget::NotificationWidget(Settings *settings, QWidget *parent)
     : SettingWidget(parent), m_settings(settings)
 {
     setupUi(this);
-    setDirty(true);
+    setDirty();
     QCompleter *completer = new QCompleter(this);
     completer->setModel(new QDirModel(completer));
     soundFileEdit->setCompleter(completer);

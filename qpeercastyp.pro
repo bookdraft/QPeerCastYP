@@ -10,26 +10,37 @@ CONFIG += precompile_header
 PRECOMPILED_HEADER = stable.h
 
 unix {
-    CONFIG += debug
-    # CONFIG -= debug
-    # CONFIG += release
+    # CONFIG += debug
+    CONFIG -= debug
     BUILD_DIR = build-linux
 
     # gprof 用
     # QMAKE_CXXFLAGS_DEBUG += -pg
     # QMAKE_LFLAGS_DEBUG += -pg
 
-    contains(CONFIG, debug) {
-        run.target = all
-        run.commands = ./$$TARGET
-        QMAKE_EXTRA_TARGETS += run
-    }
+    run.target = run
+    run.commands = ./$$TARGET
+    QMAKE_EXTRA_TARGETS += run
 
     archive.target = archive
     archive.commands = git-archive --format=tar --prefix=qpeercastyp-$${VERSION}/ HEAD \
                        | bzip2 > qpeercastyp-$${VERSION}.tar.bz2
-
     QMAKE_EXTRA_TARGETS += archive
+
+    # http://code.google.com/p/support/wiki/ScriptedUploads
+    googlecode_upload = googlecode_upload.py -p qpeercastyp -u ciao.altern8
+    uploadsrc.target = upload-src
+    uploadsrc.commands = $$googlecode_upload -s \"QPeerCastYP $$VERSION Source\" \
+                         -l Type-Source,Featured qpeercastyp-$${VERSION}.tar.bz2
+    uploaddeb.target = upload-deb
+    uploaddeb.commands = $$googlecode_upload -s \"QPeerCastYP $$VERSION Debian Package\" \
+                      -l OpSys-Linux,Type-Package,Featured qpeercastyp_$${VERSION}-*_i386.deb
+    uploadins.target = upload-installer
+    uploadins.commands = $$googlecode_upload -s \"QPeerCastYP $$VERSION Installer\" \
+                      -l OpSys-Windows,Type-Installer,Featured qpeercastyp-$${VERSION}.exe
+    uploadall.target = upload-all
+    uploadall.depends = uploadsrc uploaddeb uploadins
+    QMAKE_EXTRA_TARGETS += uploadsrc uploaddeb uploadins uploadall
 
     HEADERS += proxystyle.h
     SOURCES += proxystyle.cpp

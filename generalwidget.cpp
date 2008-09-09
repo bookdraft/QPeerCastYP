@@ -14,7 +14,7 @@ GeneralWidget::GeneralWidget(Settings *settings, QWidget *parent)
     : SettingWidget(parent), m_settings(settings)
 {
     setupUi(this);
-    setDirty(true);
+    setDirty();
     QCompleter *completer = new QCompleter(this);
     completer->setModel(new QDirModel(completer));
     webBrowserEdit->setCompleter(completer);

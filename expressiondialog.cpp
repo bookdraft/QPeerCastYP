@@ -91,7 +91,6 @@ void ExpressionDialog::accept()
         return;
     }
 
-    m_expression->enabled = patternGroupBox->isChecked();
     m_expression->pattern = patternEdit->text();
     if (matchCaseSensitiveBox->isChecked())
         m_expression->matchFlags |= Qt::MatchCaseSensitive;

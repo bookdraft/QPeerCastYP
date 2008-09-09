@@ -3,7 +3,7 @@ SetCompressor /FINAL /SOLID lzma
 !define PRODUCT_NAME "QPeerCastYP"
 # !define PRODUCT_VERSION "0.0.1"
 !define PRODUCT_PUBLISHER "ciao"
-!define PRODUCT_WEB_SITE "http://qpeercastyp.sourceforge.jp/"
+!define PRODUCT_WEB_SITE "http://code.google.com/p/qpeercastyp/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\qpeercastyp.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
@@ -52,7 +52,7 @@ Section "MainSection" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
   File "release\qpeercastyp.exe"
-  File "bin\pcraw_proxy.exe"
+  File "pcraw\pcraw_proxy.exe"
   File "COPYING"
   CreateDirectory "$SMPROGRAMS\QPeerCastYP"
   CreateShortCut "$SMPROGRAMS\QPeerCastYP\QPeerCastYP.lnk" "$INSTDIR\qpeercastyp.exe"

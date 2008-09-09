@@ -56,9 +56,9 @@ Application::Application(int argc, char *argv[])
 #endif
 #ifdef Q_WS_WIN
         m_settings->setValue("Player/VideoPlayer", defaultSettings->value("Player/Windows/VideoPlayer"));
-        m_settings->setValue("Player/VideoPlayerArgs", defaultSettings->value("Player/Windowsinux/VideoPlayerArgs"));
-        m_settings->setValue("Player/SoundPlayer", defaultSettings->value("Player/Windowsinux/SoundPlayer"));
-        m_settings->setValue("Player/SoundPlayerArgs", defaultSettings->value("Player/Windowsinux/SoundPlayerArgs"));
+        m_settings->setValue("Player/VideoPlayerArgs", defaultSettings->value("Player/Windows/VideoPlayerArgs"));
+        m_settings->setValue("Player/SoundPlayer", defaultSettings->value("Player/Windows/SoundPlayer"));
+        m_settings->setValue("Player/SoundPlayerArgs", defaultSettings->value("Player/Windows/SoundPlayerArgs"));
 #endif
     }
 

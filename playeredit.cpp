@@ -14,15 +14,15 @@ PlayerEdit::PlayerEdit(Settings *settings, QWidget *parent)
     : SettingWidget(parent), m_settings(settings)
 {
     setupUi(this);
-    setDirty(true);
+    setDirty();
     QCompleter *completer = new QCompleter(this);
     completer->setModel(new QDirModel(completer));
     videoPlayerEdit->setCompleter(completer);
     soundPlayerEdit->setCompleter(completer);
     label->setText(tr("<table cellspacing=6 width=100%>"
-                   "<tr><td>$STREAM_URL</td><td>ストリーム URL (http)</td></tr>"
-                   "<tr><td>$STREAM_URL(scheme)</td><td>ストリーム URL (mms, mmsh などのスキームを指定)</td></tr>"
-                   "<tr><td>$CHANNEL_NAME</td><td>チャンネル名</td></tr></table>"));
+                      "<tr><td>$STREAM_URL</td><td>ストリーム URL (http)</td></tr>"
+                      "<tr><td>$STREAM_URL(scheme)</td><td>ストリーム URL (スキームを指定)</td></tr>"
+                      "<tr><td>$CHANNEL_NAME</td><td>チャンネル名</td></tr></table>"));
 }
 
 PlayerEdit::~PlayerEdit()
@@ -81,7 +81,7 @@ void PlayerEdit::on_selectSoundPlayerButton_clicked()
     if (!program.isEmpty()) {
         soundPlayerEdit->setText(program);
         if (program.endsWith("pcwmp.exe"))
-            videoPlayerArgsEdit->setText("\"$STREAM_URL\" \"$CHANNEL_NAME\"");
+            soundPlayerArgsEdit->setText("\"$STREAM_URL\" \"$CHANNEL_NAME\"");
     }
 }
 
@@ -89,7 +89,7 @@ QString PlayerEdit::getProgram(const QString &currentProgram)
 {
     QString dir = ".";
     if (!currentProgram.isEmpty()) {
-        dir = QFileInfo(currentProgram).dir().canonicalPath();
+        dir = QFileInfo(currentProgram).dir().absolutePath();
     } else {
 #ifdef Q_WS_X11
         dir = "/usr/bin";
