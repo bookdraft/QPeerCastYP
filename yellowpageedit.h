@@ -48,6 +48,8 @@ public:
 
 public slots:
     void clear();
+    void upCurrentItem();
+    void downCurrentItem();
     void addNewItem();
     void editCurrentItem();
     void editItem(QTreeWidgetItem *i);

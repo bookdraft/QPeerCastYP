@@ -77,6 +77,48 @@ void YellowPageListWidget::clear()
     emit changed(true);
 }
 
+void YellowPageListWidget::upCurrentItem()
+{
+    QTreeWidgetItem *current = currentItem();
+    int currentIndex = indexOfTopLevelItem(current);
+    QTreeWidgetItem *above = itemAbove(current);
+    int insertIndex = indexOfTopLevelItem(above);
+    if (insertIndex != -1) {
+        takeTopLevelItem(currentIndex);
+        insertTopLevelItem(insertIndex, current);
+        setCurrentItem(current);
+        int i = m_manager->yellowPages().indexOf(
+                static_cast<YellowPageListWidgetItem *>(current)->yellowPage());
+        int j = m_manager->yellowPages().indexOf(
+                static_cast<YellowPageListWidgetItem *>(above)->yellowPage());
+        if (i != j) {
+            m_manager->yellowPages().swap(i, j);
+            emit changed(true);
+        }
+    }
+}
+
+void YellowPageListWidget::downCurrentItem()
+{
+    QTreeWidgetItem *current = currentItem();
+    int currentIndex = indexOfTopLevelItem(current);
+    QTreeWidgetItem *below = itemBelow(current);
+    int insertIndex = indexOfTopLevelItem(below);
+    if (insertIndex != -1) {
+        takeTopLevelItem(currentIndex);
+        insertTopLevelItem(insertIndex, current);
+        setCurrentItem(current);
+        int i = m_manager->yellowPages().indexOf(
+                static_cast<YellowPageListWidgetItem *>(current)->yellowPage());
+        int j = m_manager->yellowPages().indexOf(
+                static_cast<YellowPageListWidgetItem  *>(below)->yellowPage());
+        if (i != j) {
+            m_manager->yellowPages().swap(i, j);
+            emit changed(true);
+        }
+    }
+}
+
 void YellowPageListWidget::itemClicked(QTreeWidgetItem *i, int column)
 {
     if (YellowPageListWidgetItem *item = static_cast<YellowPageListWidgetItem *>(i))
@@ -156,6 +198,8 @@ YellowPageEdit::YellowPageEdit(Settings *settings, QWidget *parent)
     connect(addButton, SIGNAL(clicked(bool)), m_listWidget, SLOT(addNewItem()));
     connect(editButton, SIGNAL(clicked(bool)), m_listWidget, SLOT(editCurrentItem()));
     connect(removeButton, SIGNAL(clicked(bool)), m_listWidget, SLOT(removeCurrentItem()));
+    connect(upButton, SIGNAL(clicked(bool)), m_listWidget, SLOT(upCurrentItem()));
+    connect(downButton, SIGNAL(clicked(bool)), m_listWidget, SLOT(downCurrentItem()));
 }
 
 YellowPageEdit::~YellowPageEdit()

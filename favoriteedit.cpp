@@ -81,7 +81,6 @@ void ExpressionListWidget::upCurrentItem()
 {
     QTreeWidgetItem *current = currentItem();
     int currentIndex = indexOfTopLevelItem(current);
-    // Qt 4.3.3 以前だと itemAbove/itemBelow が機能しない
     QTreeWidgetItem *above = itemAbove(current);
     int insertIndex = indexOfTopLevelItem(above);
     if (insertIndex != -1) {
@@ -103,7 +102,6 @@ void ExpressionListWidget::downCurrentItem()
 {
     QTreeWidgetItem *current = currentItem();
     int currentIndex = indexOfTopLevelItem(current);
-    // Qt 4.3.3 以前だと itemAbove/itemBelow が機能しない
     QTreeWidgetItem *below = itemBelow(current);
     int insertIndex = indexOfTopLevelItem(below);
     if (insertIndex != -1) {

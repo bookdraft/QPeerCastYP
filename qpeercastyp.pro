@@ -30,13 +30,13 @@ unix {
     # http://code.google.com/p/support/wiki/ScriptedUploads
     googlecode_upload = googlecode_upload.py -p qpeercastyp -u ciao.altern8
     uploadsrc.target = upload-src
-    uploadsrc.commands = $$googlecode_upload -s \"QPeerCastYP $$VERSION Source\" \
+    uploadsrc.commands = $$googlecode_upload -s \"QPeerCastYP $$VERSION - Source\" \
                          -l Type-Source,Featured qpeercastyp-$${VERSION}.tar.bz2
     uploaddeb.target = upload-deb
-    uploaddeb.commands = $$googlecode_upload -s \"QPeerCastYP $$VERSION Debian Package\" \
+    uploaddeb.commands = $$googlecode_upload -s \"QPeerCastYP $$VERSION - Debian Package\" \
                       -l OpSys-Linux,Type-Package,Featured qpeercastyp_$${VERSION}-*_i386.deb
     uploadins.target = upload-installer
-    uploadins.commands = $$googlecode_upload -s \"QPeerCastYP $$VERSION Installer\" \
+    uploadins.commands = $$googlecode_upload -s \"QPeerCastYP $$VERSION - Windows Installer\" \
                       -l OpSys-Windows,Type-Installer,Featured qpeercastyp-$${VERSION}.exe
     uploadall.target = upload-all
     uploadall.depends = uploadsrc uploaddeb uploadins
@@ -50,7 +50,7 @@ unix {
     bin.files = $$TARGET
     bin.path = $$BINDIR
 
-    pcraw.files = pcraw/pcraw_srv pcraw/pcraw_proxy
+    pcraw.files = pcraw/pcraw_proxy
     pcraw.path = $$BINDIR
 
     INSTALLS += bin pcraw

@@ -15,7 +15,7 @@
 class Channel
 {
 public:
-    enum Status { Stopped, Normal, Changed,  New };
+    enum Status { Stopped, Normal, Changed, New };
 
     Channel(const QString &name = QString());
     virtual ~Channel();
