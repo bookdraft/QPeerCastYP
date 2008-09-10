@@ -18,9 +18,9 @@ QPeerCastYP - PeerCast 視聴補助プログラム
         QPeerCastYP があるディレクトリに移動
         > qmake
         > make
-        > make installer
+        > make nsis
 
-* ソースコード、ツールの入手
+* ソースコード、ツール、アイコンの入手
 
     QPeerCastYP
       http://code.google.com/p/qpeercastyp/
@@ -28,7 +28,11 @@ QPeerCastYP - PeerCast 視聴補助プログラム
     Qt
       http://trolltech.com/downloads/opensource
 
+    Crystal
+      http://www.everaldo.com/crystal/
+
     PCRaw
+      http://mosax.sakura.ne.jp/
       http://mosax.sakura.ne.jp/fswiki.cgi?page=PCRaw
 
     NSIS

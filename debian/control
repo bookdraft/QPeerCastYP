@@ -8,5 +8,5 @@ Standards-Version: 3.7.2
 Package: qpeercastyp
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: PeerCast Yellow Pages
- PeerCast Yellow Pages
+Recommends: ogg123, mpg321
+Description: Qt4 based PeerCast Yellow Page Viewer

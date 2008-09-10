@@ -38,7 +38,6 @@ unix {
     QMAKE_EXTRA_TARGETS += archive
 
     deb.target = deb
-    deb.depends = qpeercastyp-$${VERSION}.tar.bz2
     deb.commands = tar jxvf qpeercastyp-$${VERSION}.tar.bz2 && \
                    cd qpeercastyp-$${VERSION}/ && \
                    debuild -b -uc -us
@@ -51,13 +50,13 @@ unix {
                          -l Type-Source,Featured qpeercastyp-$${VERSION}.tar.bz2
     uploaddeb.target = upload-deb
     uploaddeb.commands = $$googlecode_upload -s \"QPeerCastYP $$VERSION - Debian Package\" \
-                      -l OpSys-Linux,Type-Package,Featured qpeercastyp_$${VERSION}-*_i386.deb
-    uploadins.target = upload-installer
-    uploadins.commands = $$googlecode_upload -s \"QPeerCastYP $$VERSION - Windows Installer\" \
-                      -l OpSys-Windows,Type-Installer,Featured qpeercastyp-$${VERSION}.exe
+                         -l OpSys-Linux,Type-Package,Featured qpeercastyp_$${VERSION}-*_i386.deb
+    uploadexe.target = upload-installer
+    uploadexe.commands = $$googlecode_upload -s \"QPeerCastYP $$VERSION - Windows Installer\" \
+                         -l OpSys-Windows,Type-Installer,Featured qpeercastyp-$${VERSION}.exe
     uploadall.target = upload-all
-    uploadall.depends = uploadsrc uploaddeb uploadins
-    QMAKE_EXTRA_TARGETS += uploadsrc uploaddeb uploadins uploadall
+    uploadall.depends = uploadsrc uploaddeb uploadexe
+    QMAKE_EXTRA_TARGETS += uploadsrc uploaddeb uploadexe uploadall
 
     HEADERS += proxystyle.h
     SOURCES += proxystyle.cpp
