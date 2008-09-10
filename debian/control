@@ -1,0 +1,12 @@
+Source: qpeercastyp
+Section: sound
+Priority: extra
+Maintainer: ciao <ciao@users.sourceforge.jp>
+Build-Depends: debhelper (>= 5), libqt4-dev
+Standards-Version: 3.7.2
+
+Package: qpeercastyp
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: PeerCast Yellow Pages
+ PeerCast Yellow Pages

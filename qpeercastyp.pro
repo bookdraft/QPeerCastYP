@@ -14,7 +14,11 @@ unix {
     CONFIG -= debug
     BUILD_DIR = build-linux
 
-    include(conf.pri)
+    !include(conf.pri) {
+        PREFIX = /usr/local
+        BINDIR = /usr/local/bin
+        DATADIR = /usr/local/share
+    }
 
     # gprof 用
     # QMAKE_CXXFLAGS_DEBUG += -pg
@@ -24,10 +28,21 @@ unix {
     run.commands = ./$$TARGET
     # QMAKE_EXTRA_TARGETS += run
 
+    pcraw.target = pcraw-bin
+    pcraw.commands = @cd pcraw; make
+    QMAKE_EXTRA_TARGETS += pcraw
+
     archive.target = archive
     archive.commands = git-archive --format=tar --prefix=qpeercastyp-$${VERSION}/ HEAD \
                        | bzip2 > qpeercastyp-$${VERSION}.tar.bz2
     QMAKE_EXTRA_TARGETS += archive
+
+    deb.target = deb
+    deb.depends = qpeercastyp-$${VERSION}.tar.bz2
+    deb.commands = tar jxvf qpeercastyp-$${VERSION}.tar.bz2 && \
+                   cd qpeercastyp-$${VERSION}/ && \
+                   debuild -b -uc -us
+    QMAKE_EXTRA_TARGETS += deb
 
     # http://code.google.com/p/support/wiki/ScriptedUploads
     googlecode_upload = googlecode_upload.py -p qpeercastyp -u ciao.altern8
@@ -50,16 +65,19 @@ unix {
     bin.files = $$TARGET
     bin.path = $$BINDIR
 
-    pcraw.files = pcraw/pcraw_proxy
-    pcraw.path = $$BINDIR
-
     desktop.files = qpeercastyp.desktop
     desktop.path = $$DATADIR/applications
 
     pixmap.files = images/qpeercastyp.png
     pixmap.path = $$DATADIR/pixmaps
 
-    INSTALLS += bin pcraw desktop pixmap
+    INSTALLS += bin desktop pixmap
+
+    exists (pcraw/pcraw_proxy) {
+        pcraw.files = pcraw/pcraw_proxy
+        pcraw.path = $$BINDIR
+        INSTALLS += pcraw
+    }
 }
 
 win32 {
@@ -141,17 +159,17 @@ SOURCES += main.cpp \
            yellowpagemanager.cpp \
            pcrawproxy.cpp
 
-FORMS += channellistfindbar.ui \
-         generalwidget.ui \
-         yellowpageedit.ui \
-         yellowpagedialog.ui \
-         favoriteedit.ui \
-         expressiondialog.ui \
-         playeredit.ui \
-         notificationwidget.ui \
-         networkwidget.ui \
-         advancedwidget.ui \
-         aboutqpeercastyp.ui
+FORMS +=   channellistfindbar.ui \
+           generalwidget.ui \
+           yellowpageedit.ui \
+           yellowpagedialog.ui \
+           favoriteedit.ui \
+           expressiondialog.ui \
+           playeredit.ui \
+           notificationwidget.ui \
+           networkwidget.ui \
+           advancedwidget.ui \
+           aboutqpeercastyp.ui
 
 RESOURCES = qpeercastyp.qrc
 
