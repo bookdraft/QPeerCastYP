@@ -14,13 +14,15 @@ unix {
     CONFIG -= debug
     BUILD_DIR = build-linux
 
+    include(conf.pri)
+
     # gprof 用
     # QMAKE_CXXFLAGS_DEBUG += -pg
     # QMAKE_LFLAGS_DEBUG += -pg
 
-    run.target = run
+    run.target = all
     run.commands = ./$$TARGET
-    QMAKE_EXTRA_TARGETS += run
+    # QMAKE_EXTRA_TARGETS += run
 
     archive.target = archive
     archive.commands = git-archive --format=tar --prefix=qpeercastyp-$${VERSION}/ HEAD \
@@ -45,15 +47,19 @@ unix {
     HEADERS += proxystyle.h
     SOURCES += proxystyle.cpp
 
-    include(conf.pri)
-
     bin.files = $$TARGET
     bin.path = $$BINDIR
 
     pcraw.files = pcraw/pcraw_proxy
     pcraw.path = $$BINDIR
 
-    INSTALLS += bin pcraw
+    desktop.files = qpeercastyp.desktop
+    desktop.path = $$DATADIR/applications
+
+    pixmap.files = images/qpeercastyp.png
+    pixmap.path = $$DATADIR/pixmaps
+
+    INSTALLS += bin pcraw desktop pixmap
 }
 
 win32 {
