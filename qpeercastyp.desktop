@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=QPeerCastYP
+Name[ja]=QPeerCastYP
+Comment=PeerCast YellowPage Viewer
+Comment[ja]=PeerCast の視聴を補助します
+TryExec=qpeercastyp
+Exec=qpeercastyp
+Icon=qpeercastyp.png
+Type=Application
+Categories=Qt;AudioVideo;Video;Player;
