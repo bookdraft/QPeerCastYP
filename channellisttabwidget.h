@@ -27,15 +27,9 @@ public:
     void setTabBarVisible(bool shown);
     bool tabBarIsVisible() const;
 
-public slots:
-    void setCurrentWidget(ChannelListWidget *widget);
-
 private slots:
     void findRequest(QString text, Qt::MatchFlags flags);
     void currentChanged(int index);
-
-private:
-    int m_currentIndex;
 };
 
 #endif // CHANNELLISTTABWIDGET_H

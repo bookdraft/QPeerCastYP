@@ -33,6 +33,7 @@ public:
 
     QDateTime lastUpdatedTime();
     Channel *currentChannel() const;
+    bool isActive() const;
     void setActive(bool active);
     void updateActions();
 
@@ -68,6 +69,7 @@ private:
     QDateTime m_lastUpdatedTime;
     QList<Channel *> m_favoriteChannels;
     bool m_needClear;
+    bool m_active;
 };
 
 #endif // CHANNELLISTWIDGET_H

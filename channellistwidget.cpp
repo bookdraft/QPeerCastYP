@@ -145,7 +145,7 @@ private:
 };
 
 ChannelListWidget::ChannelListWidget(QWidget *parent, YellowPage *yellowPage)
-    : QTreeWidget(parent)
+    : QTreeWidget(parent), m_active(false)
 {
     setYellowPage(yellowPage);
     m_lastUpdatedTime = QDateTime::currentDateTime();
@@ -166,12 +166,14 @@ ChannelListWidget::ChannelListWidget(QWidget *parent, YellowPage *yellowPage)
             SLOT(headerContextMenuRequested(QPoint)));
     QByteArray state = qApp->settings()->value("ChannelListWidget/HeaderState").toByteArray();
     header()->restoreState(state);
-    int lastSection = 0;
+
+    int lastSection = -1;
     for (int i = 0; i < header()->count(); ++i)
         if (header()->sectionSize(i))
             lastSection = i;
-    header()->resizeSection(lastSection, fontMetrics().width(headers[lastSection]) +
-                                         style()->pixelMetric(QStyle::PM_HeaderGripMargin) * 2);
+    if (lastSection != -1)
+        header()->resizeSection(lastSection, fontMetrics().width(headers[lastSection])
+                                    + style()->pixelMetric(QStyle::PM_HeaderGripMargin) * 2);
 
     setAllColumnsShowFocus(true);
     setSortingEnabled(true);
@@ -244,8 +246,16 @@ int ChannelListWidget::yellowPageCount() const
     return count;
 }
 
+bool ChannelListWidget::isActive() const
+{
+    return m_active;
+}
+
 void ChannelListWidget::setActive(bool active)
 {
+    if (m_active == active)
+        return;
+    m_active = active;
     if (active) {
         connect(m_yellowPage, SIGNAL(updateDone(YellowPage *, bool)),
                 this, SLOT(done(YellowPage *, bool)));

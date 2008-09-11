@@ -21,13 +21,18 @@ public:
     ChannelListTabBar(QWidget *parent = 0) : QTabBar(parent) { }
 
 protected:
+    ChannelListTabWidget *tabWidget() const
+    {
+        return qobject_cast<ChannelListTabWidget *>(parentWidget());
+    }
+
     void contextMenuEvent(QContextMenuEvent *event)
     {
         QMenu menu;
         menu.addAction(qApp->actions()->updateYellowPageAction());
         menu.addSeparator();
         for (int i = 0; i < count(); ++i) {
-            ChannelListWidget *list = qobject_cast<ChannelListTabWidget *>(parentWidget())->widget(i);
+            ChannelListWidget *list = tabWidget()->widget(i);
             if (list and !list->yellowPage()->isManager()) {
                 QAction *action = menu.addAction(QIcon(),
                         tr("%1 をウェブ・ブラウザで開く").arg(list->yellowPage()->name()));
@@ -42,6 +47,18 @@ protected:
             else if (action == hideTabBar)
                 qApp->actions()->showTabBarAction()->trigger();
         }
+    }
+
+    void hideEvent(QHideEvent *event)
+    {
+        for (int i = 0; i < count(); ++i) {
+            ChannelListWidget *list = tabWidget()->widget(i);
+            if (!list->yellowPage()->isManager())
+                continue;
+            tabWidget()->setCurrentWidget(list);
+            break;
+        }
+        QTabBar::hideEvent(event);
     }
 
     void wheelEvent(QWheelEvent *event)
@@ -61,7 +78,7 @@ protected:
 };
 
 ChannelListTabWidget::ChannelListTabWidget(QWidget *parent)
-    : QTabWidget(parent), m_currentIndex(-1)
+    : QTabWidget(parent)
 {
     setTabBar(new ChannelListTabBar(this));
     connect(this, SIGNAL(currentChanged(int)), SLOT(currentChanged(int)));
@@ -81,22 +98,14 @@ ChannelListWidget *ChannelListTabWidget::widget(int index)
     return qobject_cast<ChannelListWidget *>(QTabWidget::widget(index));
 }
 
-void ChannelListTabWidget::setCurrentWidget(ChannelListWidget *widget)
-{
-    m_currentIndex = indexOf(widget);
-    currentChanged(m_currentIndex);
-    QTabWidget::setCurrentWidget(widget);
-}
-
 void ChannelListTabWidget::currentChanged(int index)
 {
     ChannelListWidget *current = widget(index);
     if (!current)
         return;
-    if (m_currentIndex != -1 and widget(m_currentIndex)) {
-        widget(m_currentIndex)->setActive(false);
-        m_currentIndex = index;
-    }
+    for (int i = 0; i < count(); ++i)
+        if (i != index)
+            widget(i)->setActive(false);
     current->setActive(true);
     if (current->yellowPage()->lastUpdatedTime() > current->lastUpdatedTime()) {
         current->updateItems();

@@ -97,7 +97,7 @@ void MainWindow::setupChannelListWidget()
     YellowPage *manager = qApp->yellowPageManager();
     ChannelListWidget *list = new ChannelListWidget(m_channelListTabWidget, manager);
     m_channelListTabWidget->addTab(list, manager->name());
-    m_channelListTabWidget->setCurrentWidget(list);
+    list->setActive(true);
     connect(m_channelListFindBar, SIGNAL(findRequest(QString, Qt::MatchFlags)),
             m_channelListTabWidget, SLOT(findRequest(QString, Qt::MatchFlags)));
 

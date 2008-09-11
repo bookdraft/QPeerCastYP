@@ -26,7 +26,7 @@ unix {
 
     run.target = all
     run.commands = ./$$TARGET
-    # QMAKE_EXTRA_TARGETS += run
+    QMAKE_EXTRA_TARGETS += run
 
     pcraw.target = pcraw-bin
     pcraw.commands = @cd pcraw; make
@@ -40,7 +40,7 @@ unix {
     deb.target = deb
     deb.commands = tar jxvf qpeercastyp-$${VERSION}.tar.bz2 && \
                    cd qpeercastyp-$${VERSION}/ && \
-                   debuild -b -uc -us
+                   debuild -e MAKE=\"make -j3\" -b -uc -us 
     QMAKE_EXTRA_TARGETS += deb
 
     # http://code.google.com/p/support/wiki/ScriptedUploads

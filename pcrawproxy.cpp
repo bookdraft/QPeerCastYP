@@ -59,13 +59,19 @@ void PCRawProxy::restart()
 
 void PCRawProxy::finished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-    if (exitCode) {
+    Q_UNUSED(exitCode);
+    QString errorString = m_process.readAllStandardError();
+    if (errorString.contains("Unable to bind socket: Address already in use")) {
         QMessageBox::warning(qApp->mainWindow(), tr("エラー"),
                 tr("PCRaw プロキシサーバの起動に失敗しました。\n"
-                   "既に PCRaw プロキシサーバが起動しているかもしれません。"));
+                   "既に PCRaw プロキシサーバが起動しているかもしれません。"
+#ifdef Q_WS_X11
+                   "\n\nメモ：ターミナルで killall pcraw_proxy を実行すると終了"
+#endif
+                   ));
     } else if (exitStatus == QProcess::CrashExit) {
         int button = QMessageBox::question(qApp->mainWindow(), tr("PCRaw プロキシサーバを再起動しますか？"),
-                        tr("PCRaw プロキシサーバがクラッシュしました。\nPCRaw プロキシサーバを起動しなおしますか？"),
+                        tr("PCRaw プロキシサーバがクラッシュしました。\nPCRaw プロキシサーバを再起動しますか？"),
                         QMessageBox::Yes | QMessageBox::No);
         if (button == QMessageBox::Yes)
             start();
