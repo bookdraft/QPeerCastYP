@@ -11,10 +11,16 @@
 #include "application.h"
 #include "settings.h"
 
-Channel::Channel(const QString &name)
-    : m_status(New), m_name(name), m_uptime(0),
-      m_listeners(-1), m_relays(-1), m_score(0), m_bitrate(-1)
+Channel::Channel(const QString &name, QObject *parent)
+    : QObject(parent)
 {
+    setProperty("name", name);
+    setProperty("status", New);
+    setProperty("uptime", 0);
+    setProperty("listeners", -1);
+    setProperty("relays", -1);
+    setProperty("score", 0);
+    setProperty("bitrate", -1);
 }
 
 Channel::~Channel()
@@ -23,7 +29,7 @@ Channel::~Channel()
 
 bool Channel::isPlayable() const
 {
-    return m_id != "00000000000000000000000000000000";
+    return id() != "00000000000000000000000000000000";
 }
 
 QUrl Channel::streamUrl(const QString &scheme) const
@@ -31,26 +37,26 @@ QUrl Channel::streamUrl(const QString &scheme) const
     QUrl url = qApp->settings()->value("PeerCast/ServerUrl").toString();
     return QUrl(QString("%1://%2:%3/stream/%4.%5?tip=%6")
                         .arg(scheme).arg(url.host()).arg(url.port())
-                        .arg(m_id).arg(m_type.toLower()).arg(m_tip));
+                        .arg(id()).arg(type().toLower()).arg(tip()));
 }
 
 Channel::Status Channel::status() const
 {
-    return m_status;
+    return (Status)property("status").toInt();
 }
 
 void Channel::setStatus(Status status)
 {
-    m_status = status;
+    setProperty("status", status);
 }
 
 QString Channel::longDescription() const
 {
     QString desc;
     QStringList list;
-    if (!m_genre.isEmpty())
-        desc += "[" + m_genre + "] ";
-    list << m_description << m_artist << m_title << m_album << m_message;
+    if (!genre().isEmpty())
+        desc += "[" + genre() + "] ";
+    list << description() << artist() << title() << album() << message();
     list.removeAll(QString());
     desc += list.join(" - ");
 
@@ -59,7 +65,7 @@ QString Channel::longDescription() const
 
 QString Channel::name(bool removeStatus) const
 {
-    QString name = m_name;
+    QString name = property("name").toString();
     if (removeStatus)
         name.remove(QRegExp("( \\((切断|再生不可|要帯域チェック|要ポート開放)[^)]*\\))*$"));
     return name;
@@ -67,102 +73,102 @@ QString Channel::name(bool removeStatus) const
 
 void Channel::setName(const QString &name)
 {
-    m_name = name;
+    setProperty("name", name);
 }
 
 QString Channel::id() const
 {
-    return m_id;
+    return property("id").toString();
 }
 
 void Channel::setId(const QString &id)
 {
-    m_id = id;
+    setProperty("id", id);
 }
 
 QString Channel::tip() const
 {
-    return m_tip;
+    return property("tip").toString();
 }
 
 void Channel::setTip(const QString &tip)
 {
-    m_tip = tip;
+    setProperty("tip", tip);
 }
 
 QString Channel::genre() const
 {
-    return m_genre;
+    return property("genre").toString();
 }
 
 void Channel::setGenre(const QString &genre)
 {
-    m_genre = genre;
+    setProperty("genre", genre);
 }
 
 QString Channel::description() const
 {
-    return m_description;
+    return property("description").toString();
 }
 
 void Channel::setDescription(const QString &description)
 {
-    m_description = description;
+    setProperty("description", description);
 }
 
 QString Channel::artist() const
 {
-    return m_artist;
+    return property("artist").toString();
 }
 
 void Channel::setArtist(const QString &artist)
 {
-    m_artist = artist;
+    setProperty("artist", artist);
 }
 
 QString Channel::album() const
 {
-    return m_album;
+    return property("album").toString();
 }
 
 void Channel::setAlbum(const QString &album)
 {
-    m_album = album;
+    setProperty("album", album);
 }
 
 QString Channel::title() const
 {
-    return m_title;
+    return property("title").toString();
 }
 
 void Channel::setTitle(const QString &title)
 {
-    m_title = title;
+    setProperty("title", title);
 }
 
 QString Channel::message() const
 {
-    return m_message;
+    return property("message").toString();
 }
 
 void Channel::setMessage(const QString &message)
 {
-    m_message = message;
+    setProperty("message", message);
 }
 
 QString Channel::type() const
 {
-    return m_type;
+    return property("type").toString();
 }
 
 void Channel::setType(const QString &type)
 {
-    m_type = type.toUpper();
+    setProperty("type", type.toUpper());
 }
 
 QUrl Channel::contactUrl() const
 {
-    return m_contactUrl;
+    return property("contact_url").toUrl();
 }
 
 void Channel::setContactUrl(const QString &url)
@@ -172,89 +178,89 @@ void Channel::setContactUrl(const QString &url)
 
 void Channel::setContactUrl(const QUrl &url)
 {
-    m_contactUrl = url;
+    setProperty("contact_url", url);
 }
 
 QUrl Channel::url() const
 {
-    return m_url;
+    return property("url").toUrl();
 }
 
 void Channel::setUrl(const QUrl &url)
 {
-    m_url = url;
+    setProperty("url", url);
 }
 
 // 配信時間(単位は秒)
 qint32 Channel::uptime() const
 {
-    return m_uptime;
+    return property("uptime").value<qint32>();
 }
 
 void Channel::setUptime(qint32 uptime)
 {
-    m_uptime = uptime;
+    setProperty("uptime", uptime);
 }
 
 void Channel::setUptime(const QString &uptime) {
-    int uptime_ = 0;
+    qint32 secs = 0;
     QStringList t = uptime.split(":");
-    uptime_ += t[0].toInt() * 60 * 60;
-    uptime_ += t[1].toInt() * 60;
-    m_uptime = uptime_; 
+    secs += t[0].toInt() * 60 * 60;
+    secs += t[1].toInt() * 60;
+    setUptime(secs); 
 }
 
 QString Channel::uptimeString() const {
-    int days  = m_uptime / (24 * 60 * 60);
-    int hours = (m_uptime - days * 24 * 60 * 60) / (60 * 60);
-    int mins  = (m_uptime - days * 24 * 60 * 60 - hours * 60 * 60) / 60;
+    int days  = uptime() / (24 * 60 * 60);
+    int hours = (uptime() - days * 24 * 60 * 60) / (60 * 60);
+    int mins  = (uptime() - days * 24 * 60 * 60 - hours * 60 * 60) / 60;
     QString str = days ? QString("%1:").arg(days) : "";
     return str + QString().sprintf("%02d:%02d", hours, mins);
 }
 
 int Channel::listeners() const
 {
-    return m_listeners;
+    return property("listeners").toInt();
 }
 
 void Channel::setListeners(int listeners)
 {
-    m_listeners = listeners;
+    setProperty("listeners", listeners);
 }
 
 int Channel::relays() const
 {
-    return m_relays;
+    return property("relays").toInt();
 }
 
 void Channel::setRelays(int relays)
 {
-    m_relays = relays;
+    setProperty("relays", relays);
 }
 
 int Channel::score() const
 {
-    return m_score;
+    return property("score").toInt();
 }
 
 bool Channel::hasScore() const
 {
-    return m_score > 0;
+    return score() > 0;
 }
 
 void Channel::setScore(int score)
 {
-    m_score = score;
+    setProperty("score", score);
 }
 
 int Channel::bitrate() const
 {
-    return m_bitrate;
+    return property("bitrate").toInt();
 }
 
 void Channel::setBitrate(int bitrate)
 {
-    m_bitrate = bitrate;
+    setProperty("bitrate", bitrate);
 }
 
 QDebug operator<<(QDebug dbg, const Channel &c)

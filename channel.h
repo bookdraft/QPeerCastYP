@@ -12,12 +12,13 @@
 
 #include <QtCore>
 
-class Channel
+class Channel : public QObject
 {
+    Q_OBJECT
 public:
     enum Status { Stopped, Normal, Changed, New };
 
-    Channel(const QString &name = QString());
+    Channel(const QString &name = QString(), QObject *parent = 0);
     virtual ~Channel();
 
     bool isPlayable() const;
@@ -81,26 +82,6 @@ public:
 
     int bitrate() const;
     void setBitrate(int bitrate);
-
-private:
-    Status m_status;
-    QString m_name;
-    QString m_id;
-    QString m_tip;
-    QString m_genre;
-    QString m_description;
-    QString m_artist;
-    QString m_album;
-    QString m_title;
-    QString m_message;
-    QString m_type;
-    QUrl m_contactUrl;
-    QUrl m_url;
-    qint32 m_uptime;
-    int m_listeners;
-    int m_relays;
-    int m_score;
-    int m_bitrate;
 };
 
 typedef QList<Channel *> ChannelList;
