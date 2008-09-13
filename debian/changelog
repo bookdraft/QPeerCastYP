@@ -1,6 +1,12 @@
+qpeercastyp (0.1.1-1) unstable; urgency=low
+
+  * New version 
+
+ -- ciao <ciao@users.sourceforge.jp>  Sat, 13 Sep 2008 23:35:17 +0900
+
 qpeercastyp (0.1.0-1) unstable; urgency=low
 
   * Initial release
 
- -- ciao <ciao@users.sourceforge.jp>  Wed, 10 Sep 2008 22:29:48 +0900
+ -- ciao <ciao@users.sourceforge.jp>  Sat, 13 Sep 2008 23:35:05 +0900
 

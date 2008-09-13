@@ -238,18 +238,25 @@ QString Actions::expandVars(const QString &str, Channel *channel)
     qDebug() << channel->dynamicPropertyNames();
     while ((pos = rxVar.indexIn(s, pos)) != -1) {
         QString name = rxVar.cap(1).toUpper();
-        QString arg = rxVar.cap(2);
+        QString arg = rxVar.cap(2).toUpper();
         QString value;
+        if (name == "PEERCAST_SERVER") {
+            QUrl pcserv = qApp->settings()->value("PeerCast/ServerUrl").toString(); 
+            if (arg.isEmpty())
+                value = pcserv.toString();
+            else if (arg == "HOST")
+                value = pcserv.host();
+            else if (arg == "PORT")
+                value = QString::number(pcserv.port());
+        }
         if (channel) {
             if (name == "STREAM_URL") {
-                value = channel->streamUrl(arg.isEmpty() ? "http" : arg).toEncoded();
+                value = channel->streamUrl(arg.isEmpty() ? "http" : arg.toLower()).toEncoded();
             } else if (name == "CHANNEL" and !arg.isEmpty()) {
-                arg = arg.toLower();
-                if (arg == "stream_url") {
+                if (arg == "STREAM_URL")
                     value = channel->streamUrl().toEncoded();
-                } else {
-                    value = channel->property(arg.toAscii()).toString();
-                }
+                else
+                    value = channel->property(arg.toLower().toAscii()).toString();
             }
         }
         if (value.isNull()) {

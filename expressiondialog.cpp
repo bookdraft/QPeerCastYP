@@ -15,7 +15,6 @@ ExpressionDialog::ExpressionDialog(ChannelMatcher::Expression *exp, QWidget *par
 {
     setupUi(this);
 
-    patternGroupBox->setChecked(exp->enabled);
     patternEdit->setText(exp->pattern);
 
     int matchFlags = exp->matchFlags;
@@ -39,8 +38,6 @@ ExpressionDialog::ExpressionDialog(ChannelMatcher::Expression *exp, QWidget *par
 
     pointSpinBox->setValue(exp->point);
 
-    // patternEdit->setFocus();
-    // patternEdit->deselect();
     resize(minimumSizeHint().width() + 20, minimumSizeHint().height());
 }
 

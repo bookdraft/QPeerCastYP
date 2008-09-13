@@ -31,6 +31,7 @@ void YellowPage::initialize()
 {
     m_enabled = true;
     m_name = tr("unnamed");
+    m_isManager = false;
     m_usePCRawProxy = false;
     m_yellowPages += this;
     m_updating = false;
@@ -43,10 +44,6 @@ void YellowPage::initialize()
 
 YellowPage::~YellowPage()
 {
-    while (!m_channels.isEmpty())
-        delete m_channels.takeFirst();
-    while (!m_stoppedChannels.isEmpty())
-        delete m_stoppedChannels.takeFirst();
 }
 
 void YellowPage::update()
@@ -132,7 +129,7 @@ void YellowPage::done(bool error)
             }
 
             if (!channel)
-                channel = new Channel;
+                channel = new Channel(this);
             QString longDesc = channel->longDescription();
             channel->setName(fields[0]);
             channel->setId(fields[1]);
@@ -245,7 +242,7 @@ void YellowPage::setUsePCRawProxy(bool enabled)
 
 bool YellowPage::isManager() const
 {
-    return m_type == Manager;
+    return m_isManager;
 }
 
 bool YellowPage::isEnabled() const

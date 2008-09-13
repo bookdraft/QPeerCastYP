@@ -12,11 +12,12 @@
 #include "settings.h"
 
 YellowPageManager::YellowPageManager(Settings *settings)
-    : YellowPage(QString("http://%1/YellowPageManager").arg(qApp->applicationName()), Manager),
+    : YellowPage(QString("http://%1/YellowPageManager").arg(qApp->applicationName())),
       m_settings(settings)
 {
     m_lastUpdatedTime = QDateTime::currentDateTime();
     setName(tr("All"));
+    m_isManager = true;
     m_yellowPages.clear();
     loadYellowPages();
 }
@@ -112,6 +113,7 @@ void YellowPageManager::saveYellowPages()
         YellowPage *yp = m_yellowPages[i];
         m_settings->setValue(key, yp->isEnabled());
         m_settings->setValue(key + "/Name", yp->name());
+        m_settings->setValue(key + "/Type", yp->type());
         m_settings->setValue(key + "/Url", yp->url().toString());
         m_settings->setValue(key + "/NameSpaces", yp->nameSpaces());
         m_settings->setValue(key + "/UsePCRawProxy", yp->usePCRawProxy());
@@ -130,6 +132,7 @@ void YellowPageManager::loadYellowPages()
         YellowPage *yp = new YellowPage(m_settings->value(key + "/Url").toString());
         yp->setEnabled(m_settings->value(key).toBool());
         yp->setName(m_settings->value(key + "/Name").toString());
+        yp->setType((YellowPage::Type)m_settings->value(key + "/Type").toInt());
         yp->setNameSpaces(m_settings->value(key + "/NameSpaces").toStringList());
         yp->setUsePCRawProxy(m_settings->value(key + "/UsePCRawProxy").toBool());
         addYellowPage(yp);

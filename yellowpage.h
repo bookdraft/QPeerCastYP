@@ -19,7 +19,7 @@ class YellowPage : public QObject
 {
     Q_OBJECT
 public:
-    enum Type { IndexTxt, Xml, Manager };
+    enum Type { IndexTxt, Xml };
 
     YellowPage(const QUrl &url, Type = IndexTxt);
     YellowPage(const QString &url = QString(), Type = IndexTxt);
@@ -70,6 +70,7 @@ protected slots:
     virtual void done(bool error);
 
 protected:
+    bool m_isManager;
     ChannelList m_channels;
     ChannelList m_stoppedChannels;
     QDateTime m_lastUpdatedTime;

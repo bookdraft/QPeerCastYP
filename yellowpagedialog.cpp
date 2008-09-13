@@ -15,7 +15,6 @@ YellowPageDialog::YellowPageDialog(YellowPage *yellowPage, QWidget *parent)
 {
     setupUi(this);
 
-    // groupBox->setChecked(m_yellowPage->isEnabled());
     nameEdit->setText(m_yellowPage->name());
     urlEdit->setText(m_yellowPage->url().toString());
     nameSpaceEdit->setText(m_yellowPage->nameSpaces().join("|"));
@@ -23,7 +22,6 @@ YellowPageDialog::YellowPageDialog(YellowPage *yellowPage, QWidget *parent)
     typeComboBox->setCurrentIndex(m_yellowPage->type());
     usePCRawProxyCheckBox->setChecked(m_yellowPage->usePCRawProxy());
 
-    nameEdit->setFocus();
     resize(minimumSizeHint());
 }
 
@@ -47,7 +45,6 @@ void YellowPageDialog::accept()
         return;
     }
 
-    m_yellowPage->setEnabled(groupBox->isChecked());
     m_yellowPage->setName(nameEdit->text());
     m_yellowPage->setUrl(url);
     m_yellowPage->setNameSpaces(nameSpaceEdit->text().split("|", QString::SkipEmptyParts));

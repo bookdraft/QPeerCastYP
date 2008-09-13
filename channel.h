@@ -12,14 +12,20 @@
 
 #include <QtCore>
 
+class YellowPage;
+
 class Channel : public QObject
 {
     Q_OBJECT
 public:
     enum Status { Stopped, Normal, Changed, New };
 
-    Channel(const QString &name = QString(), QObject *parent = 0);
+    Channel(const QString &name, YellowPage *yellowPage = 0);
+    Channel(YellowPage *yellowPage = 0);
     virtual ~Channel();
+
+    YellowPage *yellowPage() const;
+    void setYellowPage(YellowPage *yellowPage);
 
     bool isPlayable() const;
     QUrl streamUrl(const QString &scheme = "http") const;
@@ -82,6 +88,12 @@ public:
 
     int bitrate() const;
     void setBitrate(int bitrate);
+
+protected:
+    YellowPage *m_yellowPage;
+
+private:
+    void init();
 };
 
 typedef QList<Channel *> ChannelList;

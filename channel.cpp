@@ -10,11 +10,27 @@
 #include "channel.h"
 #include "application.h"
 #include "settings.h"
+#include "yellowpage.h"
 
-Channel::Channel(const QString &name, QObject *parent)
-    : QObject(parent)
+Channel::Channel(const QString &name, YellowPage *yellowPage)
+    : QObject(yellowPage), m_yellowPage(yellowPage)
 {
     setProperty("name", name);
+    init();
+}
+
+Channel::Channel(YellowPage *yellowPage)
+    : QObject(yellowPage), m_yellowPage(yellowPage)
+{
+    init();
+}
+
+Channel::~Channel()
+{
+}
+
+void Channel::init()
+{
     setProperty("status", New);
     setProperty("uptime", 0);
     setProperty("listeners", -1);
@@ -23,8 +39,14 @@ Channel::Channel(const QString &name, QObject *parent)
     setProperty("bitrate", -1);
 }
 
-Channel::~Channel()
+YellowPage *Channel::yellowPage() const
 {
+    return m_yellowPage;
+}
+
+void Channel::setYellowPage(YellowPage *yellowPage)
+{
+    m_yellowPage = yellowPage;
 }
 
 bool Channel::isPlayable() const
