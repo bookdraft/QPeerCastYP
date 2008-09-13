@@ -26,7 +26,7 @@ unix {
 
     run.target = all
     run.commands = ./$$TARGET
-    QMAKE_EXTRA_TARGETS += run
+    # QMAKE_EXTRA_TARGETS += run
 
     pcraw.target = pcraw-bin
     pcraw.commands = @cd pcraw; make

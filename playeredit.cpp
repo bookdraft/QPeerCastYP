@@ -20,9 +20,9 @@ PlayerEdit::PlayerEdit(Settings *settings, QWidget *parent)
     videoPlayerEdit->setCompleter(completer);
     soundPlayerEdit->setCompleter(completer);
     label->setText(tr("<table cellspacing=6 width=100%>"
-                      "<tr><td>$STREAM_URL</td><td>ストリーム URL (http)</td></tr>"
+                      "<tr><td>$STREAM_URL</td><td>ストリーム URL (HTTP)</td></tr>"
                       "<tr><td>$STREAM_URL(scheme)</td><td>ストリーム URL (スキームを指定)</td></tr>"
-                      "<tr><td>$CHANNEL_NAME</td><td>チャンネル名</td></tr></table>"));
+                      "<tr><td>$CHANNEL(property)</td><td>チャンネル情報</td></tr></table>"));
 }
 
 PlayerEdit::~PlayerEdit()
@@ -71,7 +71,7 @@ void PlayerEdit::on_selectVideoPlayerButton_clicked()
     if (!program.isEmpty()) {
         videoPlayerEdit->setText(program);
         if (program.endsWith("pcwmp.exe"))
-            videoPlayerArgsEdit->setText("\"$STREAM_URL\" \"$CHANNEL_NAME\"");
+            videoPlayerArgsEdit->setText("\"$STREAM_URL\" \"$CHANNEL(name)\"");
     }
 }
 
@@ -81,7 +81,7 @@ void PlayerEdit::on_selectSoundPlayerButton_clicked()
     if (!program.isEmpty()) {
         soundPlayerEdit->setText(program);
         if (program.endsWith("pcwmp.exe"))
-            soundPlayerArgsEdit->setText("\"$STREAM_URL\" \"$CHANNEL_NAME\"");
+            soundPlayerArgsEdit->setText("\"$STREAM_URL\" \"$CHANNEL(name)\"");
     }
 }
 
@@ -99,5 +99,10 @@ QString PlayerEdit::getProgram(const QString &currentProgram)
 #endif
     }
     return QFileDialog::getOpenFileName(this, tr("プログラムを選択"), dir);
+}
+
+void PlayerEdit::on_label_linkActivated(const QString &link)
+{
+    Q_UNUSED(link);
 }
 

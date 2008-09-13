@@ -52,7 +52,7 @@ ExpressionListWidget::ExpressionListWidget(ChannelMatcher *matcher, QWidget *par
     QVector<QString> headers(Headers);
     headers[Pattern] = tr("検索文字/正規表現");
     headers[Target] = tr("検索対象");
-    headers[Point] = tr("評価点数");
+    headers[Point] = tr("点数");
     setHeaderLabels(headers.toList());
     connect(this, SIGNAL(itemActivated(QTreeWidgetItem *, int)),
             this, SLOT(editCurrentItem()));

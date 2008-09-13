@@ -136,11 +136,6 @@ QMenu *Actions::fileMenu(QWidget *parent) const
     return menu;
 }
 
-QAction *Actions::quitAction() const
-{
-    return m_quitAction;
-}
-
 QMenu *Actions::yellowPageMenu(QWidget *parent) const
 {
     QMenu *menu = new QMenu(tr("イエローページ(&Y)"), parent);
@@ -166,6 +161,112 @@ QMenu *Actions::yellowPageMenu(QWidget *parent) const
         menu->addAction(m_quitAction);
     }
     return menu;
+}
+
+QMenu *Actions::settingsMenu(QWidget *parent) const
+{
+    QMenu *menu = new QMenu(tr("設定(&S)"), parent);
+    menu->addAction(m_showMenuBarAction);
+    menu->addAction(m_showToolBarAction);
+    menu->addAction(m_showStatusBarAction);
+    menu->addAction(m_showTabBarAction);
+    menu->addSeparator();
+    menu->addAction(m_showSettingsAction);
+    return menu;
+}
+
+QMenu *Actions::helpMenu(QWidget *parent) const
+{
+    QMenu *menu = new QMenu(tr("ヘルプ(&H)"), parent);
+    menu->addAction(m_aboutQPeerCastYPAction);
+    menu->addAction(m_aboutQtAction);
+    return menu;
+}
+
+void Actions::playChannel(Channel *channel)
+{
+    if (!channel or !channel->isPlayable()) {
+        m_mainWindow->showErrorMessage(tr("このチャンネルは再生できません。"));
+        return;
+    }
+    QString player;
+    QString args;
+    Settings *s = qApp->settings();
+    QString videoTypes = s->value("Player/VideoTypes").toString();
+    QString soundTypes = s->value("Player/SoundTypes").toString();
+    if (channel->type().contains(QRegExp(videoTypes, Qt::CaseInsensitive))) {
+        player = s->value("Player/VideoPlayer").toString();
+        args = s->value("Player/VideoPlayerArgs").toString();
+    } else if (channel->type().contains(QRegExp(soundTypes, Qt::CaseInsensitive))) {
+        player = s->value("Player/SoundPlayer").toString();
+        args = s->value("Player/SoundPlayerArgs").toString();
+    }
+    if (player.isEmpty()) {
+        m_mainWindow->showErrorMessage(
+                tr("%1 用のプレイヤが設定されていません。").arg(channel->type().toUpper()));
+        return;
+    }
+    args = expandVars(args, channel);
+    QString program = "\"" + player + "\" " + args;
+    qDebug() << program;
+    if (!QProcess::startDetached(program))
+        m_mainWindow->showErrorMessage(tr("プログラムの実行に失敗しました。"));
+}
+
+void Actions::setClipboardText(const QString &text)
+{
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(text, QClipboard::Selection);
+    clipboard->setText(text, QClipboard::Clipboard);
+}
+
+void Actions::openUrl(const QUrl &url)
+{
+    if (qApp->settings()->value("Program/UseCommonWebBrowser", true).toBool()) {
+        QDesktopServices::openUrl(url);
+    } else {
+        QString browser = qApp->settings()->value("Program/WebBrowser").toString();
+        QProcess::startDetached(browser, QStringList(url.toString()));
+    }
+}
+
+QString Actions::expandVars(const QString &str, Channel *channel)
+{
+    QString s = str;
+    QRegExp rxVar("\\$\\{?([\\w\\d_]+)(?:\\(([\\w\\d_]+)\\))?\\}?");
+    int pos = 0;
+    qDebug() << channel->dynamicPropertyNames();
+    while ((pos = rxVar.indexIn(s, pos)) != -1) {
+        QString name = rxVar.cap(1).toUpper();
+        QString arg = rxVar.cap(2);
+        QString value;
+        if (channel) {
+            if (name == "STREAM_URL") {
+                value = channel->streamUrl(arg.isEmpty() ? "http" : arg).toEncoded();
+            } else if (name == "CHANNEL" and !arg.isEmpty()) {
+                arg = arg.toLower();
+                if (arg == "stream_url") {
+                    value = channel->streamUrl().toEncoded();
+                } else {
+                    value = channel->property(arg.toAscii()).toString();
+                }
+            }
+        }
+        if (value.isNull()) {
+            pos += rxVar.matchedLength();
+        } else {
+            s.replace(pos, rxVar.matchedLength(), value);
+            pos += value.length();
+        }
+        qDebug() << rxVar.cap(0);
+    }
+    return s;
+}
+
+
+QAction *Actions::quitAction() const
+{
+    return m_quitAction;
 }
 
 QAction *Actions::updateYellowPageAction() const
@@ -232,18 +333,6 @@ QAction *Actions::findChannelAction() const
     return m_findChannelAction;
 }
 
-QMenu *Actions::settingsMenu(QWidget *parent) const
-{
-    QMenu *menu = new QMenu(tr("設定(&S)"), parent);
-    menu->addAction(m_showMenuBarAction);
-    menu->addAction(m_showToolBarAction);
-    menu->addAction(m_showStatusBarAction);
-    menu->addAction(m_showTabBarAction);
-    menu->addSeparator();
-    menu->addAction(m_showSettingsAction);
-    return menu;
-}
-
 QAction *Actions::showStatusBarAction() const
 {
     return m_showStatusBarAction;
@@ -278,63 +367,3 @@ QAction *Actions::aboutQtAction() const
 {
     return m_aboutQtAction;
 }
-
-QMenu *Actions::helpMenu(QWidget *parent) const
-{
-    QMenu *menu = new QMenu(tr("ヘルプ(&H)"), parent);
-    menu->addAction(m_aboutQPeerCastYPAction);
-    menu->addAction(m_aboutQtAction);
-    return menu;
-}
-
-void Actions::playChannel(Channel *channel)
-{
-    if (!channel or !channel->isPlayable()) {
-        m_mainWindow->showErrorMessage(tr("このチャンネルは再生できません。"));
-        return;
-    }
-    QString player;
-    QString args;
-    Settings *s = qApp->settings();
-    QString videoTypes = s->value("Player/VideoTypes").toString();
-    QString soundTypes = s->value("Player/SoundTypes").toString();
-    if (channel->type().contains(QRegExp(videoTypes, Qt::CaseInsensitive))) {
-        player = s->value("Player/VideoPlayer").toString();
-        args = s->value("Player/VideoPlayerArgs").toString();
-    } else if (channel->type().contains(QRegExp(soundTypes, Qt::CaseInsensitive))) {
-        player = s->value("Player/SoundPlayer").toString();
-        args = s->value("Player/SoundPlayerArgs").toString();
-    }
-    if (player.isEmpty()) {
-        m_mainWindow->showErrorMessage(
-                tr("%1 用のプレイヤが設定されていません。").arg(channel->type().toUpper()));
-        return;
-    }
-    QRegExp rxStreamUrl("\\$STREAM_URL\\((\\w+)\\)");
-    if (rxStreamUrl.indexIn(args) != -1)
-        args.replace(rxStreamUrl, channel->streamUrl(rxStreamUrl.cap(1)).toEncoded());
-    args.replace("$STREAM_URL", channel->streamUrl().toEncoded());
-    args.replace("$CHANNEL_NAME", channel->name(true));
-    QString program = "\"" + player + "\" " + args;
-    qDebug() << program;
-    if (!QProcess::startDetached(program))
-        m_mainWindow->showErrorMessage(tr("プログラムの実行に失敗しました。"));
-}
-
-void Actions::setClipboardText(const QString &text)
-{
-    QClipboard *clipboard = QApplication::clipboard();
-    clipboard->setText(text, QClipboard::Selection);
-    clipboard->setText(text, QClipboard::Clipboard);
-}
-
-void Actions::openUrl(const QUrl &url)
-{
-    if (qApp->settings()->value("Program/UseCommonWebBrowser", true).toBool()) {
-        QDesktopServices::openUrl(url);
-    } else {
-        QString browser = qApp->settings()->value("Program/WebBrowser").toString();
-        QProcess::startDetached(browser, QStringList(url.toString()));
-    }
-}
-

@@ -28,6 +28,7 @@ public:
     void write();
 
 private slots:
+    void on_label_linkActivated(const QString &link);
     void on_selectVideoPlayerButton_clicked();
     void on_selectSoundPlayerButton_clicked();
 

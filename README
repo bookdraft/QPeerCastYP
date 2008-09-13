@@ -1,5 +1,14 @@
 QPeerCastYP - PeerCast 視聴補助プログラム
 
+* 変数 (大文字/小文字は区別しません)
+    $STREAM_URL(scheme) : チャンネルのストリーム URL
+        scheme: http, mmsh など任意の文字列
+
+    $CHANNEL(property) : チャンネルの情報
+        property: name, id, tip, genre, description,
+                  artist, album, title, message, type,
+                  stream_url, contact_url, uptime, score, bitrate
+
 * ビルド方法
 
     Ubuntu:

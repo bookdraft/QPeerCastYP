@@ -39,7 +39,8 @@ ExpressionDialog::ExpressionDialog(ChannelMatcher::Expression *exp, QWidget *par
 
     pointSpinBox->setValue(exp->point);
 
-    patternEdit->setFocus();
+    // patternEdit->setFocus();
+    // patternEdit->deselect();
     resize(minimumSizeHint().width() + 20, minimumSizeHint().height());
 }
 
