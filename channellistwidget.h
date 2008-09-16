@@ -63,7 +63,7 @@ private slots:
 private:
     void polish();
     void addItems(QList<Channel *> &channels);
-    void notifyFavorite();
+    QList<Channel *> favoriteChannels() const;
 
     YellowPage *m_yellowPage;
     QDateTime m_lastUpdatedTime;

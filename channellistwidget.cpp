@@ -59,36 +59,31 @@ public:
         if (m_channel->relays() < 0)
             setToolTip(ChannelListWidget::Relays, QString::number(m_channel->relays()));
 
-        switch (m_channel->status()) {
-        case Channel::New:
+        Channel::Status status = m_channel->status();
+        if (status & Channel::New) {
             setIcon(ChannelListWidget::Status, QIcon(":/images/new.png"));
             setToolTip(ChannelListWidget::Status, QObject::tr("新規"));
-            break;
-        case Channel::Changed:
+        } else if (status & Channel::Changed) {
             setIcon(ChannelListWidget::Status, QIcon(":/images/changed.png"));
             setToolTip(ChannelListWidget::Status, QObject::tr("詳細変更あり"));
-            break;
-        case Channel::Normal:
+        } else if (status & Channel::Normal) {
             setText(ChannelListWidget::Status, "");
-            break;
-        case Channel::Stopped:
+        } else if (status & Channel::Stopped) {
             setIcon(ChannelListWidget::Status, QIcon(":/images/stopped.png"));
             setToolTip(ChannelListWidget::Status, QObject::tr("放送終了"));
-            break;
         }
-
-        if (!m_channel->isPlayable())
-            setToolTip(ChannelListWidget::Status, QObject::tr("再生不可"));
-
-        if (m_channel->hasScore()) {
-            if (m_channel->status() == Channel::New)
+        if (status & Channel::Favorite) {
+            if (status & Channel::New)
                 setIcon(ChannelListWidget::Status, QIcon(":/images/favorite_new.png"));
-            else if (m_channel->status() == Channel::Changed)
+            else if (status & Channel::Changed)
                 setIcon(ChannelListWidget::Status, QIcon(":/images/favorite_changed.png"));
             else
                 setIcon(ChannelListWidget::Status, QIcon(":/images/favorite.png"));
             setToolTip(ChannelListWidget::Status, QObject::tr("お気に入り (スコア: %1)").arg(m_channel->score()));
         }
+        if (!m_channel->isPlayable())
+            setToolTip(ChannelListWidget::Status, QObject::tr("再生不可"));
+
     }
 
     void updateToolTip()
@@ -112,29 +107,27 @@ public:
 
     bool operator<(const QTreeWidgetItem &item) const
     {
-        const ChannelListWidgetItem *other = static_cast<const ChannelListWidgetItem *>(&item);
+        Channel *other = static_cast<const ChannelListWidgetItem *>(&item)->channel();
         switch (treeWidget()->sortColumn()) {
         case ChannelListWidget::Status:
-            if (m_channel->hasScore() or other->channel()->hasScore()) {
-                return m_channel->score() < other->channel()->score();
-            } else if (m_channel->status() == other->channel()->status()) {
-                if (m_channel->score() != other->channel()->score())
-                    return m_channel->score() < other->channel()->score();
+            if (m_channel->status() + m_channel->score() == other->status() + other->score()) {
+                if (m_channel->listeners() < -1 or other->listeners() < -1)
+                    return m_channel->listeners() < other->listeners();
                 else
-                    return m_channel->listeners() < other->channel()->listeners();
+                    return rand() % 2;
             } else {
-                return m_channel->status() < other->channel()->status();
+                return m_channel->status() + m_channel->score() < other->status() + other->score();
             }
         case ChannelListWidget::Listeners:
-            return m_channel->listeners() < other->channel()->listeners();
+            return m_channel->listeners() < other->listeners();
         case ChannelListWidget::Relays:
-            return m_channel->relays() < other->channel()->relays();
+            return m_channel->relays() < other->relays();
         case ChannelListWidget::Score:
-            return m_channel->score() < other->channel()->score();
+            return m_channel->score() < other->score();
         case ChannelListWidget::Bitrate:
-            return m_channel->bitrate() < other->channel()->bitrate();
+            return m_channel->bitrate() < other->bitrate();
         case ChannelListWidget::Uptime:
-            return m_channel->uptime() < other->channel()->uptime();
+            return m_channel->uptime() < other->uptime();
         default:
             return QTreeWidgetItem::operator<(item);
         }
@@ -284,42 +277,57 @@ void ChannelListWidget::updateYellowPage()
 
 void ChannelListWidget::done(YellowPage *yp, bool error)
 {
-    Settings *settings = qApp->settings();
-    if (!error) {
-        if (m_needClear)
-            clear();
-        m_needClear = false;
-        addItems(yp->channels());
-        if (settings->value("General/ShowStoppedChannels").toBool())
-            addItems(yp->stoppedChannels());
-        qApp->mainWindow()->updateStatusBar();
-        m_lastUpdatedTime = QDateTime::currentDateTime();
-        updateActions();
-    } else {
+    if (error)
         qApp->mainWindow()->showErrorMessage(yp->errorString());
-    }
+
+    Settings *settings = qApp->settings();
+
+    if (m_needClear)
+        clear();
+    m_needClear = false;
+    addItems(yp->channels());
+    if (settings->value("General/ShowStoppedChannels").toBool())
+        addItems(yp->stoppedChannels());
+    qApp->mainWindow()->updateStatusBar();
+    m_lastUpdatedTime = QDateTime::currentDateTime();
+    updateActions();
+
     if (!m_yellowPage->isUpdating()) {
         qApp->mainWindow()->setCursor(Qt::ArrowCursor);
-        if (settings->value("Notification/NotifyFavorite").toBool())
-            notifyFavorite();
+        ChannelList noticeChannels;
+        if (settings->value("Notification/NotifyFavorite").toBool()) {
+            noticeChannels += m_yellowPage->channels(Channel::Favorite | Channel::New);
+            if (settings->value("Notification/NotifyChangedFavorite").toBool())
+                noticeChannels += m_yellowPage->channels(Channel::Favorite | Channel::Changed);
+        }
+        if (settings->value("Notification/NotifyNew").toBool())
+            noticeChannels += m_yellowPage->channels(Channel::New);
+        if (settings->value("Notification/NotifyChanged").toBool())
+            noticeChannels += m_yellowPage->channels(Channel::Changed);
+        if (!noticeChannels .isEmpty()) {
+            if (settings->value("Notification/ShowBalloonMessage").toBool())
+                qApp->systemTrayIcon()->showFavoriteChannels(noticeChannels);
+            if (settings->value("Notification/PlaySound").toBool())
+                Sound::play(settings->value("Notification/SoundFile").toString());
+        }
     }
 }
 
-void ChannelListWidget::notifyFavorite()
+ChannelList ChannelListWidget::favoriteChannels() const
 {
     Settings *settings = qApp->settings();
+    bool dontNotifyChangedFavorite = settings->value("Notification/DontNotifyChangedFavorite").toBool();
     int minimumScore = settings->value("Notification/MinimumScore").toInt();
     ChannelList favChannels;
     foreach (Channel *channel, m_yellowPage->channels()) {
-        if (channel->hasScore() and channel->score() >= minimumScore
-                and channel->status() == Channel::New)
+        if (dontNotifyChangedFavorite and channel->status() & Channel::Changed)
+            continue;
+        if (!(channel->status() & Channel::New))
+            continue;
+        if (channel->status() & Channel::Favorite and channel->score() >= minimumScore)
             favChannels += channel;
     }
-    if (!favChannels.isEmpty()) {
-        qApp->systemTrayIcon()->showFavoriteChannels(favChannels);
-        if (settings->value("Notification/PlaySound").toBool())
-            Sound::play(settings->value("Notification/SoundFile").toString());
-    }
+    return favChannels;
 }
 
 QDateTime ChannelListWidget::lastUpdatedTime()

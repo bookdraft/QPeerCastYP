@@ -9,32 +9,9 @@
  */
 #include "viemacsbindings.h"
 
-// static int const bindings[][4] = {
-//     {Qt::ControlModifier | Qt::Key_F, Qt::Key_Right, Qt::NoModifier},
-//     {Qt::ControlModifier | Qt::Key_B, Qt::Key_Left, Qt::NoModifier},
-//     {Qt::ControlModifier | Qt::Key_N, Qt::Key_Down, Qt::NoModifier},
-//     {Qt::ControlModifier | Qt::Key_P, Qt::Key_Up, Qt::NoModifier},
-//     {Qt::ControlModifier | Qt::Key_H, Qt::Key_Backspace, Qt::NoModifier},
-//     {0, 0}
-// };
-
 ViEmacsBindings::ViEmacsBindings(QWidget *parent, bool vi, bool emacs)
     : QObject(parent), m_vi(vi), m_emacs(emacs)
 {
-    // qDebug() << "--------------------------------------";
-    // m_signalMapper = new QSignalMapper(this);
-    // for (int i = 0; bindings[i][0]; ++i) {
-    //     // qDebug() << (*pos)[0] << (*pos)[1] << (*pos)[2] << (*pos)[3];
-    //     qDebug() << bindings[i][0];
-    //     QShortcut *shortcut = new QShortcut(parent);
-    //     shortcut->setKey(QKeySequence(bindings[i][0]));
-    //     shortcut->setContext(Qt::WidgetShortcut);
-    //     connect(shortcut, SIGNAL(activated()), m_signalMapper, SLOT(map()));
-    //     connect(shortcut, SIGNAL(activatedAmbiguously()), m_signalMapper, SLOT(map()));
-    //     m_signalMapper->setMapping(shortcut, i);
-    //     qDebug() << shortcut;
-    // }
-    // connect(m_signalMapper, SIGNAL(mapped(int)), this, SLOT(triggered(int)));
 }
 
 ViEmacsBindings::~ViEmacsBindings()
@@ -43,9 +20,6 @@ ViEmacsBindings::~ViEmacsBindings()
 
 void ViEmacsBindings::triggered(int)
 {
-    // qDebug() << i;
-    // QKeyEvent e(QEvent::KeyPress, bindings[i][1], (Qt::KeyboardModifier)bindings[i][2]);
-    // QCoreApplication::sendEvent(parent(), &e);
 }
 
 bool ViEmacsBindings::eventFilter(QObject *watched, QEvent *event)

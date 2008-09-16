@@ -64,12 +64,17 @@ QUrl Channel::streamUrl(const QString &scheme) const
 
 Channel::Status Channel::status() const
 {
-    return (Status)property("status").toInt();
+    return (Status)property("status").value<qint32>();
 }
 
 void Channel::setStatus(Status status)
 {
-    setProperty("status", status);
+    setProperty("status", (qint32)status);
+}
+
+bool Channel::isFavorite() const
+{
+    return status() & Favorite;
 }
 
 QString Channel::longDescription() const

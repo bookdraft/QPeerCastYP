@@ -40,7 +40,7 @@ public:
             enabled = true;
             point = 3;
             targetFlags = Name | LongDescription;
-            matchFlags = Qt::MatchRegExp;
+            matchFlags = Qt::MatchContains;
         }
         bool enabled;
         QString pattern;

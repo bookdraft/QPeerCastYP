@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>551</width>
-    <height>304</height>
+    <width>603</width>
+    <height>487</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -14,37 +14,40 @@
   </property>
   <layout class="QVBoxLayout" >
    <item>
-    <widget class="QGroupBox" name="balloonGroupBox" >
+    <widget class="QGroupBox" name="groupBox" >
      <property name="title" >
-      <string>バルーン通知</string>
+      <string>通知するチャンネル</string>
      </property>
      <property name="flat" >
       <bool>true</bool>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
+     <layout class="QVBoxLayout" >
+      <item>
        <layout class="QHBoxLayout" >
         <item>
          <widget class="QCheckBox" name="notifyFavoriteCheckBox" >
           <property name="text" >
            <string>お気に入り</string>
           </property>
+          <property name="checked" >
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="checkBox_2" >
+         <widget class="QCheckBox" name="notifyNewCheckBox" >
           <property name="enabled" >
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="text" >
-           <string>新着</string>
+           <string>新規</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="checkBox_4" >
+         <widget class="QCheckBox" name="notifyChangedCheckBox" >
           <property name="enabled" >
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="text" >
            <string>詳細変更あり</string>
@@ -53,15 +56,40 @@
         </item>
        </layout>
       </item>
-      <item row="1" column="0" >
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="favoriteGroupBox" >
+     <property name="enabled" >
+      <bool>true</bool>
+     </property>
+     <property name="title" >
+      <string>お気に入り通知</string>
+     </property>
+     <property name="flat" >
+      <bool>true</bool>
+     </property>
+     <layout class="QVBoxLayout" >
+      <item>
+       <widget class="QCheckBox" name="notifyChangedFavoriteCheckBox" >
+        <property name="enabled" >
+         <bool>true</bool>
+        </property>
+        <property name="text" >
+         <string>詳細変更があったチャンネルも通知する</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <layout class="QHBoxLayout" >
         <item>
-         <widget class="QLabel" name="label_2" >
+         <widget class="QLabel" name="label_4" >
           <property name="enabled" >
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="text" >
-           <string>通知するお気に入りチャンネルの最低スコア</string>
+           <string>通知するチャンネルの最低スコア</string>
           </property>
           <property name="indent" >
            <number>20</number>
@@ -87,7 +115,7 @@
         <item>
          <widget class="QSpinBox" name="minimumScoreSpinBox" >
           <property name="enabled" >
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="minimum" >
            <number>0</number>
@@ -97,6 +125,78 @@
           </property>
           <property name="value" >
            <number>3</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="balloonGroupBox" >
+     <property name="title" >
+      <string>バルーン通知</string>
+     </property>
+     <property name="flat" >
+      <bool>true</bool>
+     </property>
+     <layout class="QVBoxLayout" >
+      <item>
+       <widget class="QCheckBox" name="showBalloonMessageCheckBox" >
+        <property name="text" >
+         <string>システムトレイアイコンにメッセージを表示する</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QLabel" name="label" >
+          <property name="text" >
+           <string>一度に表示する最大チャンネル数</string>
+          </property>
+          <property name="indent" >
+           <number>20</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Preferred</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="maxShowChannelsSpinBox" >
+          <property name="minimum" >
+           <number>1</number>
           </property>
          </widget>
         </item>
@@ -192,7 +292,7 @@
      <property name="sizeHint" >
       <size>
        <width>20</width>
-       <height>118</height>
+       <height>117</height>
       </size>
      </property>
     </spacer>
@@ -208,12 +308,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>81</x>
-     <y>171</y>
+     <x>134</x>
+     <y>318</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>91</x>
-     <y>188</y>
+     <x>169</x>
+     <y>343</y>
     </hint>
    </hints>
   </connection>
@@ -224,12 +324,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>59</x>
-     <y>165</y>
+     <x>134</x>
+     <y>318</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>445</x>
-     <y>174</y>
+     <x>492</x>
+     <y>320</y>
     </hint>
    </hints>
   </connection>
@@ -240,12 +340,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>96</x>
-     <y>161</y>
+     <x>134</x>
+     <y>318</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>212</x>
-     <y>161</y>
+     <x>401</x>
+     <y>319</y>
     </hint>
    </hints>
   </connection>
@@ -256,12 +356,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>51</x>
-     <y>157</y>
+     <x>132</x>
+     <y>318</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>531</x>
-     <y>174</y>
+     <x>583</x>
+     <y>320</y>
     </hint>
    </hints>
   </connection>
@@ -272,44 +372,76 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>142</x>
-     <y>159</y>
+     <x>151</x>
+     <y>294</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>445</x>
-     <y>174</y>
+     <x>492</x>
+     <y>320</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>notifyFavoriteCheckBox</sender>
    <signal>toggled(bool)</signal>
-   <receiver>label_2</receiver>
+   <receiver>favoriteGroupBox</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>128</x>
-     <y>59</y>
+     <x>117</x>
+     <y>45</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>129</x>
-     <y>86</y>
+     <x>74</x>
+     <y>84</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>notifyFavoriteCheckBox</sender>
+   <sender>balloonGroupBox</sender>
    <signal>toggled(bool)</signal>
-   <receiver>minimumScoreSpinBox</receiver>
+   <receiver>label</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>179</x>
-     <y>57</y>
+     <x>171</x>
+     <y>222</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>368</x>
-     <y>89</y>
+     <x>171</x>
+     <y>232</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>showBalloonMessageCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>maxShowChannelsSpinBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>192</x>
+     <y>209</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>283</x>
+     <y>236</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>showBalloonMessageCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>104</x>
+     <y>215</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>69</x>
+     <y>240</y>
     </hint>
    </hints>
   </connection>

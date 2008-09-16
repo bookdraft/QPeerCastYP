@@ -30,6 +30,10 @@ public:
     ChannelListWidget *currentChannelListWidget() const;
     ChannelListTabWidget *channelListTabWidget() const;
 
+#ifdef Q_WS_X11
+    void activateWindow();
+#endif
+
 public slots:
     void setVisible(bool visible);
     void quit();

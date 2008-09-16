@@ -18,8 +18,15 @@ class Channel : public QObject
 {
     Q_OBJECT
 public:
-    enum Status { Stopped, Normal, Changed, New };
-
+    enum StatusFlag {
+        Stopped  = 0x0000,
+        Normal   = 0x1000,
+        Changed  = 0x2000,
+        New      = 0x4000,
+        Favorite = 0x8000
+    };
+    Q_DECLARE_FLAGS(Status, StatusFlag)
+    
     Channel(const QString &name, YellowPage *yellowPage = 0);
     Channel(YellowPage *yellowPage = 0);
     virtual ~Channel();
@@ -32,6 +39,8 @@ public:
 
     Status status() const;
     void setStatus(Status status);
+
+    bool isFavorite() const;
 
     QString name(bool removeStatus = false) const;
     void setName(const QString &name);
@@ -96,6 +105,7 @@ private:
     void init();
 };
 
+Q_DECLARE_OPERATORS_FOR_FLAGS(Channel::Status)
 typedef QList<Channel *> ChannelList;
 
 QDebug operator<<(QDebug dbg, const Channel &c);

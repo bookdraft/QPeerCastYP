@@ -28,6 +28,7 @@ public:
     void write();
 
 private slots:
+    void notifyChannelCheckBoxChanged();
     void on_selectFileButton_clicked();
     void on_playSoundButton_clicked();
 

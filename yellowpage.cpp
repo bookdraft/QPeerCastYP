@@ -80,7 +80,7 @@ void YellowPage::done(bool error)
     m_httpTimer.stop();
     QHttpResponseHeader response = m_http->lastResponse();
     qDebug() << m_name << "status code:" << response.statusCode();
-    if (response.statusCode() != 403 and !error) {
+    if (response.statusCode() == 200 and !error) {
         ChannelList oldChannels = m_channels;
         oldChannels += m_stoppedChannels;
         m_channels.clear();
@@ -152,10 +152,12 @@ void YellowPage::done(bool error)
             // qDebug() << fields[18];
             int score = matcher.score(channel);
             channel->setScore(score);
-            if (channel->status() != Channel::New
+            if (score > 0)
+                channel->setStatus(channel->status() | Channel::Favorite);
+            if (!(channel->status() & Channel::New)
                     and channel->name().indexOf(QRegExp("◆(Status|帯域チェック)$")) == -1
                     and longDesc != channel->longDescription())
-                channel->setStatus(Channel::Changed);
+                channel->setStatus(channel->status() | Channel::Changed);
             m_channels += channel;
         }
 
@@ -166,13 +168,17 @@ void YellowPage::done(bool error)
             ch->setRelays(-2);
         }
     } else {
+        foreach (Channel *channel, m_channels)
+            if (channel->status() & (Channel::New | Channel::Changed)) {
+                if (channel->isFavorite())
+                    channel->setStatus(Channel::Favorite);
+                else
+                    channel->setStatus(Channel::Normal);
+            }
         m_errorString = tr("イエローページの更新に失敗しました。(%1: %2 %3 / %4)")
             .arg(m_name).arg(response.statusCode())
             .arg(response.reasonPhrase().isEmpty() ? tr("Unknown") : response.reasonPhrase())
             .arg(m_http->errorString());
-        qDebug() << m_http->lastResponse().reasonPhrase();
-        qDebug() << m_http->error();
-        qDebug() << m_http->errorString();
         error = true;
     }
 
@@ -217,6 +223,17 @@ QUrl YellowPage::channelListUrl() const
 ChannelList &YellowPage::channels()
 {
     return m_channels;
+}
+
+ChannelList YellowPage::channels(Channel::Status status)
+{
+    ChannelList list;
+    foreach (Channel *channel, channels())
+        if ((channel->status() & status) == status)
+            list += channel;
+    if (status & Channel::Stopped)
+        list += stoppedChannels();
+    return list;
 }
 
 ChannelList &YellowPage::stoppedChannels()

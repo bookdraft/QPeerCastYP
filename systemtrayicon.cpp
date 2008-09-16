@@ -48,22 +48,52 @@ void SystemTrayIcon::showFavoriteChannels(const QList<Channel *> &channels_)
     if (!channels.isEmpty()) {
         QStringList message;
         qSort(channels.begin(), channels.end(), scoreMoreThan);
-        foreach (Channel *channel, channels) {
-            if (channel->hasScore()) {
-                message += QString("%1 (スコア: %2)").arg(channel->name()).arg(channel->score());
-                message += channel->longDescription();
-                if (!message.last().isEmpty())
-                    message.last().append("\n");
-            }
+        for (int i = 0; i < channels.count(); ++i) {
+            int index = i + 1;
+            if (index > channels.count())
+                break;
+            while ((index = channels.indexOf(channels[i], index)) != -1)
+                channels.removeAt(index);
         }
-        showMessage(tr("お気に入り通知"), message.join("\n").remove(QRegExp("\n$")));
+        int max = qApp->settings()->value("Notification/MaximumShowChannels").toInt();
+        for (int i = 0; i < channels.count() and i < max; i++) {
+            Channel *channel = channels[i];
+            QStringList status;
+            if (channel->hasScore())
+                status += QString("スコア %1").arg(channel->score());
+            if (channel->status() & Channel::New)
+                status += "新規";
+            else if (channel->status() & Channel::Changed)
+                status += "詳細変更";
+            message += QString("%1 (%2)").arg(channel->name()).arg(status.join(" / "));
+            message += channel->longDescription();
+            if (!message.last().isEmpty())
+                message.last().append("\n");
+        }
+        if (!message.isEmpty())
+            showMessage(tr("チャンネル通知"), message.join("\n").remove(QRegExp("\n$")));
     }
 }
 
 void SystemTrayIcon::activated(QSystemTrayIcon::ActivationReason reason)
 {
     if (reason == QSystemTrayIcon::Trigger) {
-        qApp->mainWindow()->setVisible(!qApp->mainWindow()->isVisible());
+#ifdef Q_WS_X11
+        if (qApp->mainWindow()->isActiveWindow()) {
+            qApp->mainWindow()->setVisible(false);
+        } else {
+            qApp->mainWindow()->setVisible(true);
+            qApp->mainWindow()->raise();
+            qApp->mainWindow()->activateWindow();
+        }
+#else
+        bool visible = !qApp->mainWindow()->isVisible();
+        qApp->mainWindow()->setVisible(visible);
+        if (visible) {
+            qApp->mainWindow()->raise();
+            qApp->mainWindow()->activateWindow();
+        }
+#endif // Q_WS_X11
     } else if (reason == QSystemTrayIcon::Context) {
         contextMenu()->exec(QCursor::pos());
     }
@@ -72,6 +102,7 @@ void SystemTrayIcon::activated(QSystemTrayIcon::ActivationReason reason)
 void SystemTrayIcon::messageClicked()
 {
     qApp->mainWindow()->setVisible(true);
-    // qApp->mainWindow()->activateWindow();
+    qApp->mainWindow()->raise();
+    qApp->mainWindow()->activateWindow();
 }
 

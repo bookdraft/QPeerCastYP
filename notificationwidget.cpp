@@ -19,17 +19,35 @@ NotificationWidget::NotificationWidget(Settings *settings, QWidget *parent)
     QCompleter *completer = new QCompleter(this);
     completer->setModel(new QDirModel(completer));
     soundFileEdit->setCompleter(completer);
+    connect(notifyFavoriteCheckBox, SIGNAL(toggled(bool)), SLOT(notifyChannelCheckBoxChanged()));
+    connect(notifyNewCheckBox, SIGNAL(toggled(bool)), SLOT(notifyChannelCheckBoxChanged()));
+    connect(notifyChangedCheckBox, SIGNAL(toggled(bool)), SLOT(notifyChannelCheckBoxChanged()));
 }
 
 NotificationWidget::~NotificationWidget()
 {
 }
 
+void NotificationWidget::notifyChannelCheckBoxChanged()
+{
+    bool enabled = notifyFavoriteCheckBox->isChecked()
+                    or notifyNewCheckBox->isChecked()
+                    or notifyChangedCheckBox->isChecked();
+    favoriteGroupBox->setEnabled(enabled);
+    balloonGroupBox->setEnabled(enabled);
+    soundGroupBox->setEnabled(enabled);
+}
+
 void NotificationWidget::setValue(bool reset)
 {
     Settings *settings = reset ? m_settings->defaultSettings() : m_settings;
     notifyFavoriteCheckBox->setChecked(settings->value("Notification/NotifyFavorite").toBool());
+    notifyNewCheckBox->setChecked(settings->value("Notification/NotifyNew").toBool());
+    notifyChangedCheckBox->setChecked(settings->value("Notification/NotifyChanged").toBool());
+    notifyChangedFavoriteCheckBox->setChecked(settings->value("Notification/NotifyChangedFavorite").toBool());
     minimumScoreSpinBox->setValue(settings->value("Notification/MinimumScore").toInt());
+    showBalloonMessageCheckBox->setChecked(settings->value("Notification/ShowBalloonMessage").toBool());
+    maxShowChannelsSpinBox->setValue(settings->value("Notification/MaximumShowChannels").toInt());
     playSoundCheckBox->setChecked(settings->value("Notification/PlaySound").toBool());
     soundFileEdit->setText(settings->value("Notification/SoundFile").toString());
 }
@@ -37,7 +55,12 @@ void NotificationWidget::setValue(bool reset)
 void NotificationWidget::write()
 {
     m_settings->setValue("Notification/NotifyFavorite", notifyFavoriteCheckBox->isChecked());
+    m_settings->setValue("Notification/NotifyNew", notifyNewCheckBox->isChecked());
+    m_settings->setValue("Notification/NotifyChanged", notifyChangedCheckBox->isChecked());
+    m_settings->setValue("Notification/NotifyChangedFavorite", notifyChangedFavoriteCheckBox->isChecked());
     m_settings->setValue("Notification/MinimumScore", minimumScoreSpinBox->value());
+    m_settings->setValue("Notification/ShowBalloonMessage", showBalloonMessageCheckBox->isChecked());
+    m_settings->setValue("Notification/MaximumShowChannels", maxShowChannelsSpinBox->value());
     m_settings->setValue("Notification/PlaySound", playSoundCheckBox->isChecked());
     m_settings->setValue("Notification/SoundFile", soundFileEdit->text());
 }

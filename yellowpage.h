@@ -35,6 +35,7 @@ public:
 
     QUrl channelListUrl() const;
     virtual ChannelList &channels();
+    virtual ChannelList channels(Channel::Status status);
     virtual ChannelList &stoppedChannels();
     virtual QList<YellowPage *> &yellowPages();
 
