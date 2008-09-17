@@ -45,6 +45,7 @@ public:
     virtual ~YellowPageListWidget();
 
     void setValue();
+    void saveYellowPages();
 
 public slots:
     void clear();
@@ -59,6 +60,7 @@ signals:
     void changed(bool dirty);
 
 protected:
+    void dropEvent(QDropEvent * event);
     void showEvent(QShowEvent *event);
 
 private slots:

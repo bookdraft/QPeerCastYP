@@ -1,4 +1,4 @@
-VERSION = 0.2.0
+VERSION = 0.3.0
 DEFINES += VERSION=\\\"$$VERSION\\\"
 QT += network
 TEMPLATE = app
@@ -10,8 +10,8 @@ CONFIG += precompile_header
 PRECOMPILED_HEADER = stable.h
 
 unix {
-    # CONFIG += debug
-    CONFIG -= debug
+    CONFIG += debug
+    # CONFIG -= debug
     BUILD_DIR = build-linux
 
     !include(conf.pri) {
@@ -26,7 +26,7 @@ unix {
 
     run.target = all
     run.commands = ./$$TARGET
-    # QMAKE_EXTRA_TARGETS += run
+    QMAKE_EXTRA_TARGETS += run
 
     pcraw.target = pcraw-bin
     pcraw.commands = @cd pcraw; make
@@ -81,7 +81,7 @@ unix {
 
 win32 {
     CONFIG += static release
-    # CONFIG += console
+    CONFIG += console
     BUILD_DIR = build-win32
     RC_FILE = qpeercastyp_resource.rc
 
@@ -111,6 +111,7 @@ SOURCES += network.cpp \
 
 HEADERS += application.h \
            settings.h \
+           settingsconverter.h \
            mainwindow.h \
            systemtrayicon.h \
            actions.h \
@@ -136,6 +137,7 @@ HEADERS += application.h \
 SOURCES += main.cpp \
            application.cpp \
            settings.cpp \
+           settingsconverter.cpp \
            mainwindow.cpp \
            systemtrayicon.cpp \
            actions.cpp \

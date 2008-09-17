@@ -15,6 +15,7 @@ Settings::Settings(Format format, Scope scope, const QString &org, const QString
                    Settings *defaultSettings, QObject *parent)
     : QSettings(format, scope, org, appName, parent), m_defaultSettings(defaultSettings)
 {
+    setDefualtValues();
 }
 
 Settings::Settings(const QString &fileName, Format format, QObject *parent)
@@ -26,31 +27,35 @@ Settings::~Settings()
 {
 }
 
-bool Settings::contains(const QString &key, bool excludeDefault) const
-{
-    if (QSettings::contains(key))
-        return true;
-    else if (!excludeDefault and hasDefaultSettings()
-            and m_defaultSettings->contains(key))
-        return true;
-    return false;
-}
-
 Settings *Settings::defaultSettings() const
 {
     return m_defaultSettings;
 }
 
-bool Settings::hasDefaultSettings() const
+void Settings::setDefualtValues()
 {
-    return (bool)m_defaultSettings;
+    foreach (QString key, m_defaultSettings->allKeys())
+        if (!contains(key))
+            setValue(key, m_defaultSettings->value(key));
 }
 
-QVariant Settings::value(const QString &key, const QVariant &defaultValue)
+void Settings::reset()
 {
-    QVariant value = defaultValue;
-    if (value.isNull() and hasDefaultSettings())
-        value = m_defaultSettings->value(key);
-    return QSettings::value(key, value);
+    if (!m_defaultSettings)
+        return;
+    foreach (QString key, m_defaultSettings->allKeys())
+        setValue(key, m_defaultSettings->value(key));
+}
+
+void Settings::copy(const QString &from, const QString &to)
+{
+    setValue(to, value(from));
+}
+
+void Settings::rename(const QString &from, const QString &to)
+{
+    copy(from, to);
+    if (childKeys().isEmpty())
+        remove(from);
 }
 

@@ -23,12 +23,14 @@ public:
     Settings(const QString &fileName, Format format, QObject *parent = 0);
     virtual ~Settings();
 
-    bool contains(const QString &key, bool excludeDefault = false) const;
     Settings *defaultSettings() const;
-    bool hasDefaultSettings() const;
-    QVariant value(const QString &key, const QVariant &defaultValue = QVariant());
+    void reset();
+    void copy(const QString &from, const QString &to);
+    void rename(const QString &from, const QString &to);
 
 private:
+    void setDefualtValues();
+
     Settings *m_defaultSettings;
 };
 

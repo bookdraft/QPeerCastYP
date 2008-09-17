@@ -19,7 +19,7 @@ public:
         : QTreeWidgetItem(parent), m_expression(exp)
     {
         setTextAlignment(ExpressionListWidget::Point, Qt::AlignRight);
-        setFlags(flags() | Qt::ItemIsUserCheckable);
+        setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsDragEnabled | Qt::ItemIsEnabled);
         update();
     }
 
@@ -180,6 +180,23 @@ void ExpressionListWidget::showEvent(QShowEvent *event)
     QTreeWidget::showEvent(event);
 }
 
+void ExpressionListWidget::dropEvent(QDropEvent *event)
+{
+    emit changed(true);
+    QTreeWidget::dropEvent(event);
+}
+
+void ExpressionListWidget::saveExpressions()
+{
+    for (int i = 0; i < topLevelItemCount(); ++i) {
+        ExpressionListWidgetItem *item = static_cast<ExpressionListWidgetItem *>(topLevelItem(i));
+        int index = m_matcher->expressions().indexOf(item->expression());
+        if (i != index)
+            m_matcher->expressions().swap(i, index);
+    }
+    m_matcher->saveExpressions();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 FavoriteEdit::FavoriteEdit(Settings *settings, QWidget *parent)
@@ -188,6 +205,9 @@ FavoriteEdit::FavoriteEdit(Settings *settings, QWidget *parent)
     setupUi(this);
     m_matcher = new ChannelMatcher(settings);
     m_listWidget = new ExpressionListWidget(m_matcher, this);
+    m_listWidget->setDragDropMode(QAbstractItemView::InternalMove);
+    m_listWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    m_listWidget->setAllColumnsShowFocus(true);
     m_listWidget->setFocus();
     widget->layout()->addWidget(m_listWidget);
     connect(m_listWidget, SIGNAL(changed(bool)), this, SLOT(setDirty(bool)));
@@ -223,6 +243,6 @@ void FavoriteEdit::addExpression(const QString &pattern, Qt::MatchFlags matchFla
 
 void FavoriteEdit::write()
 {
-    m_matcher->saveExpressions();
+    m_listWidget->saveExpressions();
 }
 

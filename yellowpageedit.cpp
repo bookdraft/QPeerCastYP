@@ -18,7 +18,7 @@ public:
     YellowPageListWidgetItem(QTreeWidget *parent, YellowPage *yellowPage)
         : QTreeWidgetItem(parent), m_yellowPage(yellowPage)
     {
-        setFlags(flags() | Qt::ItemIsUserCheckable);
+        setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsDragEnabled | Qt::ItemIsEnabled);
         update();
     }
 
@@ -184,6 +184,23 @@ void YellowPageListWidget::showEvent(QShowEvent *event)
     QTreeWidget::showEvent(event);
 }
 
+void YellowPageListWidget::dropEvent(QDropEvent *event)
+{
+    emit changed(true);
+    QTreeWidget::dropEvent(event);
+}
+
+void YellowPageListWidget::saveYellowPages()
+{
+    for (int i = 0; i < topLevelItemCount(); ++i) {
+        YellowPageListWidgetItem *item = static_cast<YellowPageListWidgetItem *>(topLevelItem(i));
+        int index = m_manager->yellowPages().indexOf(item->yellowPage());
+        if (i != index)
+            m_manager->yellowPages().swap(i, index);
+    }
+    m_manager->saveYellowPages();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 YellowPageEdit::YellowPageEdit(Settings *settings, QWidget *parent)
@@ -192,6 +209,8 @@ YellowPageEdit::YellowPageEdit(Settings *settings, QWidget *parent)
     setupUi(this);
     m_manager = new YellowPageManager(settings);
     m_listWidget = new YellowPageListWidget(m_manager, this);
+    m_listWidget->setDragDropMode(QAbstractItemView::InternalMove);
+    m_listWidget->setAllColumnsShowFocus(true);
     m_listWidget->setFocus();
     widget->layout()->addWidget(m_listWidget);
     connect(m_listWidget, SIGNAL(changed(bool)), this, SLOT(setDirty(bool)));
@@ -217,6 +236,6 @@ void YellowPageEdit::setValue(bool reset)
 
 void YellowPageEdit::write()
 {
-    m_manager->saveYellowPages();
+    m_listWidget->saveYellowPages();
 }
 

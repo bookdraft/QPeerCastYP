@@ -133,31 +133,33 @@ void ChannelMatcher::clear()
 
 void ChannelMatcher::loadExpressions()
 {
-    for (int i = 0; i < 100; ++i) {
-        QString key = QString("Favorite/Item%1").arg(i, 2, 10, QChar('0'));
-        if (!m_settings->contains(key))
-            continue;
+    int size = m_settings->beginReadArray("Favorite/Items");
+    for (int i = 0; i < size; ++i) {
+        m_settings->setArrayIndex(i);
         Expression *exp = new Expression;
-        exp->enabled = m_settings->value(key).toBool();
-        exp->pattern = m_settings->value(key + "/Pattern").toString();
-        exp->matchFlags = m_settings->value(key + "/MatchFlags").toInt();
-        exp->targetFlags = m_settings->value(key + "/TargetFlags").toInt();
-        exp->point = m_settings->value(key + "/Point").toInt();
+        exp->enabled = m_settings->value("Enabled").toBool();
+        exp->pattern = m_settings->value("Pattern").toString();
+        exp->matchFlags = m_settings->value("MatchFlags").toInt();
+        exp->targetFlags = m_settings->value("TargetFlags").toInt();
+        exp->point = m_settings->value("Point").toInt();
         m_expressions += exp;
     }
+    m_settings->endArray();
 }
 
 void ChannelMatcher::saveExpressions()
 {
     m_settings->remove("Favorite");
+    m_settings->beginWriteArray("Favorite/Items");
     for (int i = 0; i < m_expressions.count(); ++i) {
+        m_settings->setArrayIndex(i);
         Expression *exp = m_expressions[i];
-        QString key = QString("Favorite/Item%1").arg(i, 2, 10, QChar('0'));
-        m_settings->setValue(key, exp->enabled);
-        m_settings->setValue(key + "/Pattern", exp->pattern);
-        m_settings->setValue(key + "/MatchFlags", exp->matchFlags);
-        m_settings->setValue(key + "/TargetFlags", exp->targetFlags);
-        m_settings->setValue(key + "/Point", exp->point);
+        m_settings->setValue("Enabled", exp->enabled);
+        m_settings->setValue("Pattern", exp->pattern);
+        m_settings->setValue("MatchFlags", exp->matchFlags);
+        m_settings->setValue("TargetFlags", exp->targetFlags);
+        m_settings->setValue("Point", exp->point);
     }
+    m_settings->endArray();
 }
 

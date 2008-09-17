@@ -103,39 +103,40 @@ void YellowPageManager::clear()
         delete m_yellowPages.takeFirst();
 }
 
-void YellowPageManager::saveYellowPages()
-{
-    if (!m_settings)
-        return;
-    m_settings->remove("YellowPage");
-    for (int i = 0; i < m_yellowPages.count(); ++i) {
-        QString key = QString("YellowPage/Item%1").arg(i, 2, 10, QChar('0'));
-        YellowPage *yp = m_yellowPages[i];
-        m_settings->setValue(key, yp->isEnabled());
-        m_settings->setValue(key + "/Name", yp->name());
-        m_settings->setValue(key + "/Type", yp->type());
-        m_settings->setValue(key + "/Url", yp->url().toString());
-        m_settings->setValue(key + "/NameSpaces", yp->nameSpaces());
-        m_settings->setValue(key + "/UsePCRawProxy", yp->usePCRawProxy());
-    }
-}
-
 void YellowPageManager::loadYellowPages()
 {
     if (!m_settings)
         return;
-    bool excludeDefault = m_settings->childGroups().contains("YellowPage");
-    for (int i = 0; i < 100; ++i) {
-        QString key = QString("YellowPage/Item%1").arg(i, 2, 10, QChar('0'));
-        if (!m_settings->contains(key, excludeDefault))
-            break;
-        YellowPage *yp = new YellowPage(m_settings->value(key + "/Url").toString());
-        yp->setEnabled(m_settings->value(key).toBool());
-        yp->setName(m_settings->value(key + "/Name").toString());
-        yp->setType((YellowPage::Type)m_settings->value(key + "/Type").toInt());
-        yp->setNameSpaces(m_settings->value(key + "/NameSpaces").toStringList());
-        yp->setUsePCRawProxy(m_settings->value(key + "/UsePCRawProxy").toBool());
-        addYellowPage(yp);
-    }
+    int size = m_settings->beginReadArray("YellowPage/Items");
+        for (int i = 0; i < size; ++i) {
+            m_settings->setArrayIndex(i);
+            YellowPage *yp = new YellowPage(m_settings->value("Url").toString());
+            yp->setEnabled(m_settings->value("Enabled").toBool());
+            yp->setName(m_settings->value("Name").toString());
+            yp->setType((YellowPage::Type)m_settings->value("Type").toInt());
+            yp->setNameSpaces(m_settings->value("NameSpaces").toStringList());
+            yp->setUsePCRawProxy(m_settings->value("UsePCRawProxy").toBool());
+            addYellowPage(yp);
+        }
+    m_settings->endArray();
+}
+
+void YellowPageManager::saveYellowPages()
+{
+    if (!m_settings)
+        return;
+    m_settings->remove("YellowPage/Items");
+    m_settings->beginWriteArray("YellowPage/Items");
+        for (int i = 0; i < m_yellowPages.count(); ++i) {
+            m_settings->setArrayIndex(i);
+            YellowPage *yp = m_yellowPages[i];
+            m_settings->setValue("Enabled", yp->isEnabled());
+            m_settings->setValue("Name", yp->name());
+            m_settings->setValue("Type", yp->type());
+            m_settings->setValue("Url", yp->url().toString());
+            m_settings->setValue("NameSpaces", yp->nameSpaces());
+            m_settings->setValue("UsePCRawProxy", yp->usePCRawProxy());
+        }
+    m_settings->endArray();
 }
 
