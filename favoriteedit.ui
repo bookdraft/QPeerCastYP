@@ -93,7 +93,14 @@
      <item>
       <widget class="QPushButton" name="addButton" >
        <property name="text" >
-        <string>追加</string>
+        <string>お気に入りを追加</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="addGroupButton" >
+       <property name="text" >
+        <string>グループを追加</string>
        </property>
       </widget>
      </item>

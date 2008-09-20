@@ -1,18 +1,24 @@
-qpeercastyp (0.2.0-1) unstable; urgency=low
+qpeercastyp (0.3.0-1) feisty; urgency=low
+
+  * New version
+
+ -- ciao_ <ciao@users.sourceforge.jp>  Sun, 21 Sep 2008 05:38:10 +0900
+
+qpeercastyp (0.2.0-1) feisty; urgency=low
 
   * New version 
 
- -- ciao <ciao@users.sourceforge.jp>  Tue, 16 Sep 2008 17:34:24 +0900
+ -- ciao_ <ciao@users.sourceforge.jp>  Tue, 16 Sep 2008 17:34:24 +0900
 
-qpeercastyp (0.1.1-1) unstable; urgency=low
+qpeercastyp (0.1.1-1) feisty; urgency=low
 
   * New version 
 
- -- ciao <ciao@users.sourceforge.jp>  Sat, 13 Sep 2008 23:35:17 +0900
+ -- ciao_ <ciao@users.sourceforge.jp>  Sat, 13 Sep 2008 23:35:17 +0900
 
-qpeercastyp (0.1.0-1) unstable; urgency=low
+qpeercastyp (0.1.0-1) feisty; urgency=low
 
   * Initial release
 
- -- ciao <ciao@users.sourceforge.jp>  Sat, 13 Sep 2008 23:35:05 +0900
+ -- ciao_ <ciao@users.sourceforge.jp>  Sat, 13 Sep 2008 23:35:05 +0900
 

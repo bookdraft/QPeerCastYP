@@ -10,4 +10,3 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Recommends: ogg123, mpg321
 Description: Qt4 based PeerCast Yellow Page Viewer
-Description-ja: PeerCast 視聴補助プログラム (Qt4)

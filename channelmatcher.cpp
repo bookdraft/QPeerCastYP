@@ -12,24 +12,31 @@
 #include "application.h"
 #include "settings.h"
 
-ChannelMatcher::ChannelMatcher(Settings *settings)
-    : m_settings(settings)
+ChannelMatcher::ChannelMatcher(Settings *settings, QObject *parent)
+    : QObject(parent), m_settings(settings)
 {
     if (!settings)
         m_settings = qApp->settings();
+    m_rootGroup = new Expression(this);
+    m_rootGroup->isGroup = true;
+    m_rootGroup->isRoot = true;
     loadExpressions();
 }
 
 ChannelMatcher::~ChannelMatcher()
 {
-    clear();
 }
 
 typedef QPair<ChannelMatcher::TargetFlag, QString> TargetPair;
 
 int ChannelMatcher::score(Channel *channel) const
 {
-    int score = 0;
+    return score(channel, m_rootGroup);
+}
+
+int ChannelMatcher::score(Channel *channel, Expression *group) const
+{
+    int points = 0;
     QList<TargetPair> targetPairs;
     targetPairs << TargetPair(Name, channel->name())
                 << TargetPair(LongDescription, channel->longDescription())
@@ -41,9 +48,13 @@ int ChannelMatcher::score(Channel *channel) const
                 << TargetPair(Message, channel->message())
                 << TargetPair(ContactUrl, channel->contactUrl().toString())
                 << TargetPair(Type, channel->type());
-    foreach (Expression *exp, m_expressions) {
-        if (!exp->enabled or exp->pattern.isEmpty())
+    foreach (Expression *exp, group->expressions) {
+        if (!exp->isEnabled or exp->pattern.isEmpty())
             continue;
+        if (exp->isGroup) {
+            points += score(channel, exp);
+            continue;
+        }
         bool matched = false;
         Qt::CaseSensitivity cs =
             exp->matchFlags & Qt::MatchCaseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive;
@@ -66,10 +77,11 @@ int ChannelMatcher::score(Channel *channel) const
             }
         }
         if (matched)
-            score += exp->point;
+            points += exp->point;
     }
-    return score;
+    return points;
 }
+
 
 QString ChannelMatcher::targetString(Expression *exp)
 {
@@ -103,12 +115,19 @@ QString ChannelMatcher::targetString(Expression *exp)
 
 QList<ChannelMatcher::Expression *> &ChannelMatcher::expressions()
 {
-    return m_expressions;
+    return m_rootGroup->expressions;
 }
 
-void ChannelMatcher::addExpression(const QString &pattern, Qt::MatchFlags matchFlags, TargetFlags targetFlags, int point)
+ChannelMatcher::Expression *ChannelMatcher::rootGroup() const
 {
-    foreach (Expression *exp, m_expressions) {
+    return m_rootGroup;
+}
+
+void ChannelMatcher::addExpression(const QString &pattern, Qt::MatchFlags matchFlags, TargetFlags targetFlags, int point, Expression *group)
+{
+    if (!group)
+        group = m_rootGroup;
+    foreach (Expression *exp, group->expressions) {
         if (exp->pattern == pattern) {
             exp->targetFlags = targetFlags;
             exp->matchFlags = matchFlags;
@@ -117,32 +136,56 @@ void ChannelMatcher::addExpression(const QString &pattern, Qt::MatchFlags matchF
         }
     }
     Expression *exp = new Expression;
-    exp->enabled = true;
+    exp->isEnabled = true;
     exp->pattern = pattern;
     exp->targetFlags = targetFlags;
     exp->matchFlags = matchFlags;
     exp->point = point;
-    m_expressions += exp;
+    group->expressions += exp;
 }
 
 void ChannelMatcher::clear()
 {
-    while (!m_expressions.isEmpty())
-        delete m_expressions.takeFirst();
+    delete m_rootGroup;
+    m_rootGroup = new Expression(this);
+    m_rootGroup->isGroup = true;
+    m_rootGroup->isRoot = true;
+}
+
+bool ChannelMatcher::hasGroup() const
+{
+    foreach (Expression *exp, m_rootGroup->expressions)
+        if (exp->isGroup)
+            return true;
+    return false;
 }
 
 void ChannelMatcher::loadExpressions()
 {
-    int size = m_settings->beginReadArray("Favorite/Items");
+    m_settings->beginGroup("Favorite");
+    loadExpressions("Items", m_rootGroup);
+    m_settings->endGroup();
+}
+
+void ChannelMatcher::loadExpressions(const QString &prefix, Expression *group)
+{
+    int size = m_settings->beginReadArray(prefix);
     for (int i = 0; i < size; ++i) {
         m_settings->setArrayIndex(i);
-        Expression *exp = new Expression;
-        exp->enabled = m_settings->value("Enabled").toBool();
+        Expression *exp = new Expression(group);
+        if (!group->isRoot)
+            exp->isChild = group->isGroup;
+        exp->isGroup = m_settings->value("Group").toBool();
+        exp->isEnabled = m_settings->value("Enabled").toBool();
         exp->pattern = m_settings->value("Pattern").toString();
-        exp->matchFlags = m_settings->value("MatchFlags").toInt();
-        exp->targetFlags = m_settings->value("TargetFlags").toInt();
-        exp->point = m_settings->value("Point").toInt();
-        m_expressions += exp;
+        if (exp->isGroup) {
+            loadExpressions(QString("Items"), exp);
+        } else {
+            exp->matchFlags = m_settings->value("MatchFlags").toInt();
+            exp->targetFlags = m_settings->value("TargetFlags").toInt();
+            exp->point = m_settings->value("Point").toInt();
+        }
+        group->expressions += exp;
     }
     m_settings->endArray();
 }
@@ -150,15 +193,27 @@ void ChannelMatcher::loadExpressions()
 void ChannelMatcher::saveExpressions()
 {
     m_settings->remove("Favorite");
-    m_settings->beginWriteArray("Favorite/Items");
-    for (int i = 0; i < m_expressions.count(); ++i) {
+    m_settings->beginGroup("Favorite");
+    saveExpressions("Items", m_rootGroup);
+    m_settings->endGroup();
+}
+
+void ChannelMatcher::saveExpressions(const QString &prefix, Expression *group)
+{
+    m_settings->beginWriteArray(prefix);
+    for (int i = 0; i < group->expressions.count(); ++i) {
         m_settings->setArrayIndex(i);
-        Expression *exp = m_expressions[i];
-        m_settings->setValue("Enabled", exp->enabled);
+        Expression *exp = group->expressions[i];
+        m_settings->setValue("Group", exp->isGroup);
+        m_settings->setValue("Enabled", exp->isEnabled);
         m_settings->setValue("Pattern", exp->pattern);
-        m_settings->setValue("MatchFlags", exp->matchFlags);
-        m_settings->setValue("TargetFlags", exp->targetFlags);
-        m_settings->setValue("Point", exp->point);
+        if (exp->isGroup) {
+            saveExpressions("Items", exp);
+        } else {
+            m_settings->setValue("MatchFlags", exp->matchFlags);
+            m_settings->setValue("TargetFlags", exp->targetFlags);
+            m_settings->setValue("Point", exp->point);
+        }
     }
     m_settings->endArray();
 }

@@ -15,7 +15,7 @@
 class Channel;
 class Settings;
 
-class ChannelMatcher
+class ChannelMatcher : public QObject
 {
 public:
     enum TargetFlag {
@@ -31,40 +31,54 @@ public:
         ContactUrl      = 0x0100,
         Type            = 0x0200,
     };
-    Q_DECLARE_FLAGS(TargetFlags, TargetFlag)
+    Q_DECLARE_FLAGS(TargetFlags, TargetFlag);
 
-    class Expression
+    class Expression : public QObject
     {
     public:
-        Expression() {
-            enabled = true;
+        Expression(QObject *parent = 0) : QObject(parent) {
+            isRoot = false;
+            isGroup = false;
+            isChild = false;
+            isEnabled = true;
             point = 3;
             targetFlags = Name | LongDescription;
             matchFlags = Qt::MatchContains;
         }
-        bool enabled;
+        ~Expression() { }
+        bool isRoot;
+        bool isGroup;
+        bool isChild;
+        bool isEnabled;
         QString pattern;
         int point;
         int targetFlags;
         int matchFlags;
+        QList<Expression *> expressions;
     };
 
-    ChannelMatcher(Settings *settings = 0);
+    ChannelMatcher(Settings *settings = 0, QObject *parent = 0);
     virtual ~ChannelMatcher();
 
     void clear();
 
     int score(Channel *channel) const;
+    bool hasGroup() const;
 
     static QString targetString(Expression *exp);
 
+    Expression *rootGroup() const;
     QList<Expression *> &expressions();
-    void addExpression(const QString &pattern, Qt::MatchFlags matchFlags, TargetFlags flags, int point);
+    void addExpression(const QString &pattern, Qt::MatchFlags matchFlags, TargetFlags flags, int point, Expression *group = 0);
     void loadExpressions();
     void saveExpressions();
 
 private:
-    QList<Expression *> m_expressions;
+    int score(Channel *channel, Expression *exp) const;
+    void loadExpressions(const QString &prefix, Expression *exp);
+    void saveExpressions(const QString &prefix, Expression *exp);
+
+    Expression *m_rootGroup;
     QSettings *m_settings;
 };
 

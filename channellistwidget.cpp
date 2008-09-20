@@ -299,6 +299,10 @@ void ChannelListWidget::done(YellowPage *yp, bool error)
             noticeChannels += m_yellowPage->channels(Channel::Favorite | Channel::New);
             if (settings->value("Notification/NotifyChangedFavorite").toBool())
                 noticeChannels += m_yellowPage->channels(Channel::Favorite | Channel::Changed);
+            int minimumScore = settings->value("Notification/MinimumScore").toInt();
+            foreach (Channel *ch, noticeChannels)
+                if (ch->score() < minimumScore)
+                    noticeChannels.removeAll(ch);
         }
         if (settings->value("Notification/NotifyNew").toBool())
             noticeChannels += m_yellowPage->channels(Channel::New);
@@ -311,23 +315,6 @@ void ChannelListWidget::done(YellowPage *yp, bool error)
                 Sound::play(settings->value("Notification/SoundFile").toString());
         }
     }
-}
-
-ChannelList ChannelListWidget::favoriteChannels() const
-{
-    Settings *settings = qApp->settings();
-    bool dontNotifyChangedFavorite = settings->value("Notification/DontNotifyChangedFavorite").toBool();
-    int minimumScore = settings->value("Notification/MinimumScore").toInt();
-    ChannelList favChannels;
-    foreach (Channel *channel, m_yellowPage->channels()) {
-        if (dontNotifyChangedFavorite and channel->status() & Channel::Changed)
-            continue;
-        if (!(channel->status() & Channel::New))
-            continue;
-        if (channel->status() & Channel::Favorite and channel->score() >= minimumScore)
-            favChannels += channel;
-    }
-    return favChannels;
 }
 
 QDateTime ChannelListWidget::lastUpdatedTime()

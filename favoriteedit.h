@@ -44,8 +44,10 @@ public:
     ExpressionListWidget(ChannelMatcher *matcher, QWidget *parent = 0);
     virtual ~ExpressionListWidget();
 
-    void setValue();
+    void addItems();
+    void addItems(QTreeWidgetItem *parent, ChannelMatcher::Expression *group);
     void saveExpressions();
+    void saveExpressions(QTreeWidgetItem *item);
 
 public slots:
     void clear();
@@ -53,14 +55,16 @@ public slots:
     void downCurrentItem();
 
     void addNewItem(ChannelMatcher::Expression *exp = 0);
+    void addNewGroupItem();
     void editCurrentItem();
     void editItem(QTreeWidgetItem *i);
-    void removeCurrentItem();
+    void removeSelectedItem();
 
 signals:
     void changed(bool dirty);
 
 protected:
+    void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent * event);
     void showEvent(QShowEvent *event);
 
@@ -69,6 +73,7 @@ private slots:
 
 private:
     ChannelMatcher *m_matcher;
+    QList<QTreeWidgetItem *> m_draggingItems;
 };
 
 #endif // FAVORITEEDIT_H

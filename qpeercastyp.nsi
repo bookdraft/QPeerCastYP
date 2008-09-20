@@ -54,6 +54,7 @@ Section "MainSection" SEC01
   File "release\qpeercastyp.exe"
   File "pcraw\pcraw_proxy.exe"
   File "bin\mingwm10.dll"
+  File "ChangeLog"
   File "COPYING"
   CreateDirectory "$SMPROGRAMS\QPeerCastYP"
   CreateShortCut "$SMPROGRAMS\QPeerCastYP\QPeerCastYP.lnk" "$INSTDIR\qpeercastyp.exe"

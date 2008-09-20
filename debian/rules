@@ -26,7 +26,6 @@ endif
 
 config.status: configure
 	dh_testdir
-	# Add here commands to configure the package.
 	./configure  --prefix=/usr
 
 
@@ -35,9 +34,7 @@ build: build-stamp
 build-stamp:  config.status
 	dh_testdir
 
-	# Add here commands to compile the package.
 	$(MAKE)
-	#docbook-to-man debian/qpeercastyp.sgml > qpeercastyp.1
 
 	touch $@
 
@@ -46,15 +43,7 @@ clean:
 	dh_testroot
 	rm -f build-stamp 
 
-	# Add here commands to clean up after the build process.
 	-$(MAKE) distclean
-# ifneq "$(wildcard /usr/share/misc/config.sub)" ""
-# 	cp -f /usr/share/misc/config.sub config.sub
-# endif
-# ifneq "$(wildcard /usr/share/misc/config.guess)" ""
-# 	cp -f /usr/share/misc/config.guess config.guess
-# endif
-
 
 	dh_clean 
 
@@ -64,15 +53,11 @@ install: build
 	dh_clean -k 
 	dh_installdirs
 
-	# Add here commands to install the package into debian/qpeercastyp.
 	$(MAKE) INSTALL_ROOT=$(CURDIR)/debian/qpeercastyp install
 
 
-# Build architecture-independent files here.
 binary-indep: build install
-# We have nothing to do by default.
 
-# Build architecture-dependent files here.
 binary-arch: build install
 	dh_testdir
 	dh_testroot

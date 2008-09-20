@@ -235,7 +235,6 @@ QString Actions::expandVars(const QString &str, Channel *channel)
     QString s = str;
     QRegExp rxVar("\\$\\{?([\\w\\d_]+)(?:\\(([\\w\\d_]+)\\))?\\}?");
     int pos = 0;
-    qDebug() << channel->dynamicPropertyNames();
     while ((pos = rxVar.indexIn(s, pos)) != -1) {
         QString name = rxVar.cap(1).toUpper();
         QString arg = rxVar.cap(2).toUpper();
@@ -265,7 +264,6 @@ QString Actions::expandVars(const QString &str, Channel *channel)
             s.replace(pos, rxVar.matchedLength(), value);
             pos += value.length();
         }
-        qDebug() << rxVar.cap(0);
     }
     return s;
 }
@@ -374,3 +372,4 @@ QAction *Actions::aboutQtAction() const
 {
     return m_aboutQtAction;
 }
+

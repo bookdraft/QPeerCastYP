@@ -12,7 +12,6 @@
 
 void SettingsConverter::convert(Settings *settings)
 {
-    qDebug() << "Version:" << settings->value("General/Version").toString();
     if (settings->value("General/Version").toString().isEmpty())
         convertV020ToV030(settings);
     settings->sync();
@@ -20,7 +19,7 @@ void SettingsConverter::convert(Settings *settings)
 
 void SettingsConverter::convertV020ToV030(Settings *settings)
 {
-    qDebug() << "convertV020ToV030";
+    qDebug() << "convert settings: v0.2.0 to v0.3.0";
 
     // イエローページ
     for (int i = 0; i < 100; ++i) {
