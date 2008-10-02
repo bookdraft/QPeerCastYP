@@ -19,11 +19,11 @@ class Channel : public QObject
     Q_OBJECT
 public:
     enum StatusFlag {
-        Stopped  = 0x0000,
-        Normal   = 0x1000,
-        Changed  = 0x2000,
-        New      = 0x4000,
-        Favorite = 0x8000
+        Stopped  = 0x0001000,
+        Normal   = 0x0002000,
+        Changed  = 0x0004000,
+        New      = 0x0008000,
+        Favorite = 0x0010000
     };
     Q_DECLARE_FLAGS(Status, StatusFlag)
     
@@ -76,9 +76,7 @@ public:
     QUrl contactUrl() const;
     void setContactUrl(const QString &url);
     void setContactUrl(const QUrl &url);
-
-    QUrl url() const;
-    void setUrl(const QUrl &url);
+    bool hasContactUrl() const;
 
     qint32 uptime() const;
     QString uptimeString() const;
@@ -87,9 +85,11 @@ public:
 
     int listeners() const;
     void setListeners(int listeners);
+    QString listenersString() const;
 
     int relays() const;
     void setRelays(int relays);
+    QString relaysString() const;
 
     int score() const;
     bool hasScore() const;
@@ -97,6 +97,7 @@ public:
 
     int bitrate() const;
     void setBitrate(int bitrate);
+    QString bitrateString() const;
 
 protected:
     YellowPage *m_yellowPage;

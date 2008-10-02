@@ -2,17 +2,10 @@
 <RCC version="1.0">
 <qresource>
     <file>images/qpeercastyp.png</file>
-    <file>images/blue.png</file>
-    <file>images/gray.png</file>
-    <file>images/green.png</file>
-    <file>images/red.png</file>
     <file>images/new.png</file>
-    <file>images/reentry.png</file>
     <file>images/stopped.png</file>
     <file>images/changed.png</file>
     <file>images/favorite.png</file>
-    <file>images/favorite_new.png</file>
-    <file>images/favorite_changed.png</file>
     <file>images/browser.png</file>
     <file>images/find.png</file>
     <file>images/configure.png</file>
@@ -20,7 +13,7 @@
     <file>images/exit.png</file>
     <file>images/play.png</file>
     <file>images/reload.png</file>
-    <file>images/barclose.png</file>
+    <file>images/close.png</file>
     <file>translations/qt_ja_jp.qm</file>
     <file>default.conf</file>
 </qresource>

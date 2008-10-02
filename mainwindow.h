@@ -13,6 +13,7 @@
 #include <QtGui>
 
 class Actions;
+class Channel;
 class ChannelListWidget;
 class ChannelListTabWidget;
 class ChannelListFindBar;
@@ -28,6 +29,7 @@ public:
 
     Actions *actions() const;
     ChannelListWidget *currentChannelListWidget() const;
+    Channel *currentChannel() const;
     ChannelListTabWidget *channelListTabWidget() const;
 
 #ifdef Q_WS_X11
@@ -80,7 +82,9 @@ private:
     QPoint m_pos;
     QToolBar *m_mainToolBar;
     Actions *m_actions;
+    QStackedWidget *m_stackedWidget;
     ChannelListTabWidget *m_channelListTabWidget;
+    ChannelListWidget *m_channelMergedList;
     ChannelListFindBar *m_channelListFindBar;
     bool m_autoUpdateEnabled;
     QTimer m_autoUpdateTimer;

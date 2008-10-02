@@ -78,23 +78,22 @@ bool YellowPageManager::isUpdating()
     return false;
 }
 
-ChannelList &YellowPageManager::channels()
+ChannelList YellowPageManager::channels() const
 {
-    m_channels.clear();
+    ChannelList channels;
     foreach (YellowPage *yp, m_yellowPages)
         if (yp->isEnabled())
-            m_channels += yp->channels();
+            channels += yp->channels();
 
-    return m_channels;
+    return channels;
 }
 
-ChannelList &YellowPageManager::channels(const QString &ypName)
+ChannelList YellowPageManager::channels(const QString &ypName) const
 {
     foreach (YellowPage *yp, m_yellowPages)
         if (yp->name() == ypName)
             return yp->channels();
-    m_channels.clear();
-    return m_channels;
+    return ChannelList();
 }
 
 void YellowPageManager::clear()

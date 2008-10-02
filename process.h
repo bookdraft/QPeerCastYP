@@ -7,17 +7,19 @@
  *  (at your option) any later version.
  *
  */
-#include "application.h"
-#ifdef Q_WS_X11
-#include "proxystyle.h"
-#endif
+#ifndef PROCESS_H
+#define PROCESS_H
 
-int main(int argc, char *argv[]) {
-    Application app(argc, argv);
-#ifdef Q_WS_X11
-    app.setStyle(new ProxyStyle(app.style()->objectName()));
-#endif
-    int code = app.exec();
-    return code;
-}
+#include <QtCore>
 
+class Channel;
+
+class Process : public QProcess
+{
+    Q_OBJECT
+public:
+    static bool start(const QString &program, Channel *channel = 0);
+    static QString expandVars(const QString &str, Channel *channel = 0);
+};
+
+#endif // PROCESS_H

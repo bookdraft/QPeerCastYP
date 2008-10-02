@@ -20,12 +20,34 @@ class ChannelListWidget : public QTreeWidget
     Q_OBJECT
 public:
     enum Column { Status, Name, Description, Listeners, Relays, Score, Uptime, Bitrate, Type, Headers };
+    enum LinkType { ChannelLink, ContactLink };
 
     ChannelListWidget(QWidget *parent = 0, YellowPage *yellowPage = 0);
     virtual ~ChannelListWidget();
 
     YellowPage *yellowPage() const;
     void setYellowPage(YellowPage *yp);
+
+    bool customToolTip() const;
+    void setCustomToolTip(bool enable);
+
+    LinkType linkType() const;
+    void setLinkType(LinkType type);
+
+    bool linkEnabled() const;
+    void setLinkEnabled(bool enable);
+
+    bool linkUnderline() const;
+    void setLinkUnderline(bool enable);
+
+    bool linkBold() const;
+    void setLinkBold(bool enable);
+
+    QColor linkColor() const;
+    void setLinkColor(const QColor &c);
+
+    QString linkMessageFormat(LinkType type) const;
+    void setLinkMessageFormat(LinkType type, const QString &format);
 
     int channelCount() const;
     int listenerCount() const;
@@ -50,8 +72,17 @@ public slots:
     void copyChannelInfo();
 
 protected:
+    void polish();
+    QRect linkTextRect(QTreeWidgetItem *item, Column column) const;
+    void addItems(const QList<Channel *> &channels);
+    void updateCursor();
+
     bool event(QEvent *event);
+    bool viewportEvent(QEvent *event);
+    void leaveEvent(QEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void hideEvent(QHideEvent *event);
     void showEvent(QShowEvent *event);
@@ -61,14 +92,19 @@ private slots:
     void headerContextMenuRequested(const QPoint &pos);
 
 private:
-    void polish();
-    void addItems(QList<Channel *> &channels);
-
     YellowPage *m_yellowPage;
     QDateTime m_lastUpdatedTime;
     QList<Channel *> m_favoriteChannels;
-    bool m_needClear;
     bool m_active;
+    bool m_customToolTip;
+    LinkType m_linkType;
+    QMap<int, QString> m_linkMessageFormats;
+    bool m_linkEnabled;
+    bool m_linkUnderline;
+    bool m_linkBold;
+    bool m_linkHovering;
+    QColor m_linkColor;
+    bool m_needClear;
 };
 
 #endif // CHANNELLISTWIDGET_H

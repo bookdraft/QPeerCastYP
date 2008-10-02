@@ -24,6 +24,7 @@ public:
     ChannelListWidget *currentWidget();
     ChannelListWidget *widget(int index);
 
+    void setActive(bool active);
     void setTabBarVisible(bool shown);
     bool tabBarIsVisible() const;
 

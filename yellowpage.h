@@ -34,9 +34,8 @@ public:
     virtual QDateTime lastUpdatedTime();
 
     QUrl channelListUrl() const;
-    virtual ChannelList &channels();
-    virtual ChannelList channels(Channel::Status status);
-    virtual ChannelList &stoppedChannels();
+    virtual ChannelList channels() const;
+    virtual ChannelList channels(Channel::Status status) const;
     virtual QList<YellowPage *> &yellowPages();
 
     bool usePCRawProxy() const;
@@ -73,7 +72,6 @@ protected slots:
 protected:
     bool m_isManager;
     ChannelList m_channels;
-    ChannelList m_stoppedChannels;
     QDateTime m_lastUpdatedTime;
     QList<YellowPage *> m_yellowPages;
 

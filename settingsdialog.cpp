@@ -66,7 +66,7 @@ SettingsDialog::SettingsDialog(Settings *settings, QWidget *parent)
 
     setWindowTitle(tr("%1 の設定").arg(qApp->applicationName()));
     QSize minSize = minimumSizeHint();
-    resize(minSize.width() + 200, minSize.height());
+    resize(minSize.width() + 150, minSize.height());
     setModal(true);
     show();
 }

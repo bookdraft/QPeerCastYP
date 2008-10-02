@@ -12,6 +12,8 @@
 #include "mainwindow.h"
 #include "channellistwidget.h"
 #include "channel.h"
+#include "commandaction.h"
+#include "process.h"
 #include "settings.h"
 
 Actions::Actions(MainWindow *mainWindow)
@@ -123,10 +125,29 @@ Actions::Actions(MainWindow *mainWindow)
     m_aboutQtAction = new QAction(tr("&Qt について"), this);
     m_mainWindow->addAction(m_aboutQtAction);
     connect(m_aboutQtAction, SIGNAL(triggered(bool)), m_mainWindow, SLOT(aboutQt()));
+
+    loadUserActions();
 }
 
 Actions::~Actions()
 {
+}
+
+void Actions::loadUserActions()
+{
+    while (!m_userActions.isEmpty())
+        delete m_userActions.takeFirst();
+    Settings *s = qApp->settings();
+    int size = s->beginReadArray("UserAction/Actions");
+    for (int i = 0; i < size; ++i) {
+        s->setArrayIndex(i);
+        QIcon icon(s->value("Icon").toString());
+        CommandAction *action = new CommandAction(icon, s->value("Text").toString(), this);
+        action->setCommand(s->value("Program").toString(), s->value("Args").toString());
+        action->setShortcut(QKeySequence(s->value("Shortcut").toString()));
+        m_userActions += action;
+    }
+    s->endArray();
 }
 
 QMenu *Actions::fileMenu(QWidget *parent) const
@@ -142,11 +163,16 @@ QMenu *Actions::yellowPageMenu(QWidget *parent) const
     menu->addAction(m_updateYellowPageAction);
     menu->addAction(m_toggleAutoUpdateAction);
     menu->addAction(m_playChannelAction);
+
+    if (!m_userActions.isEmpty())
+        menu->addSeparator();
+    foreach (QAction *action, m_userActions)
+        menu->addAction(action);
+
     menu->addSeparator();
     menu->addAction(m_addToFavoritesAction);
     menu->addSeparator();
     menu->addAction(m_openContactUrlAction);
-    // menu->addAction(m_openContactUrlWith2chBrowserAction);
     menu->addSeparator();
     menu->addAction(m_copyChannelInfoAction);
     menu->addAction(m_copyStreamUrlAction);
@@ -206,11 +232,8 @@ void Actions::playChannel(Channel *channel)
                 tr("%1 用のプレイヤが設定されていません。").arg(channel->type().toUpper()));
         return;
     }
-    args = expandVars(args, channel);
     QString program = "\"" + player + "\" " + args;
-    qDebug() << program;
-    if (!QProcess::startDetached(program))
-        m_mainWindow->showErrorMessage(tr("プログラムの実行に失敗しました。"));
+    Process::start(program, channel);
 }
 
 void Actions::setClipboardText(const QString &text)
@@ -229,45 +252,6 @@ void Actions::openUrl(const QUrl &url)
         QProcess::startDetached(browser, QStringList(url.toString()));
     }
 }
-
-QString Actions::expandVars(const QString &str, Channel *channel)
-{
-    QString s = str;
-    QRegExp rxVar("\\$\\{?([\\w\\d_]+)(?:\\(([\\w\\d_]+)\\))?\\}?");
-    int pos = 0;
-    while ((pos = rxVar.indexIn(s, pos)) != -1) {
-        QString name = rxVar.cap(1).toUpper();
-        QString arg = rxVar.cap(2).toUpper();
-        QString value;
-        if (name == "PEERCAST_SERVER") {
-            QUrl pcserv = qApp->settings()->value("PeerCast/ServerUrl").toString(); 
-            if (arg.isEmpty())
-                value = pcserv.toString();
-            else if (arg == "HOST")
-                value = pcserv.host();
-            else if (arg == "PORT")
-                value = QString::number(pcserv.port());
-        }
-        if (channel) {
-            if (name == "STREAM_URL") {
-                value = channel->streamUrl(arg.isEmpty() ? "http" : arg.toLower()).toEncoded();
-            } else if (name == "CHANNEL" and !arg.isEmpty()) {
-                if (arg == "STREAM_URL")
-                    value = channel->streamUrl().toEncoded();
-                else
-                    value = channel->property(arg.toLower().toAscii()).toString();
-            }
-        }
-        if (value.isNull()) {
-            pos += rxVar.matchedLength();
-        } else {
-            s.replace(pos, rxVar.matchedLength(), value);
-            pos += value.length();
-        }
-    }
-    return s;
-}
-
 
 QAction *Actions::quitAction() const
 {

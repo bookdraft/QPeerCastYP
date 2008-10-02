@@ -20,7 +20,9 @@
 #include "favoriteedit.h"
 #include "yellowpage.h"
 #include "yellowpagemanager.h"
+#include "process.h"
 #include "sound.h"
+#include "tooltip.h"
 #include "viemacsbindings.h"
 
 class ChannelListWidgetItem : public QTreeWidgetItem
@@ -29,6 +31,19 @@ public:
     ChannelListWidgetItem(QTreeWidget *parent, Channel *channel, int type = Type)
         : QTreeWidgetItem(parent, type), m_channel(channel)
     {
+        ChannelListWidget *tw = static_cast<ChannelListWidget *>(treeWidget());
+        if (tw->linkEnabled()) {
+            switch (tw->linkType()) {
+            case ChannelListWidget::ChannelLink:
+                if (channel->isPlayable())
+                    setLink(ChannelListWidget::Name);
+                break;
+            case ChannelListWidget::ContactLink:
+                if (channel->hasContactUrl())
+                    setLink(ChannelListWidget::Name);
+                break;
+            }
+        }
         setTextAlignment(ChannelListWidget::Listeners, Qt::AlignRight);
         setTextAlignment(ChannelListWidget::Relays, Qt::AlignRight);
         setTextAlignment(ChannelListWidget::Score, Qt::AlignRight);
@@ -44,20 +59,13 @@ public:
         setText(ChannelListWidget::Name, m_channel->name());
         setText(ChannelListWidget::Description, m_channel->longDescription());
         setText(ChannelListWidget::Score, QString::number(m_channel->score()));
-        setText(ChannelListWidget::Listeners,
-                m_channel->listeners() < 0 ? "-" : QString::number(m_channel->listeners()));
-        setText(ChannelListWidget::Relays,
-                m_channel->relays() < 0 ? "-" : QString::number(m_channel->relays()));
+        setText(ChannelListWidget::Listeners, m_channel->listenersString());
+        setText(ChannelListWidget::Relays, m_channel->relaysString());
         setText(ChannelListWidget::Uptime, m_channel->uptimeString());
-        setText(ChannelListWidget::Bitrate, QString::number(m_channel->bitrate()) + "kb/s");
+        setText(ChannelListWidget::Bitrate, m_channel->bitrateString());
         setText(ChannelListWidget::Type, m_channel->type());
 
         updateToolTip();
-
-        if (m_channel->listeners() < 0)
-            setToolTip(ChannelListWidget::Listeners, QString::number(m_channel->listeners()));
-        if (m_channel->relays() < 0)
-            setToolTip(ChannelListWidget::Relays, QString::number(m_channel->relays()));
 
         Channel::Status status = m_channel->status();
         if (status & Channel::New) {
@@ -73,17 +81,32 @@ public:
             setToolTip(ChannelListWidget::Status, QObject::tr("放送終了"));
         }
         if (status & Channel::Favorite) {
-            if (status & Channel::New)
-                setIcon(ChannelListWidget::Status, QIcon(":/images/favorite_new.png"));
-            else if (status & Channel::Changed)
-                setIcon(ChannelListWidget::Status, QIcon(":/images/favorite_changed.png"));
-            else
-                setIcon(ChannelListWidget::Status, QIcon(":/images/favorite.png"));
+            QPixmap pixmap(":/images/favorite.png");
+            QIcon statusIcon = icon(ChannelListWidget::Status);
+            if (!statusIcon.isNull()) {
+                QPainter painter(&pixmap);
+                QSize statusIconSize(pixmap.size() * 0.5625);
+                QPoint point(pixmap.width() - statusIconSize.width(),
+                             pixmap.height() - statusIconSize.height());
+                painter.drawPixmap(point, statusIcon.pixmap(statusIconSize));
+            }
+            setIcon(ChannelListWidget::Status, QIcon(pixmap));
             setToolTip(ChannelListWidget::Status, QObject::tr("お気に入り (スコア: %1)").arg(m_channel->score()));
         }
         if (!m_channel->isPlayable())
             setToolTip(ChannelListWidget::Status, QObject::tr("再生不可"));
 
+    }
+
+    void setLink(int column)
+    {
+        ChannelListWidget *tw = static_cast<ChannelListWidget *>(treeWidget());
+        QFont f(font(column));
+        f.setUnderline(tw->linkUnderline());
+        f.setBold(tw->linkBold());
+        setFont(column, f);
+        if (tw->linkColor().isValid())
+            setForeground(column, QBrush(tw->linkColor()));
     }
 
     void updateToolTip()
@@ -138,7 +161,7 @@ private:
 };
 
 ChannelListWidget::ChannelListWidget(QWidget *parent, YellowPage *yellowPage)
-    : QTreeWidget(parent), m_active(false)
+    : QTreeWidget(parent), m_active(false), m_linkHovering(false)
 {
     setYellowPage(yellowPage);
     m_lastUpdatedTime = QDateTime::currentDateTime();
@@ -157,8 +180,28 @@ ChannelListWidget::ChannelListWidget(QWidget *parent, YellowPage *yellowPage)
     header()->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(header(), SIGNAL(customContextMenuRequested(QPoint)),
             SLOT(headerContextMenuRequested(QPoint)));
-    QByteArray state = qApp->settings()->value("ChannelListWidget/HeaderState").toByteArray();
-    header()->restoreState(state);
+
+    Settings *s = qApp->settings();
+    s->beginGroup("ChannelListWidget");
+        header()->restoreState(s->value("HeaderState").toByteArray());
+        setIconSize(s->value("IconSize").toSize());
+        setAlternatingRowColors(s->value("AlternatingRowColors").toBool());
+        if (alternatingRowColors())
+            setStyleSheet(QString("QTreeWidget { alternate-background-color: %1; }")
+                    .arg(s->value("AlternateBackgroundColor").toString()));
+        m_customToolTip = s->value("CustomToolTip").toBool();
+        m_linkType = (LinkType)s->value("LinkType").toInt();
+        m_linkEnabled = s->value("LinkEnabled").toBool();
+        m_linkColor = s->value("LinkColor").value<QColor>();
+        m_linkBold = s->value("LinkBold").toBool();
+        m_linkUnderline = s->value("LinkUnderline").toBool();
+        m_linkMessageFormats[ChannelLink] = s->value("ChannelLinkMessageFormat",
+                tr("$CHANNEL(NAME) : ビットレート $CHANNEL(BITRATE)kbps : "
+                "視聴者数 $CHANNEL(LISTENERS_STRING) : 配信時間 $CHANNEL(UPTIME_STRING) : "
+                "種類 $CHANNEL(TYPE)")).toString();
+        m_linkMessageFormats[ContactLink] = s->value("ContactLinkMessageFormat",
+                tr("$CHANNEL(CONTACT_URL)")).toString();
+    s->endGroup();
 
     int lastSection = -1;
     for (int i = 0; i < header()->count(); ++i)
@@ -171,12 +214,7 @@ ChannelListWidget::ChannelListWidget(QWidget *parent, YellowPage *yellowPage)
     setAllColumnsShowFocus(true);
     setSortingEnabled(true);
     setRootIsDecorated(false);
-    setIconSize(QSize(12, 12));
-
-    setAlternatingRowColors(qApp->settings()->value("ChannelListWidget/AlternatingRowColors").toBool());
-    if (alternatingRowColors())
-        setStyleSheet(QString("QTreeWidget { alternate-background-color: %1; }")
-                .arg(qApp->settings()->value("ChannelListWidget/AlternateBackgroundColor").toString()));
+    setMouseTracking(linkEnabled());
 
     installEventFilter(new ViEmacsBindings(this));
     updateActions();
@@ -252,15 +290,11 @@ void ChannelListWidget::setActive(bool active)
     if (active) {
         connect(m_yellowPage, SIGNAL(updateDone(YellowPage *, bool)),
                 this, SLOT(done(YellowPage *, bool)));
-        if (m_yellowPage->isUpdating())
-            qApp->mainWindow()->setCursor(Qt::BusyCursor);
-        else
-            qApp->mainWindow()->setCursor(Qt::ArrowCursor);
+        updateCursor();
         updateActions();
     } else {
         disconnect(m_yellowPage, SIGNAL(updateDone(YellowPage *, bool)),
                    this, SLOT(done(YellowPage *, bool)));
-        qApp->mainWindow()->setCursor(Qt::ArrowCursor);
     }
 }
 
@@ -269,10 +303,10 @@ void ChannelListWidget::updateYellowPage()
     if (!yellowPageCount())
         return;
     m_needClear = true;
-    qApp->mainWindow()->setCursor(Qt::BusyCursor);
     if (m_yellowPage->isUpdating())
         m_yellowPage->stopUpdate();
     m_yellowPage->update();
+    updateCursor();
 }
 
 void ChannelListWidget::done(YellowPage *yp, bool error)
@@ -286,14 +320,13 @@ void ChannelListWidget::done(YellowPage *yp, bool error)
         clear();
     m_needClear = false;
     addItems(yp->channels());
-    if (settings->value("General/ShowStoppedChannels").toBool())
-        addItems(yp->stoppedChannels());
+
     qApp->mainWindow()->updateStatusBar();
     m_lastUpdatedTime = QDateTime::currentDateTime();
     updateActions();
 
     if (!m_yellowPage->isUpdating()) {
-        qApp->mainWindow()->setCursor(Qt::ArrowCursor);
+        updateCursor();
         ChannelList noticeChannels;
         if (settings->value("Notification/NotifyFavorite").toBool()) {
             noticeChannels += m_yellowPage->channels(Channel::Favorite | Channel::New);
@@ -324,22 +357,26 @@ QDateTime ChannelListWidget::lastUpdatedTime()
 
 void ChannelListWidget::updateItems()
 {
-    clear();
     m_lastUpdatedTime = QDateTime::currentDateTime();
+    clear();
     foreach (YellowPage *yp, m_yellowPage->yellowPages())
         addItems(yp->channels());
 }
 
-void ChannelListWidget::addItems(ChannelList &channels)
+void ChannelListWidget::addItems(const ChannelList &channels)
 {
     setUpdatesEnabled(false);
-    bool dontShowMinusScoreChannels
-        = qApp->settings()->value("General/DontShowMinusScoreChannels").toBool();
+    bool showStoppedChannels =
+        qApp->settings()->value("General/ShowStoppedChannels").toBool();
+    bool dontShowMinusScoreChannels =
+        qApp->settings()->value("General/DontShowMinusScoreChannels").toBool();
     foreach (Channel *channel, channels) {
+        if (!showStoppedChannels and channel->status() & Channel::Stopped)
+            continue;
         if (dontShowMinusScoreChannels and channel->score() < 0)
             continue;
         ChannelListWidgetItem *item = new ChannelListWidgetItem(this, channel);
-        bool disable = !channel->isPlayable() or channel->status() == Channel::Stopped;
+        bool disable = !channel->isPlayable() or channel->status() & Channel::Stopped;
         item->setDisabled(disable);
     }
     sortItems(sortColumn(), header()->sortIndicatorOrder());
@@ -349,6 +386,8 @@ void ChannelListWidget::addItems(ChannelList &channels)
 void ChannelListWidget::currentItemChanged(QTreeWidgetItem *current)
 {
     Q_UNUSED(current);
+    QString message = Process::expandVars(m_linkMessageFormats[ChannelLink], currentChannel());
+    qApp->mainWindow()->updateStatusBar(message);
     updateActions();
 }
 
@@ -463,11 +502,177 @@ void ChannelListWidget::copyChannelInfo()
     }
 }
 
+inline bool ChannelListWidget::customToolTip() const
+{
+    return m_customToolTip;
+}
+
+inline void ChannelListWidget::setCustomToolTip(bool enable)
+{
+    m_customToolTip = enable;
+}
+
+ChannelListWidget::LinkType ChannelListWidget::linkType() const
+{
+    return m_linkType;
+}
+
+void ChannelListWidget::setLinkType(LinkType type)
+{
+    m_linkType = type;
+}
+
+inline bool ChannelListWidget::linkEnabled() const
+{
+    return m_linkEnabled;
+}
+
+inline void ChannelListWidget::setLinkEnabled(bool enable)
+{
+    m_linkEnabled = enable;
+}
+
+inline bool ChannelListWidget::linkUnderline() const
+{
+    return m_linkUnderline;
+}
+
+inline void ChannelListWidget::setLinkUnderline(bool enable)
+{
+    m_linkUnderline = enable;
+}
+
+bool ChannelListWidget::linkBold() const
+{
+    return m_linkBold;
+}
+
+void ChannelListWidget::setLinkBold(bool enable)
+{
+    m_linkBold = enable;
+}
+
+inline QColor ChannelListWidget::linkColor() const
+{
+    return m_linkColor;
+}
+
+void ChannelListWidget::setLinkColor(const QColor &c)
+{
+    m_linkColor = c;
+}
+
+QString ChannelListWidget::linkMessageFormat(LinkType type) const
+{
+    return m_linkMessageFormats[type];
+}
+
+void ChannelListWidget::setLinkMessageFormat(LinkType type, const QString &format)
+{
+    m_linkMessageFormats[type] = format;
+}
+
+QRect ChannelListWidget::linkTextRect(QTreeWidgetItem *item, Column column) const
+{
+    QRect rect = visualRect(indexFromItem(item, column));
+    rect.setX(rect.x() + style()->pixelMetric(QStyle::PM_HeaderGripMargin));
+    int width = QFontMetrics(item->font(column)).width(item->text(column));
+    if (width < rect.width())
+        rect.setWidth(width);
+    return rect;
+}
+
+void ChannelListWidget::updateCursor()
+{
+    if (m_yellowPage->isUpdating()) {
+        qApp->mainWindow()->setCursor(Qt::BusyCursor);
+        viewport()->setCursor(Qt::BusyCursor);
+    } else {
+        qApp->mainWindow()->setCursor(Qt::ArrowCursor);
+        viewport()->setCursor(Qt::ArrowCursor);
+    }
+}
+
 bool ChannelListWidget::event(QEvent *event)
 {
-    if (event->type() == QEvent::PolishRequest)
+    if (event->type() == QEvent::PolishRequest) {
         polish();
+    } else if (event->type() == QEvent::ToolTip) {
+        return true;
+    }
     return QTreeWidget::event(event);
+}
+
+void ChannelListWidget::leaveEvent(QEvent *event)
+{
+    if (m_linkHovering) {
+        qApp->mainWindow()->updateStatusBar();
+        updateCursor();
+        m_linkHovering = false;
+    }
+    QTreeWidget::leaveEvent(event);
+}
+
+bool ChannelListWidget::viewportEvent(QEvent *event)
+{
+    if (customToolTip() and event->type() == QEvent::ToolTip) {
+        QHelpEvent *he = static_cast<QHelpEvent *>(event);
+        QPoint pos = he->pos();
+        ChannelListWidgetItem *item = static_cast<ChannelListWidgetItem *>(itemAt(pos));
+        if (item) {
+            QModelIndex index = indexAt(he->pos());
+            int column = index.column();
+            QRect rect = visualRect(index);
+            QString text = item->toolTip(column);
+            if (!text.isEmpty()) {
+                QPoint pos(viewport()->mapToGlobal(rect.topLeft()));
+                int top = 0;
+                ToolTip::instance()->getContentsMargins(0, &top, 0, 0);
+                pos.setY(pos.y() - top);
+                ToolTip::showText(pos, text, this);
+            } else {
+                ToolTip::hideText();
+            }
+        }
+        return true;
+    }
+    return QTreeWidget::viewportEvent(event);
+}
+
+void ChannelListWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    if (linkEnabled()) {
+        QModelIndex index = indexAt(event->pos());
+        if (index.isValid() and index.column() == Name) {
+            ChannelListWidgetItem *item = static_cast<ChannelListWidgetItem *>(itemAt(event->pos()));
+            QRect rect = linkTextRect(item, Name);
+            bool hovering = rect.contains(event->pos());
+            if (m_linkType == ChannelLink and !item->channel()->isPlayable())
+                hovering = false;
+            else if (m_linkType == ContactLink and !item->channel()->hasContactUrl())
+                hovering = false;
+
+            if (hovering and !m_linkHovering) {
+                viewport()->setCursor(Qt::PointingHandCursor);
+                m_linkHovering = true;
+            } else if (!hovering and m_linkHovering) {
+                qApp->mainWindow()->updateStatusBar();
+                updateCursor();
+                m_linkHovering = false;
+            }
+
+            QString format = m_linkMessageFormats[m_linkType];
+            QString msg = Process::expandVars(format, item->channel());
+            if (hovering and qApp->mainWindow()->statusBar()->currentMessage() != msg) {
+                qApp->mainWindow()->updateStatusBar(msg);
+            }
+        } else if (m_linkHovering) {
+            qApp->mainWindow()->updateStatusBar();
+            updateCursor();
+            m_linkHovering = false;
+        }
+    }
+    QTreeWidget::mouseMoveEvent(event);
 }
 
 void ChannelListWidget::mousePressEvent(QMouseEvent *event)
@@ -479,7 +684,6 @@ void ChannelListWidget::mousePressEvent(QMouseEvent *event)
         item->setSelected(true); 
 
     if (event->button() == Qt::LeftButton) {
-        // 
     } else if (event->button() == Qt::RightButton) {
         updateActions();
         QMenu *menu = qApp->actions()->yellowPageMenu();
@@ -488,6 +692,30 @@ void ChannelListWidget::mousePressEvent(QMouseEvent *event)
     } else if (event->button() == Qt::MidButton) {
         openContactUrl();
     }
+}
+
+void ChannelListWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (linkEnabled() and event->button() == Qt::LeftButton) {
+        ChannelListWidgetItem *item =
+            static_cast<ChannelListWidgetItem *>(itemAt(event->pos()));
+        if (!item)
+            return;
+        QRect rect = linkTextRect(item, Name);
+        if (rect.contains(event->pos())) {
+            switch (m_linkType) {
+            case ChannelLink:
+                if (item->channel()->isPlayable())
+                    playChannel();
+                break;
+            case ContactLink:
+                if (item->channel()->hasContactUrl())
+                    openContactUrl();
+                break;
+            }
+        }
+    }
+    QTreeWidget::mouseReleaseEvent(event);
 }
 
 void ChannelListWidget::keyPressEvent(QKeyEvent *event)
@@ -503,13 +731,11 @@ void ChannelListWidget::keyPressEvent(QKeyEvent *event)
 
 void ChannelListWidget::hideEvent(QHideEvent *event)
 {
-    // setActive(false);
     QTreeWidget::hideEvent(event);
 }
 
 void ChannelListWidget::showEvent(QShowEvent *event)
 {
-    // setActive(true);
     QTreeWidget::showEvent(event);
 }
 

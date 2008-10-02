@@ -195,27 +195,22 @@ void Channel::setType(const QString &type)
 
 QUrl Channel::contactUrl() const
 {
-    return property("contact_url").toUrl();
+    return QUrl(property("contact_url").toString());
 }
 
 void Channel::setContactUrl(const QString &url)
 {
-    setContactUrl(QUrl(url));
+    setProperty("contact_url", url);
 }
 
 void Channel::setContactUrl(const QUrl &url)
 {
-    setProperty("contact_url", url);
+    setContactUrl(url.toString());
 }
 
-QUrl Channel::url() const
+bool Channel::hasContactUrl() const
 {
-    return property("url").toUrl();
-}
-
-void Channel::setUrl(const QUrl &url)
-{
-    setProperty("url", url);
+    return !contactUrl().isEmpty();
 }
 
 // 配信時間(単位は秒)
@@ -227,6 +222,7 @@ qint32 Channel::uptime() const
 void Channel::setUptime(qint32 uptime)
 {
     setProperty("uptime", uptime);
+    setProperty("uptime_string", uptimeString());
 }
 
 void Channel::setUptime(const QString &uptime) {
@@ -253,6 +249,12 @@ int Channel::listeners() const
 void Channel::setListeners(int listeners)
 {
     setProperty("listeners", listeners);
+    setProperty("listeners_string", listenersString());
+}
+
+QString Channel::listenersString() const
+{
+    return listeners() < 0 ? "-" : QString::number(listeners());
 }
 
 int Channel::relays() const
@@ -263,6 +265,12 @@ int Channel::relays() const
 void Channel::setRelays(int relays)
 {
     setProperty("relays", relays);
+    setProperty("relays_string", relaysString());
+}
+
+QString Channel::relaysString() const
+{
+    return relays() < 0 ? "-" : QString::number(relays());
 }
 
 int Channel::score() const
@@ -290,6 +298,11 @@ void Channel::setBitrate(int bitrate)
     setProperty("bitrate", bitrate);
 }
 
+QString Channel::bitrateString() const
+{
+    return QString::number(bitrate()) + "kb/s";
+}
+
 QDebug operator<<(QDebug dbg, const Channel &c)
 {
     dbg << "Channel:"          << &c                 << endl
@@ -301,7 +314,6 @@ QDebug operator<<(QDebug dbg, const Channel &c)
         << "    artist:"       << c.artist()         << endl
         << "    title:"        << c.title()          << endl
         << "    message:"      << c.message()        << endl
-        << "    url:"          << c.url().toString() << endl
         << "    uptime:"       << c.uptime()         << endl
         << "    uptimeString:" << c.uptimeString()   << endl
         << "    listeners:"    << c.listeners()      << endl

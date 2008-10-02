@@ -32,7 +32,7 @@ ChannelListFindBar::ChannelListFindBar(QWidget *parent)
     : QWidget(parent)
 {
     setupUi(this);
-    closeButton->setIcon(QIcon(":/images/barclose.png"));
+    closeButton->setIcon(QIcon(":/images/close.png").pixmap(16, 16));
     lineEdit->installEventFilter(new ViEmacsBindings(lineEdit, false));
     installEventFilter(new ChannelListFindBarEventFilter(this));
 }

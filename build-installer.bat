@@ -1,3 +1,3 @@
-call C:\Qt\4.4.0\bin\qtvars.bat
+call C:\Qt\4.4.3\bin\qtvars.bat
 qmake
 make nsis || pause

@@ -49,18 +49,6 @@ protected:
         }
     }
 
-    void hideEvent(QHideEvent *event)
-    {
-        for (int i = 0; i < count(); ++i) {
-            ChannelListWidget *list = tabWidget()->widget(i);
-            if (!list->yellowPage()->isManager())
-                continue;
-            tabWidget()->setCurrentWidget(list);
-            break;
-        }
-        QTabBar::hideEvent(event);
-    }
-
     void wheelEvent(QWheelEvent *event)
     {
         if (event->delta() > 0) {
@@ -103,7 +91,7 @@ void ChannelListTabWidget::currentChanged(int index)
     ChannelListWidget *current = widget(index);
     if (!current)
         return;
-    for (int i = 0; i < count(); ++i)
+    for (int i = 0; i < count() and widget(i); ++i)
         if (i != index)
             widget(i)->setActive(false);
     current->setActive(true);
@@ -119,6 +107,15 @@ void ChannelListTabWidget::findRequest(QString text, Qt::MatchFlags flags)
         currentWidget()->filterItems(text, flags);
         qApp->mainWindow()->updateStatusBar();
     }
+}
+
+void ChannelListTabWidget::setActive(bool active)
+{
+    for (int i = 0; i < count() and widget(i); ++i)
+        widget(i)->setActive(false);
+    if (active)
+        if (ChannelListWidget *current = currentWidget())
+            current->setActive(true);
 }
 
 void ChannelListTabWidget::setTabBarVisible(bool shown)

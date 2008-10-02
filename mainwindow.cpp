@@ -49,73 +49,56 @@ void MainWindow::setup()
     QWidget *centralWidget = new QWidget(this);
     setCentralWidget(centralWidget);
 
-    QHBoxLayout *layout = new QHBoxLayout(centralWidget);
-    layout->setMargin(0);
-    layout->setSpacing(0);
+    QVBoxLayout *layout = new QVBoxLayout(centralWidget);
+    layout->setMargin(1);
+    layout->setSpacing(1);
 
-    QVBoxLayout *tabBarLayout = new QVBoxLayout;
-    layout->addLayout(tabBarLayout);
-    QTabBar *tabBar = new QTabBar(centralWidget);
-    tabBarLayout->addWidget(tabBar);
-    tabBarLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding));
-    tabBar->setShape(QTabBar::RoundedWest);
+    m_stackedWidget = new QStackedWidget(centralWidget);
+    layout->addWidget(m_stackedWidget);
 
-    // イエローページ
-    tabBar->addTab(tr("チャンネル一覧"));
-    QStackedWidget *stackedWidget = new QStackedWidget(centralWidget);
-    layout->addWidget(stackedWidget);
-    connect(tabBar, SIGNAL(currentChanged(int)),
-            stackedWidget, SLOT(setCurrentIndex(int)));
+    m_channelListTabWidget = new ChannelListTabWidget(m_stackedWidget);
+    m_stackedWidget->addWidget(m_channelListTabWidget);
 
-    QWidget *yellowPageWidget = new QWidget(centralWidget);
-    QVBoxLayout *yellowPageLayout = new QVBoxLayout;
-    yellowPageLayout->setMargin(0);
-    yellowPageLayout->setSpacing(0);
-    stackedWidget->addWidget(yellowPageWidget);
-    yellowPageWidget->setLayout(yellowPageLayout);
-    m_channelListTabWidget = new ChannelListTabWidget(centralWidget);
-    yellowPageLayout->addWidget(m_channelListTabWidget);
     m_channelListFindBar = new ChannelListFindBar(centralWidget);
     m_channelListFindBar->hide();
-    yellowPageLayout->addWidget(m_channelListFindBar);
+    layout->addWidget(m_channelListFindBar);
 
     setupChannelListWidget();
-
-    // PeerCast
-    tabBar->addTab(tr("PeerCast"));
-    QWidget *peercast = new QWidget(centralWidget);
-    layout->addWidget(peercast);
-    stackedWidget->addWidget(peercast);
-
-    tabBar->hide();
-
     readSettings();
+    updateStatusBar();
 }
 
 void MainWindow::setupChannelListWidget()
 {
+    setUpdatesEnabled(false);
     YellowPage *manager = qApp->yellowPageManager();
-    ChannelListWidget *list = new ChannelListWidget(m_channelListTabWidget, manager);
-    m_channelListTabWidget->addTab(list, manager->name());
-    list->setActive(true);
+    m_channelMergedList = new ChannelListWidget(m_channelListTabWidget, manager);
+    m_channelListTabWidget->addTab(m_channelMergedList, manager->name());
+    m_channelMergedList->setActive(true);
     connect(m_channelListFindBar, SIGNAL(findRequest(QString, Qt::MatchFlags)),
             m_channelListTabWidget, SLOT(findRequest(QString, Qt::MatchFlags)));
 
     foreach (YellowPage *yp, manager->yellowPages()) {
         if (!yp->isEnabled())
             continue;
-        list = new ChannelListWidget(m_channelListTabWidget, yp);
+        ChannelListWidget *list = new ChannelListWidget(m_channelListTabWidget, yp);
         m_channelListTabWidget->addTab(list, yp->name());
     }
+    setUpdatesEnabled(true);
+    m_actions->showTabBarAction()->setChecked(true);
 }
 
 void MainWindow::clearChannelListWidget()
 {
+    setUpdatesEnabled(false);
+    if (!m_channelListTabWidget->isVisible())
+        delete m_channelMergedList;
     while (m_channelListTabWidget->currentWidget()) {
         ChannelListWidget *widget = m_channelListTabWidget->currentWidget();
         m_channelListTabWidget->removeTab(m_channelListTabWidget->currentIndex());
         delete widget;
     }
+    setUpdatesEnabled(true);
 }
 
 void MainWindow::setupActions()
@@ -161,7 +144,6 @@ void MainWindow::setVisible(bool visible)
 void MainWindow::quit()
 {
     writeSettings();
-    hide();
     qApp->peercast()->terminate();
     qApp->peercast()->waitForFinished();
     qApp->pcrawProxy()->stop();
@@ -243,6 +225,7 @@ void MainWindow::writeSettings()
     settings->setValue("MainWindow/ShowStatusBar", m_actions->showStatusBarAction()->isChecked());
     settings->setValue("MainWindow/ShowMainToolBar", m_actions->showToolBarAction()->isChecked());
     settings->setValue("MainWindow/ShowTabBar", m_actions->showTabBarAction()->isChecked());
+    settings->sync();
 }
 
 Actions *MainWindow::actions() const
@@ -252,7 +235,18 @@ Actions *MainWindow::actions() const
 
 ChannelListWidget *MainWindow::currentChannelListWidget() const
 {
-    return qobject_cast<ChannelListWidget *>(m_channelListTabWidget->currentWidget());
+    if (m_channelListTabWidget->isVisible())
+        return qobject_cast<ChannelListWidget *>(m_channelListTabWidget->currentWidget());
+    else
+        return m_channelMergedList;
+}
+
+Channel *MainWindow::currentChannel() const
+{
+    if (currentChannelListWidget())
+        return currentChannelListWidget()->currentChannel();
+    else
+        return 0;
 }
 
 ChannelListTabWidget *MainWindow::channelListTabWidget() const
@@ -334,18 +328,20 @@ void MainWindow::updateStatusBar(const QString &message)
 {
     if (message.isNull()) {
         if (ChannelListWidget *list = currentChannelListWidget()) {
-            QString message;
+            QString m;
             int channelCount = list->channelCount();
             int listenerCount = list->listenerCount();
             int yellowPageCount = list->yellowPageCount();
             if (yellowPageCount > 1) {
-                message = tr("%1 チャンネル（合計 %2 リスナー、%3 イエローページ）")
+                m = tr("%1 チャンネル（合計 %2 リスナー、%3 イエローページ）")
                              .arg(channelCount).arg(listenerCount).arg(yellowPageCount);
             } else {
-                message = tr("%1 チャンネル（合計 %2 リスナー）").arg(channelCount).arg(listenerCount);
+                m = tr("%1 チャンネル（合計 %2 リスナー）").arg(channelCount).arg(listenerCount);
             }
-            statusBar()->showMessage(message);
+            statusBar()->showMessage(m);
         }
+    } else {
+        statusBar()->showMessage(message, 5000);
     }
 }
 
@@ -369,8 +365,35 @@ void MainWindow::setToolBarVisible(bool shown)
 
 void MainWindow::setTabBarVisible(bool shown)
 {
-    m_channelListTabWidget->setTabBarVisible(shown);
+    if (shown == !m_channelListTabWidget->isHidden())
+        return;
+    setUpdatesEnabled(false);
+    if (shown) {
+        connect(m_channelListFindBar, SIGNAL(findRequest(QString, Qt::MatchFlags)),
+                m_channelListTabWidget, SLOT(findRequest(QString, Qt::MatchFlags)));
+        disconnect(m_channelListFindBar, SIGNAL(findRequest(QString, Qt::MatchFlags)),
+                m_channelMergedList, SLOT(filterItems(QString, Qt::MatchFlags)));
+        m_stackedWidget->setCurrentWidget(m_channelListTabWidget);
+        m_stackedWidget->removeWidget(m_channelMergedList);
+        m_channelListTabWidget->insertTab(0, m_channelMergedList,
+                m_channelMergedList->yellowPage()->name());
+        m_channelListTabWidget->setCurrentWidget(m_channelMergedList);
+        m_channelListTabWidget->setActive(true);
+    } else {
+        connect(m_channelListFindBar, SIGNAL(findRequest(QString, Qt::MatchFlags)),
+                m_channelMergedList, SLOT(filterItems(QString, Qt::MatchFlags)));
+        disconnect(m_channelListFindBar, SIGNAL(findRequest(QString, Qt::MatchFlags)),
+                m_channelListTabWidget, SLOT(findRequest(QString, Qt::MatchFlags)));
+        int index = m_channelListTabWidget->indexOf(m_channelMergedList);
+        m_channelListTabWidget->removeTab(index);
+        m_stackedWidget->addWidget(m_channelMergedList);
+        m_stackedWidget->setCurrentWidget(m_channelMergedList);
+        m_channelListTabWidget->setActive(false);
+        m_channelMergedList->setActive(true);
+    }
+    setUpdatesEnabled(true);
     m_actions->showTabBarAction()->setChecked(shown);
+    updateStatusBar();
 }
 
 void MainWindow::showSettings()
@@ -384,16 +407,13 @@ void MainWindow::showSettings()
             qApp->systemTrayIcon()->setVisible(settings->value("SystemTrayIcon/Enabled").toBool());
         }
         if (dialog.yellowPageEdit()->isDirty()) {
-            m_channelListTabWidget->setUpdatesEnabled(false);
             clearChannelListWidget();
             qApp->yellowPageManager()->clear();
             qApp->yellowPageManager()->loadYellowPages();
             setupChannelListWidget();
-            m_channelListTabWidget->setUpdatesEnabled(true);
         }
     }
 }
-
 
 void MainWindow::aboutQt()
 {

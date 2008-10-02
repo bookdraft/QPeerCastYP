@@ -49,11 +49,12 @@ public:
     QAction *aboutQPeerCastYPAction() const;
     QAction *aboutQtAction() const;
 
+    void loadUserActions();
+
 public slots:
     void playChannel(Channel *channel);
     void setClipboardText(const QString &text);
     void openUrl(const QUrl &url);
-    QString expandVars(const QString &str, Channel *channel = 0);
 
 private slots:
     void updateYellowPageActionChanged();
@@ -82,6 +83,8 @@ private:
 
     QAction *m_aboutQPeerCastYPAction;
     QAction *m_aboutQtAction;
+
+    QList<QAction *> m_userActions;
 };
 
 #endif // ACTIONS_H

@@ -82,7 +82,6 @@ void YellowPage::done(bool error)
     qDebug() << m_name << "status code:" << response.statusCode();
     if (response.statusCode() == 200 and !error) {
         ChannelList oldChannels = m_channels;
-        oldChannels += m_stoppedChannels;
         m_channels.clear();
         QTextCodec *codec = QTextCodec::codecForName("UTF-8");
         QString lines(codec->toUnicode(m_http->readAll()));
@@ -120,7 +119,7 @@ void YellowPage::done(bool error)
                 if ((tmpCh.isPlayable() and ch->id() == tmpCh.id())
                         or ch->name(true) == tmpCh.name(true)) {
                     channel = oldChannels.takeAt(i);
-                    if (m_stoppedChannels.contains(channel))
+                    if (channel->status() & Channel::Stopped)
                         channel->setStatus(Channel::New);
                     else
                         channel->setStatus(Channel::Normal);
@@ -160,13 +159,13 @@ void YellowPage::done(bool error)
                 channel->setStatus(channel->status() | Channel::Changed);
             m_channels += channel;
         }
-
-        m_stoppedChannels = oldChannels;
-        foreach (Channel *ch, m_stoppedChannels) {
+        foreach (Channel *ch, oldChannels) {
             ch->setStatus(Channel::Stopped);
             ch->setListeners(-2);
             ch->setRelays(-2);
+            qDebug() << ch;
         }
+        m_channels += oldChannels;
     } else {
         foreach (Channel *channel, m_channels)
             if (channel->status() & (Channel::New | Channel::Changed)) {
@@ -220,25 +219,18 @@ QUrl YellowPage::channelListUrl() const
     return url;
 }
 
-ChannelList &YellowPage::channels()
+ChannelList YellowPage::channels() const
 {
     return m_channels;
 }
 
-ChannelList YellowPage::channels(Channel::Status status)
+ChannelList YellowPage::channels(Channel::Status status) const
 {
     ChannelList list;
     foreach (Channel *channel, channels())
         if ((channel->status() & status) == status)
             list += channel;
-    if (status & Channel::Stopped)
-        list += stoppedChannels();
     return list;
-}
-
-ChannelList &YellowPage::stoppedChannels()
-{
-    return m_stoppedChannels;
 }
 
 YellowPageList &YellowPage::yellowPages()

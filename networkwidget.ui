@@ -70,7 +70,7 @@
          </sizepolicy>
         </property>
         <property name="text" >
-         <string>PeerCast サーバを起動する</string>
+         <string>起動時に PeerCast サーバを起動する</string>
         </property>
        </widget>
       </item>
@@ -143,7 +143,7 @@
       <item row="4" column="0" >
        <widget class="QCheckBox" name="runPCRawProxyAtStartup" >
         <property name="text" >
-         <string>PCRaw プロキシサーバを起動する</string>
+         <string>起動時に PCRaw プロキシサーバを起動する</string>
         </property>
        </widget>
       </item>
@@ -235,8 +235,8 @@
      </property>
      <property name="sizeHint" >
       <size>
-       <width>20</width>
-       <height>159</height>
+       <width>16</width>
+       <height>149</height>
       </size>
      </property>
     </spacer>
