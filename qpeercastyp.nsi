@@ -86,6 +86,7 @@ Section Uninstall
   Delete "$INSTDIR\COPYING"
   Delete "$INSTDIR\pcraw_proxy.exe"
   Delete "$INSTDIR\qpeercastyp.exe"
+  Delete "$INSTDIR\mingwm10.dll"
 
   Delete "$SMPROGRAMS\QPeerCastYP\Uninstall.lnk"
   Delete "$DESKTOP\QPeerCastYP.lnk"
