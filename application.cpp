@@ -14,6 +14,7 @@
 #include "yellowpagemanager.h"
 #include "pcrawproxy.h"
 #include "settings.h"
+#include "settingsdialog.h"
 #include "settingsconverter.h"
 #include "network.h"
 #include "utils.h"
@@ -26,7 +27,12 @@ Application::Application(int argc, char *argv[])
     QTextCodec::setCodecForCStrings(codec);
 
     m_translator = new QTranslator;
-    m_translator->load(":/translations/qt_ja_jp.qm");
+    QStringList trDirs;
+    trDirs += QLibraryInfo::location(QLibraryInfo::TranslationsPath);
+    trDirs += ":/translations/";
+    foreach (QString dir, trDirs)
+        if (m_translator->load("qt_" + QLocale::system().name().toLower(), dir))
+            break;
     installTranslator(m_translator);
 
     setWindowIcon(QIcon(":/images/qpeercastyp.png"));
@@ -47,7 +53,8 @@ Application::Application(int argc, char *argv[])
                               organizationName(), applicationName(), defaultSettings);
 #endif // Q_WS_WIN
 
-    if (m_settings->value("General/FirstRun").toBool()) {
+    bool firstRun = m_settings->value("General/FirstRun").toBool();
+    if (firstRun) {
         m_settings->setValue("General/FirstRun", false);
 #ifdef Q_WS_X11
         m_settings->setValue("Player/VideoPlayer",
@@ -108,7 +115,8 @@ Application::Application(int argc, char *argv[])
     if (m_settings->value("AtStartup/UpdateYellowPage").toBool())
         QTimer::singleShot(1 * 1000, m_mainWindow->actions()->updateYellowPageAction(), SLOT(trigger()));
 
-    connect(this, SIGNAL(lastWindowClosed()), SLOT(lastWindowClosed()));
+    // if (firstRun)
+    //     m_mainWindow->showSettings(SettingsDialog::YellowPage);
 }
 
 Application::~Application()
@@ -117,10 +125,6 @@ Application::~Application()
     delete m_systemTrayIcon;
     delete m_translator;
     delete m_settings;
-}
-
-void Application::lastWindowClosed()
-{
 }
 
 MainWindow *Application::mainWindow() const

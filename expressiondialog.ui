@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>383</width>
-    <height>288</height>
+    <height>284</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -198,6 +198,9 @@
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
        <property name="minimum" >
         <number>-99</number>

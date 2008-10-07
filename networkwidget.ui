@@ -56,6 +56,9 @@
       </item>
       <item row="0" column="3" >
        <widget class="QSpinBox" name="peerCastServerPortSpinBox" >
+        <property name="alignment" >
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
         <property name="maximum" >
          <number>65535</number>
         </property>
@@ -135,6 +138,9 @@
       </item>
       <item row="3" column="3" >
        <widget class="QSpinBox" name="pcrawProxyServerPortSpinBox" >
+        <property name="alignment" >
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
         <property name="maximum" >
          <number>65535</number>
         </property>
@@ -201,6 +207,9 @@
       </item>
       <item>
        <widget class="QSpinBox" name="httpTimeoutIntervalSpinBox" >
+        <property name="alignment" >
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
         <property name="suffix" >
          <string>秒</string>
         </property>

@@ -12,8 +12,8 @@
 #include "process.h"
 #include "application.h"
 
-CommandAction::CommandAction(const QIcon &icon, const QString &text, QObject *parent)
-    : QAction(icon, text, parent)
+CommandAction::CommandAction(const QString &text, QObject *parent)
+    : QAction(text, parent)
 {
     connect(this, SIGNAL(triggered(bool)), this, SLOT(actionTriggered()));
 }
@@ -22,10 +22,39 @@ CommandAction::~CommandAction()
 {
 }
 
+void CommandAction::setEnabled(bool enabled)
+{
+    QAction::setEnabled(enabled);
+    QAction::setVisible(enabled);
+}
+
+QString CommandAction::program() const
+{
+    return m_program;
+}
+
+QString CommandAction::arguments() const
+{
+    return m_args;
+}
+
 void CommandAction::setCommand(const QString &program, const QString &args)
 {
     m_program = program;
     m_args = args;
+}
+
+void CommandAction::setIcon(const QString &fileName)
+{
+    if (fileName.isEmpty())
+        return;
+    QAction::setIcon(QIcon(fileName));
+    m_iconFileName = fileName;
+}
+
+QString CommandAction::iconFileName() const
+{
+    return m_iconFileName;
 }
 
 void CommandAction::actionTriggered()

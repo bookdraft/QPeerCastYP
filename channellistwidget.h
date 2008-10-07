@@ -19,7 +19,7 @@ class ChannelListWidget : public QTreeWidget
 {
     Q_OBJECT
 public:
-    enum Column { Status, Name, Description, Listeners, Relays, Score, Uptime, Bitrate, Type, Headers };
+    enum Column { Status, Name, Description, Listeners, Relays, Score, Uptime, Bitrate, Type, Labels };
     enum LinkType { ChannelLink, ContactLink };
 
     ChannelListWidget(QWidget *parent = 0, YellowPage *yellowPage = 0);
@@ -32,7 +32,7 @@ public:
     void setCustomToolTip(bool enable);
 
     LinkType linkType() const;
-    void setLinkType(LinkType type);
+    void setLinkType(int type);
 
     bool linkEnabled() const;
     void setLinkEnabled(bool enable);
@@ -46,8 +46,11 @@ public:
     QColor linkColor() const;
     void setLinkColor(const QColor &c);
 
-    QString linkMessageFormat(LinkType type) const;
-    void setLinkMessageFormat(LinkType type, const QString &format);
+    QString linkStatusTipFormat(LinkType type) const;
+    void setLinkStatusTipFormat(LinkType type, const QString &format);
+
+    int minimumItemHeight() const;
+    void setMinimumItemHeight(int height);
 
     int channelCount() const;
     int listenerCount() const;
@@ -62,6 +65,7 @@ public:
 public slots:
     void updateYellowPage();
     void updateItems();
+    void updateLinks();
     void currentItemChanged(QTreeWidgetItem *current);
     void filterItems(const QString &text, Qt::MatchFlags flags = Qt::MatchContains);
     void playChannel(Channel *channel = 0);
@@ -98,12 +102,13 @@ private:
     bool m_active;
     bool m_customToolTip;
     LinkType m_linkType;
-    QMap<int, QString> m_linkMessageFormats;
+    QMap<int, QString> m_linkStatusTipFormats;
     bool m_linkEnabled;
     bool m_linkUnderline;
     bool m_linkBold;
     bool m_linkHovering;
     QColor m_linkColor;
+    int m_minimumItemHeight;
     bool m_needClear;
 };
 

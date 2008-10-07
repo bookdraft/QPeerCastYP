@@ -103,10 +103,8 @@ void ChannelListTabWidget::currentChanged(int index)
 
 void ChannelListTabWidget::findRequest(QString text, Qt::MatchFlags flags)
 {
-    if (currentWidget()) {
+    if (currentWidget())
         currentWidget()->filterItems(text, flags);
-        qApp->mainWindow()->updateStatusBar();
-    }
 }
 
 void ChannelListTabWidget::setActive(bool active)

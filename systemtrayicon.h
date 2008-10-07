@@ -21,9 +21,7 @@ public:
     SystemTrayIcon(QObject *parent = 0);
     virtual ~SystemTrayIcon();
 
-    void showFavoriteChannels(const QList<Channel *> &favChannels);
-    void clearShowedFavoriteChannels();
-
+    void showChannels(const QList<Channel *> &channels);
     void showMainWindow() const;
 
 public slots:

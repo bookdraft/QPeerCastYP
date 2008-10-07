@@ -66,11 +66,11 @@ ExpressionListWidget::ExpressionListWidget(ChannelMatcher *matcher, QWidget *par
     : QTreeWidget(parent), m_matcher(matcher)
 {
     setRootIsDecorated(m_matcher->hasGroup());
-    QVector<QString> headers(Headers);
-    headers[Pattern] = tr("検索文字/正規表現");
-    headers[Target] = tr("検索対象");
-    headers[Point] = tr("点数");
-    setHeaderLabels(headers.toList());
+    QVector<QString> labels(Labels);
+    labels[Pattern] = tr("検索文字/正規表現");
+    labels[Target] = tr("検索対象");
+    labels[Point] = tr("点数");
+    setHeaderLabels(labels.toList());
     connect(this, SIGNAL(itemActivated(QTreeWidgetItem *, int)),
             this, SLOT(editCurrentItem()));
     connect(this, SIGNAL(itemClicked(QTreeWidgetItem *, int)),

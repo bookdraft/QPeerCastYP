@@ -14,6 +14,7 @@
 
 class MainWindow;
 class Channel;
+class UserActions;
 
 class Actions : public QObject
 {
@@ -84,7 +85,7 @@ private:
     QAction *m_aboutQPeerCastYPAction;
     QAction *m_aboutQtAction;
 
-    QList<QAction *> m_userActions;
+    UserActions *m_userActions;
 };
 
 #endif // ACTIONS_H

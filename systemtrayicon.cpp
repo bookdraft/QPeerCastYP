@@ -40,7 +40,7 @@ bool scoreMoreThan(Channel *c1, Channel *c2)
     return c1->score() > c2->score();
 }
 
-void SystemTrayIcon::showFavoriteChannels(const QList<Channel *> &channels_)
+void SystemTrayIcon::showChannels(const QList<Channel *> &channels_)
 {
     if (!isVisible())
         return;
@@ -59,15 +59,15 @@ void SystemTrayIcon::showFavoriteChannels(const QList<Channel *> &channels_)
         for (int i = 0; i < channels.count() and i < max; i++) {
             Channel *channel = channels[i];
             QStringList status;
-            if (channel->hasScore())
-                status += QString("スコア %1").arg(channel->score());
             if (channel->status() & Channel::New)
                 status += "新規";
             else if (channel->status() & Channel::Changed)
                 status += "詳細変更";
+            if (channel->hasScore())
+                status += QString("スコア %1").arg(channel->score());
             message += QString("%1 (%2)").arg(channel->name()).arg(status.join(" / "));
-            message += channel->longDescription();
-            if (!message.last().isEmpty())
+            message += channel->longDescription().prepend(" ");
+            if (!message.last().simplified().isEmpty())
                 message.last().append("\n");
         }
         if (!message.isEmpty())

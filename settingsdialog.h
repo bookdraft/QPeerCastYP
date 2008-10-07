@@ -20,13 +20,23 @@ class FavoriteEdit;
 class PlayerEdit;
 class NotificationWidget;
 class NetworkWidget;
+class UserActionEdit;
 class AdvancedWidget;
 
 class SettingsDialog : public QDialog
 {
     Q_OBJECT
 public:
-    enum WidgetIndex { General, YellowPage, Favorite, Notification, Player, Network, Advanced };
+    enum WidgetIndex {
+        General,
+        YellowPage,
+        Favorite,
+        Notification,
+        Player,
+        UserAction,
+        Network,
+        Advanced
+    };
     SettingsDialog(Settings *settings, QWidget *parent = 0);
     virtual ~SettingsDialog();
 
@@ -34,6 +44,7 @@ public:
     YellowPageEdit *yellowPageEdit() const;
     FavoriteEdit *favoriteEdit() const;
     NotificationWidget *notificationWidget() const;
+    UserActionEdit *userActionEdit() const;
     NetworkWidget *networkWidget() const;
 
     void setCurrentWidget(WidgetIndex index);
@@ -53,6 +64,7 @@ private:
     FavoriteEdit *m_favoriteEdit;
     PlayerEdit *m_playerEdit;
     NotificationWidget *m_notificationWidget;
+    UserActionEdit *m_userActionEdit;
     NetworkWidget *m_networkWidget;
     AdvancedWidget *m_advancedWidget;
 };

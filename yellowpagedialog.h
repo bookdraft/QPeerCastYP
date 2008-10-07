@@ -18,6 +18,7 @@ class YellowPage;
 
 class YellowPageDialog : public QDialog, private Ui::YellowPageDialog
 {
+    Q_OBJECT
 public:
     YellowPageDialog(YellowPage *yellowPage, QWidget *parent = 0);
     virtual ~YellowPageDialog();

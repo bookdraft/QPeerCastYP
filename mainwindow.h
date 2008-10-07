@@ -11,8 +11,10 @@
 #define MAINWINDOW_H
 
 #include <QtGui>
+#include "settingsdialog.h"
 
 class Actions;
+class YellowPage;
 class Channel;
 class ChannelListWidget;
 class ChannelListTabWidget;
@@ -37,6 +39,8 @@ public:
 #endif
 
 public slots:
+    void notifyChannels(YellowPage *yellowPage = 0);
+
     void setVisible(bool visible);
     void quit();
 
@@ -58,7 +62,7 @@ public slots:
     void setMenuBarVisible(bool shown);
     void setToolBarVisible(bool shown);
     void setTabBarVisible(bool shown);
-    void showSettings();
+    void showSettings(SettingsDialog::WidgetIndex index = SettingsDialog::General);
 
     void aboutQt();
     void aboutQPeerCastYP();
@@ -68,11 +72,12 @@ private slots:
 
 private:
     void setupActions();
-    void setupMenus();
+    void setupMenuBar();
     void setupToolBar();
     void setupStatusBar();
     void setupChannelListWidget();
     void clearChannelListWidget();
+    QList<ChannelListWidget *> channelListWidgets() const;
 
     void closeEvent(QCloseEvent *event);
 

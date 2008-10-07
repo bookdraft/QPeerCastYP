@@ -24,6 +24,7 @@
 #include "settingsdialog.h"
 #include "generalwidget.h"
 #include "yellowpageedit.h"
+#include "useractionedit.h"
 
 #include "ui_aboutqpeercastyp.h"
 
@@ -39,8 +40,10 @@ MainWindow::~MainWindow()
 void MainWindow::setup()
 {
     setWindowTitle(qApp->applicationName());
+    setAttribute(Qt::WA_AlwaysShowToolTips);
+
     setupActions();
-    setupMenus();
+    setupMenuBar();
     setupToolBar();
     setupStatusBar();
 
@@ -85,7 +88,7 @@ void MainWindow::setupChannelListWidget()
         m_channelListTabWidget->addTab(list, yp->name());
     }
     setUpdatesEnabled(true);
-    m_actions->showTabBarAction()->setChecked(true);
+    m_actions->showTabBarAction()->setChecked(false);
 }
 
 void MainWindow::clearChannelListWidget()
@@ -99,6 +102,16 @@ void MainWindow::clearChannelListWidget()
         delete widget;
     }
     setUpdatesEnabled(true);
+}
+
+QList<ChannelListWidget *> MainWindow::channelListWidgets() const
+{
+    QList<ChannelListWidget *> widgets;
+    if (!m_channelListTabWidget->isVisible())
+        widgets += m_channelMergedList;
+    for (int i = 0; i < m_channelListTabWidget->count(); ++i)
+        widgets += m_channelListTabWidget->widget(i);
+    return widgets;
 }
 
 void MainWindow::setupActions()
@@ -161,14 +174,16 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
 }
 
-void MainWindow::setupMenus()
+void MainWindow::setupMenuBar()
 {
-    menuBar()->show();
+    bool visible = menuBar()->isVisible();
+    setMenuBar(new QMenuBar(this));
     menuBar()->setContextMenuPolicy(Qt::CustomContextMenu);
-    menuBar()->addMenu(m_actions->fileMenu(this));
-    menuBar()->addMenu(m_actions->yellowPageMenu(this));
-    menuBar()->addMenu(m_actions->settingsMenu(this));
-    menuBar()->addMenu(m_actions->helpMenu(this));
+    menuBar()->addMenu(m_actions->fileMenu(menuBar()));
+    menuBar()->addMenu(m_actions->yellowPageMenu(menuBar()));
+    menuBar()->addMenu(m_actions->settingsMenu(menuBar()));
+    menuBar()->addMenu(m_actions->helpMenu(menuBar()));
+    menuBar()->setVisible(visible);
 }
 
 void MainWindow::setupToolBar()
@@ -278,6 +293,37 @@ void MainWindow::setAutoUpdateInterval(int sec)
     m_autoUpdateTimer.setInterval(sec * 1000);
 }
 
+void MainWindow::notifyChannels(YellowPage *yellowPage)
+{
+    if (!yellowPage) {
+        if (currentChannelListWidget())
+            yellowPage = currentChannelListWidget()->yellowPage();
+        else
+            return;
+    }
+    Settings *settings = qApp->settings();
+    ChannelList noticeChannels;
+    if (settings->value("Notification/NotifyFavorite").toBool()) {
+        noticeChannels += yellowPage->channels(Channel::Favorite | Channel::New);
+        if (settings->value("Notification/NotifyChangedFavorite").toBool())
+            noticeChannels += yellowPage->channels(Channel::Favorite | Channel::Changed);
+        int minimumScore = settings->value("Notification/MinimumScore").toInt();
+        foreach (Channel *ch, noticeChannels)
+            if (ch->score() < minimumScore)
+                noticeChannels.removeAll(ch);
+    }
+    if (settings->value("Notification/NotifyNew").toBool())
+        noticeChannels += yellowPage->channels(Channel::New);
+    if (settings->value("Notification/NotifyChanged").toBool())
+        noticeChannels += yellowPage->channels(Channel::Changed);
+    if (!noticeChannels .isEmpty()) {
+        if (settings->value("Notification/ShowBalloonMessage").toBool())
+            qApp->systemTrayIcon()->showChannels(noticeChannels);
+        if (settings->value("Notification/PlaySound").toBool())
+            Sound::play(settings->value("Notification/SoundFile").toString());
+    }
+}
+
 void MainWindow::playChannel()
 {
     if (currentChannelListWidget())
@@ -333,10 +379,10 @@ void MainWindow::updateStatusBar(const QString &message)
             int listenerCount = list->listenerCount();
             int yellowPageCount = list->yellowPageCount();
             if (yellowPageCount > 1) {
-                m = tr("%1 チャンネル（合計 %2 リスナー、%3 イエローページ）")
+                m = tr("%1 チャンネル | 視聴者数 %2 | イエローページ数 %3")
                              .arg(channelCount).arg(listenerCount).arg(yellowPageCount);
             } else {
-                m = tr("%1 チャンネル（合計 %2 リスナー）").arg(channelCount).arg(listenerCount);
+                m = tr("%1 チャンネル | 視聴者数 %2").arg(channelCount).arg(listenerCount);
             }
             statusBar()->showMessage(m);
         }
@@ -396,21 +442,33 @@ void MainWindow::setTabBarVisible(bool shown)
     updateStatusBar();
 }
 
-void MainWindow::showSettings()
+void MainWindow::showSettings(SettingsDialog::WidgetIndex index)
 {
     setVisible(true);
     Settings *settings = qApp->settings();
     SettingsDialog dialog(settings, this);
+    dialog.setCurrentWidget(index);
     if (dialog.exec() == QDialog::Accepted) {
         if (dialog.generalWidget()->isDirty()) {
             setAutoUpdateInterval(settings->value("General/AutoUpdateInterval").toInt());
             qApp->systemTrayIcon()->setVisible(settings->value("SystemTrayIcon/Enabled").toBool());
+            foreach (ChannelListWidget *w, channelListWidgets()) {
+                w->setCustomToolTip(settings->value("ChannelListWidget/CustomToolTip").toBool());
+                w->setLinkEnabled(settings->value("ChannelListWidget/LinkEnabled").toBool()); 
+                w->setLinkType(settings->value("ChannelListWidget/LinkType").toInt()); 
+            }
         }
         if (dialog.yellowPageEdit()->isDirty()) {
+            bool hidden = m_channelListTabWidget->isHidden();
             clearChannelListWidget();
             qApp->yellowPageManager()->clear();
             qApp->yellowPageManager()->loadYellowPages();
             setupChannelListWidget();
+            setTabBarVisible(!hidden);
+        }
+        if (dialog.userActionEdit()->isDirty()) {
+            qApp->actions()->loadUserActions();
+            setupMenuBar();
         }
     }
 }

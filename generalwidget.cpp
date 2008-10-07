@@ -8,6 +8,7 @@
  *
  */
 #include "generalwidget.h"
+#include "channellistwidget.h"
 #include "settings.h"
 
 GeneralWidget::GeneralWidget(Settings *settings, QWidget *parent)
@@ -18,6 +19,9 @@ GeneralWidget::GeneralWidget(Settings *settings, QWidget *parent)
     QCompleter *completer = new QCompleter(this);
     completer->setModel(new QDirModel(completer));
     webBrowserEdit->setCompleter(completer);
+
+    linkTypeComboBox->addItem(tr("チャンネルを再生"), (int)ChannelListWidget::ChannelLink);
+    linkTypeComboBox->addItem(tr("コンタクトURLを開く"), (int)ChannelListWidget::ContactLink);
 }
 
 GeneralWidget::~GeneralWidget()
@@ -35,6 +39,12 @@ void GeneralWidget::setValue(bool reset)
             settings->value("General/AutoUpdate").toBool());
     autoUpdateIntervalSpinBox->setValue(
             settings->value("General/AutoUpdateInterval").toInt() / 60);
+    customToolTipCheckBox->setChecked(
+            settings->value("ChannelListWidget/CustomToolTip").toBool());
+    linkEnabledCheckBox->setChecked(
+            settings->value("ChannelListWidget/LinkEnabled").toBool());
+    linkTypeComboBox->setCurrentIndex(linkTypeComboBox->findData(
+            settings->value("ChannelListWidget/LinkType").toBool()));
     showSystemTrayIconCheckBox->setChecked(
             settings->value("SystemTrayIcon/Enabled").toBool());
     bool useCommonWebBrowser = settings->value("Program/UseCommonWebBrowser").toBool();
@@ -53,6 +63,12 @@ void GeneralWidget::write()
             autoUpdateCheckBox->isChecked());
     m_settings->setValue("General/AutoUpdateInterval",
             autoUpdateIntervalSpinBox->value() * 60);
+    m_settings->setValue("ChannelListWidget/CustomToolTip",
+            customToolTipCheckBox->isChecked());
+    m_settings->setValue("ChannelListWidget/LinkEnabled",
+            linkEnabledCheckBox->isChecked());
+    m_settings->setValue("ChannelListWidget/LinkType",
+            linkTypeComboBox->itemData(linkTypeComboBox->currentIndex()));
     m_settings->setValue("SystemTrayIcon/Enabled",
             showSystemTrayIconCheckBox->isChecked());
     m_settings->setValue("Program/UseCommonWebBrowser",

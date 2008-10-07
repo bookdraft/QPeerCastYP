@@ -54,6 +54,7 @@ Section "MainSection" SEC01
   File "release\qpeercastyp.exe"
   File "pcraw\pcraw_proxy.exe"
   File "bin\mingwm10.dll"
+  File "README"
   File "ChangeLog"
   File "COPYING"
   CreateDirectory "$SMPROGRAMS\QPeerCastYP"
@@ -83,14 +84,16 @@ FunctionEnd
 
 Section Uninstall
   Delete "$INSTDIR\uninst.exe"
+  Delete "$INSTDIR\README"
   Delete "$INSTDIR\COPYING"
+  Delete "$INSTDIR\ChangeLog"
+  Delete "$INSTDIR\mingwm10.dll"
   Delete "$INSTDIR\pcraw_proxy.exe"
   Delete "$INSTDIR\qpeercastyp.exe"
-  Delete "$INSTDIR\mingwm10.dll"
 
   Delete "$SMPROGRAMS\QPeerCastYP\Uninstall.lnk"
-  Delete "$DESKTOP\QPeerCastYP.lnk"
   Delete "$SMPROGRAMS\QPeerCastYP\QPeerCastYP.lnk"
+  Delete "$DESKTOP\QPeerCastYP.lnk"
 
   RMDir "$SMPROGRAMS\QPeerCastYP"
   RMDir "$INSTDIR"

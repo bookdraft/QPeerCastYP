@@ -42,9 +42,6 @@ public:
 
     Settings *settings() const;
 
-private slots:
-    void lastWindowClosed();
-
 private:
     MainWindow *m_mainWindow;
     SystemTrayIcon *m_systemTrayIcon;

@@ -40,7 +40,7 @@ class ExpressionListWidget : public QTreeWidget
 {
     Q_OBJECT
 public:
-    enum Column { Pattern, Target, Point, Headers };
+    enum Column { Pattern, Target, Point, Labels };
     ExpressionListWidget(ChannelMatcher *matcher, QWidget *parent = 0);
     virtual ~ExpressionListWidget();
 
@@ -65,7 +65,7 @@ signals:
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event);
-    void dropEvent(QDropEvent * event);
+    void dropEvent(QDropEvent *event);
     void showEvent(QShowEvent *event);
 
 private slots:

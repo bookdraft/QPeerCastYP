@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>534</width>
-    <height>380</height>
+    <height>439</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -47,7 +47,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox_4" >
      <property name="title" >
-      <string>イエローページ</string>
+      <string>チャンネル一覧</string>
      </property>
      <property name="flat" >
       <bool>true</bool>
@@ -103,6 +103,9 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="alignment" >
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
           <property name="suffix" >
            <string>分</string>
           </property>
@@ -122,6 +125,47 @@
           <property name="sizeHint" >
            <size>
             <width>217</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="customToolTipCheckBox" >
+        <property name="text" >
+         <string>独自ツールチップを使用する</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QCheckBox" name="linkEnabledCheckBox" >
+          <property name="text" >
+           <string>リンクの有無／クリック時の動作</string>
+          </property>
+          <property name="checked" >
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="linkTypeComboBox" >
+          <property name="enabled" >
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>40</width>
             <height>20</height>
            </size>
           </property>
@@ -201,8 +245,8 @@
      </property>
      <property name="sizeHint" >
       <size>
-       <width>16</width>
-       <height>62</height>
+       <width>20</width>
+       <height>37</height>
       </size>
      </property>
     </spacer>
@@ -218,12 +262,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>213</x>
-     <y>314</y>
+     <x>247</x>
+     <y>373</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>348</x>
-     <y>302</y>
+     <x>424</x>
+     <y>374</y>
     </hint>
    </hints>
   </connection>
@@ -234,12 +278,28 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>232</x>
-     <y>313</y>
+     <x>247</x>
+     <y>373</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>469</x>
-     <y>320</y>
+     <x>515</x>
+     <y>375</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>linkEnabledCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>linkTypeComboBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>89</x>
+     <y>232</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>272</x>
+     <y>232</y>
     </hint>
    </hints>
   </connection>

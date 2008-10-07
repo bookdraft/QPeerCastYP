@@ -12,13 +12,13 @@
 #include "mainwindow.h"
 #include "channellistwidget.h"
 #include "channel.h"
+#include "useractions.h"
 #include "commandaction.h"
 #include "process.h"
 #include "settings.h"
 
 Actions::Actions(MainWindow *mainWindow)
-    : QObject(mainWindow),
-      m_mainWindow(mainWindow)
+    : QObject(mainWindow), m_mainWindow(mainWindow), m_userActions(0)
 {
     // ファイル
     m_quitAction = new QAction(QIcon(":/images/exit.png"), tr("終了(&Q)"), this);
@@ -119,6 +119,7 @@ Actions::Actions(MainWindow *mainWindow)
 
     // ヘルプ
     m_aboutQPeerCastYPAction = new QAction(tr("Q&PeerCastYP について"), this);
+    m_aboutQPeerCastYPAction->setIcon(QApplication::windowIcon());
     m_mainWindow->addAction(m_aboutQPeerCastYPAction);
     connect(m_aboutQPeerCastYPAction, SIGNAL(triggered(bool)), m_mainWindow, SLOT(aboutQPeerCastYP()));
 
@@ -135,19 +136,15 @@ Actions::~Actions()
 
 void Actions::loadUserActions()
 {
-    while (!m_userActions.isEmpty())
-        delete m_userActions.takeFirst();
-    Settings *s = qApp->settings();
-    int size = s->beginReadArray("UserAction/Actions");
-    for (int i = 0; i < size; ++i) {
-        s->setArrayIndex(i);
-        QIcon icon(s->value("Icon").toString());
-        CommandAction *action = new CommandAction(icon, s->value("Text").toString(), this);
-        action->setCommand(s->value("Program").toString(), s->value("Args").toString());
-        action->setShortcut(QKeySequence(s->value("Shortcut").toString()));
-        m_userActions += action;
+    if (m_userActions) {
+        foreach (QAction *action, m_userActions->actions())
+            m_mainWindow->removeAction(action);
+        m_userActions->loadActions();
+    } else {
+        m_userActions = new UserActions(qApp->settings(), this);
     }
-    s->endArray();
+    foreach (QAction *action, m_userActions->actions())
+        m_mainWindow->addAction(action);
 }
 
 QMenu *Actions::fileMenu(QWidget *parent) const
@@ -163,12 +160,11 @@ QMenu *Actions::yellowPageMenu(QWidget *parent) const
     menu->addAction(m_updateYellowPageAction);
     menu->addAction(m_toggleAutoUpdateAction);
     menu->addAction(m_playChannelAction);
-
-    if (!m_userActions.isEmpty())
+    if (!m_userActions->actions().isEmpty()) {
         menu->addSeparator();
-    foreach (QAction *action, m_userActions)
-        menu->addAction(action);
-
+        foreach (QAction *action, m_userActions->actions())
+            menu->addAction(action);
+    }
     menu->addSeparator();
     menu->addAction(m_addToFavoritesAction);
     menu->addSeparator();

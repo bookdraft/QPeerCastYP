@@ -16,10 +16,16 @@ class CommandAction : public QAction
 {
     Q_OBJECT
 public:
-    CommandAction(const QIcon &icon, const QString &text, QObject *parent);
+    CommandAction(const QString &text, QObject *parent);
     virtual ~CommandAction();
 
+    void setEnabled(bool enabled);
+
+    QString program() const;
+    QString arguments() const;
     void setCommand(const QString &program, const QString &args);
+    void setIcon(const QString &fileName);
+    QString iconFileName() const;
 
 private slots:
     void actionTriggered();
@@ -27,6 +33,7 @@ private slots:
 private:
     QString m_program;
     QString m_args;
+    QString m_iconFileName;
 };
 
 #endif // COMMANDACTION_H

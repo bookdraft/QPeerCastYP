@@ -1,7 +1,7 @@
 TARGET = qpeercastyp
 VERSION = 0.4.0
 DEBVERSION = 1
-# CONFIG -= debug
+CONFIG -= debug
 QT += network
 TEMPLATE = app
 
@@ -168,6 +168,9 @@ HEADERS += application.h \
            playeredit.h \
            notificationwidget.h \
            networkwidget.h \
+           useractions.h \
+           useractionedit.h \
+           commandactiondialog.h \
            advancedwidget.h \
            channel.h \
            channelmatcher.h \
@@ -196,6 +199,9 @@ SOURCES += main.cpp \
            expressiondialog.cpp \
            playeredit.cpp \
            notificationwidget.cpp \
+           useractions.cpp \
+           useractionedit.cpp \
+           commandactiondialog.cpp \
            networkwidget.cpp \
            advancedwidget.cpp \
            channel.cpp \
@@ -217,8 +223,10 @@ FORMS +=   channellistfindbar.ui \
            playeredit.ui \
            notificationwidget.ui \
            networkwidget.ui \
+           useractionedit.ui \
+           commandactiondialog.ui \
            advancedwidget.ui \
            aboutqpeercastyp.ui
 
 RESOURCES = qpeercastyp.qrc
-
+TRANSLATIONS = qpeercastyp.ts
