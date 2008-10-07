@@ -30,8 +30,6 @@ CommandActionDialog::CommandActionDialog(CommandAction *action, QWidget *parent)
     programEdit->setText(action->program());
     argsEdit->setText(action->arguments());
 
-    textEdit->setFocus();
-
     resize(minimumSizeHint().width() + 200, minimumSizeHint().height());
 }
 
