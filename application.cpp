@@ -26,14 +26,20 @@ Application::Application(int argc, char *argv[])
     QTextCodec::setCodecForTr(codec);
     QTextCodec::setCodecForCStrings(codec);
 
-    m_translator = new QTranslator;
+    QTranslator *qtTr = new QTranslator(this);
+    QTranslator *appTr = new QTranslator(this);
     QStringList trDirs;
     trDirs += QLibraryInfo::location(QLibraryInfo::TranslationsPath);
     trDirs += ":/translations/";
+    QString locale = QLocale::system().name().toLower();
     foreach (QString dir, trDirs)
-        if (m_translator->load("qt_" + QLocale::system().name().toLower(), dir))
+        if (qtTr->load("qt_" + locale, dir))
             break;
-    installTranslator(m_translator);
+    installTranslator(qtTr);
+    foreach (QString dir, trDirs)
+        if (appTr->load("qpeercastyp_" + locale, dir))
+            break;
+    installTranslator(appTr);
 
     setWindowIcon(QIcon(":/images/qpeercastyp.png"));
 
@@ -94,10 +100,10 @@ Application::Application(int argc, char *argv[])
     m_peercast = new QProcess(this);
     if (m_settings->value("AtStartup/RunPeerCast").toBool()) {
         QString program = m_settings->value("Program/PeerCast").toString();
-        QString args = m_settings->value("Program/PeerCastArgs").toString();
+        QStringList args = Utils::shellwords(m_settings->value("Program/PeerCastArgs").toString());
         if (!program.isEmpty()) {
             m_peercast->setWorkingDirectory(QFileInfo(program).dir().absolutePath());
-            m_peercast->start("\"" + program + "\" " + args);
+            m_peercast->start(program, args);
             if (!m_peercast->waitForStarted())
                 QMessageBox::warning(m_mainWindow, tr("エラー"), tr("PeerCast の起動に失敗しました。"));
         } else {
@@ -114,16 +120,12 @@ Application::Application(int argc, char *argv[])
 
     if (m_settings->value("AtStartup/UpdateYellowPage").toBool())
         QTimer::singleShot(1 * 1000, m_mainWindow->actions()->updateYellowPageAction(), SLOT(trigger()));
-
-    // if (firstRun)
-    //     m_mainWindow->showSettings(SettingsDialog::YellowPage);
 }
 
 Application::~Application()
 {
     delete m_mainWindow;
     delete m_systemTrayIcon;
-    delete m_translator;
     delete m_settings;
 }
 

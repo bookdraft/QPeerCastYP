@@ -1,5 +1,6 @@
 #if defined __cplusplus
-#include <QtCore>
+#include <string>
 #include <QtGui>
+#include <QtCore>
 #include <QtNetwork>
 #endif

@@ -49,7 +49,6 @@ private:
     YellowPageManager *m_yellowPageManager;
     QProcess *m_peercast;
     PCRawProxy *m_pcrawProxy;
-    QTranslator *m_translator;
 };
 
 #endif // APPLICATION_H

@@ -29,12 +29,16 @@ protected:
 
     QSize sizeHint(const QPoint &pos, QWidget *widget = 0);
     void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent *event);
     void leaveEvent(QEvent *event);
     void paintEvent(QPaintEvent *event);
 
 private:
+    void sendEventToWidget(QMouseEvent *event);
     static ToolTip *s_instance;
+    QWidget *m_widget;
 };
 
 #endif // TOOLTIP_H

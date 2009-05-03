@@ -49,12 +49,12 @@ YellowPageListWidget::YellowPageListWidget(YellowPageManager *manager, QWidget *
     : QTreeWidget(parent), m_manager(manager)
 {
     setRootIsDecorated(false);
-    QVector<QString> headers(Headers);
-    headers[Name] = tr("名前");
-    headers[Url] = tr("URL");
-    headers[NameSpace] = tr("名前空間");
-    headers[Type] = tr("種類");
-    setHeaderLabels(headers.toList());
+    QVector<QString> labels(LabelCount);
+    labels[Name] = tr("名前");
+    labels[Url] = tr("URL");
+    labels[NameSpace] = tr("名前空間");
+    labels[Type] = tr("種類");
+    setHeaderLabels(labels.toList());
     connect(this, SIGNAL(itemActivated(QTreeWidgetItem *, int)), SLOT(editCurrentItem()));
     connect(this, SIGNAL(itemClicked(QTreeWidgetItem *, int)),
             this, SLOT(itemClicked(QTreeWidgetItem *, int)));

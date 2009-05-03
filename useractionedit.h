@@ -38,15 +38,15 @@ class UserActionListWidget : public QTreeWidget
 {
     Q_OBJECT
 public:
-    enum Column { Name, Program, Args, Labels };
+    enum Column { Name, Command, LabelCount };
     UserActionListWidget(UserActions *actions, QWidget *parent = 0);
     virtual ~UserActionListWidget();
-
+    
     void loadActions();
     void saveActions();
+    void clear();
 
 public slots:
-    // void clear();
     void upCurrentItem();
     void downCurrentItem();
 

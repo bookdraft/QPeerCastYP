@@ -66,7 +66,7 @@ ExpressionListWidget::ExpressionListWidget(ChannelMatcher *matcher, QWidget *par
     : QTreeWidget(parent), m_matcher(matcher)
 {
     setRootIsDecorated(m_matcher->hasGroup());
-    QVector<QString> labels(Labels);
+    QVector<QString> labels(LabelCount);
     labels[Pattern] = tr("検索文字/正規表現");
     labels[Target] = tr("検索対象");
     labels[Point] = tr("点数");

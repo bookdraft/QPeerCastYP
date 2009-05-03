@@ -11,6 +11,7 @@
 #include "channel.h"
 #include "application.h"
 #include "settings.h"
+#include "utils.h"
 
 ChannelMatcher::ChannelMatcher(Settings *settings, QObject *parent)
     : QObject(parent), m_settings(settings)
@@ -36,7 +37,7 @@ int ChannelMatcher::score(Channel *channel) const
 
 int ChannelMatcher::score(Channel *channel, Expression *group) const
 {
-    int points = 0;
+    int point = 0;
     QList<TargetPair> targetPairs;
     targetPairs << TargetPair(Name, channel->name())
                 << TargetPair(LongDescription, channel->longDescription())
@@ -52,10 +53,11 @@ int ChannelMatcher::score(Channel *channel, Expression *group) const
         if (!exp->isEnabled or exp->pattern.isEmpty())
             continue;
         if (exp->isGroup) {
-            points += score(channel, exp);
+            point += score(channel, exp);
             continue;
         }
         bool matched = false;
+        bool avoided = false;
         Qt::CaseSensitivity cs =
             exp->matchFlags & Qt::MatchCaseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive;
         QRegExp rx(exp->pattern, cs);
@@ -65,8 +67,27 @@ int ChannelMatcher::score(Channel *channel, Expression *group) const
                     if (pair.second.contains(rx))
                         matched = true;
                 } else if (exp->matchFlags & Qt::MatchContains) {
-                    if (pair.second.contains(exp->pattern, cs))
+                    QStringList words = Utils::shellwords(exp->pattern);
+                    bool targetMatched = false;
+                    bool targetAvoided = false;
+                    foreach (QString word, words) {
+                        bool avoid = false;
+                        if (word.startsWith('-')) {
+                            avoid = true;
+                            word.remove(0, 1);
+                        }
+                        bool b = pair.second.contains(word, cs);
+                        if (b and avoid)
+                            targetAvoided = true;
+                        else if (b and !avoid)
+                            targetMatched = true;
+                    }
+                    if (targetAvoided) {
+                        avoided = true;
+                        matched = false;
+                    } else if (targetMatched) {
                         matched = true;
+                    }
                 } else if (exp->matchFlags & Qt::MatchStartsWith) {
                     if (pair.second.startsWith(exp->pattern, cs))
                         matched = true;
@@ -75,11 +96,15 @@ int ChannelMatcher::score(Channel *channel, Expression *group) const
                         matched = true;
                 }
             }
+            if (avoided) {
+                break;
+            } else if (matched) {
+                point += exp->point;
+                break;
+            }
         }
-        if (matched)
-            points += exp->point;
     }
-    return points;
+    return point;
 }
 
 

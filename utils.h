@@ -17,6 +17,8 @@ namespace Utils
     QString unescape(const QString &str);
     QString wsString();
     QString osString();
+
+    QStringList shellwords(const QString &line);
 }
 
 #endif // UTILS_H

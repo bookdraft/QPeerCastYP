@@ -1,5 +1,5 @@
 TARGET = qpeercastyp
-VERSION = 0.4.0
+VERSION = 0.4.1
 DEBVERSION = 1
 CONFIG -= debug
 QT += network
@@ -25,7 +25,7 @@ unix {
     }
 
     archive.target = archive
-    archive.commands = git-archive --format=tar --prefix=qpeercastyp-$${VERSION}/ HEAD \
+    archive.commands = git archive --format=tar --prefix=qpeercastyp-$${VERSION}/ HEAD \
                        | bzip2 > qpeercastyp-$${VERSION}.tar.bz2
     QMAKE_EXTRA_TARGETS += archive
 
@@ -110,10 +110,10 @@ unix {
 }
 
 win32 {
+    BUILD_DIR = build-win32
     CONFIG += release
     CONFIG += static
-    contains(CONFIG, debug):CONFIG += console
-    BUILD_DIR = build-win32
+    # contains(CONFIG, debug):CONFIG += console
     RC_FILE = qpeercastyp_resource.rc
 
     nsis.target = nsis
@@ -131,9 +131,20 @@ RCC_DIR        = $$BUILD_DIR
 CONFIG += precompile_header
 PRECOMPILED_HEADER = stable.h
 
+RESOURCES = qpeercastyp.qrc
+
+CODECFORTR = UTF-8
+TRANSLATIONS = qpeercastyp.ts
+
 unix {
     HEADERS += proxystyle.h
     SOURCES += proxystyle.cpp
+}
+
+win32 {
+    HEADERS += explorerstyle.h
+    SOURCES += explorerstyle.cpp
+    LIBS += -lgdi32
 }
 
 HEADERS += network.h \
@@ -228,5 +239,3 @@ FORMS +=   channellistfindbar.ui \
            advancedwidget.ui \
            aboutqpeercastyp.ui
 
-RESOURCES = qpeercastyp.qrc
-TRANSLATIONS = qpeercastyp.ts

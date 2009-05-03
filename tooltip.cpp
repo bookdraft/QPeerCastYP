@@ -12,7 +12,7 @@
 ToolTip *ToolTip::s_instance = 0;
 
 ToolTip::ToolTip(QWidget *parent)
-    : QLabel(parent, Qt::ToolTip)
+    : QLabel(parent, Qt::ToolTip), m_widget(0)
 {
     setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     setPalette(QToolTip::palette());
@@ -43,6 +43,7 @@ void ToolTip::showText(const QPoint &pos, const QString &text, QWidget *widget)
 
 void ToolTip::show(const QPoint &pos, const QString &text, QWidget *widget)
 {
+    m_widget = widget;
     setText(text);
     move(pos);
     resize(sizeHint(pos, widget));
@@ -70,13 +71,38 @@ QSize ToolTip::sizeHint(const QPoint &pos, QWidget *widget)
 void ToolTip::mousePressEvent(QMouseEvent *event)
 {
     hide();
-    QLabel::mousePressEvent(event);
+    sendEventToWidget(event);
+}
+
+void ToolTip::mouseReleaseEvent(QMouseEvent *event)
+{
+    sendEventToWidget(event);
+}
+
+void ToolTip::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    sendEventToWidget(event);
+}
+
+void ToolTip::sendEventToWidget(QMouseEvent *event)
+{
+    if (m_widget) {
+        QPoint gpos = event->globalPos();
+        QMouseEvent e(event->type(), m_widget->mapFromGlobal(gpos), gpos,
+                      event->button(), event->buttons(), event->modifiers());
+        QCoreApplication::sendEvent(m_widget, &e);
+    }
 }
 
 void ToolTip::wheelEvent(QWheelEvent *event)
 {
     hide();
-    QLabel::wheelEvent(event);
+    if (m_widget) {
+        QPoint gpos = event->globalPos();
+        QWheelEvent e(m_widget->mapFromGlobal(gpos), gpos, event->delta(),
+                      event->buttons(), event->modifiers(), event->orientation());
+        QCoreApplication::sendEvent(m_widget, &e);
+    }
 }
 
 void ToolTip::leaveEvent(QEvent *event)
@@ -87,11 +113,11 @@ void ToolTip::leaveEvent(QEvent *event)
 
 void ToolTip::paintEvent(QPaintEvent *event)
 {
-    QLabel::paintEvent(event);
-    QPainter painter;
-    painter.setBrush(QBrush(Qt::black));
-    painter.begin(this);
-    painter.drawRect(0, 0, width() - 1, height() - 1);
+    QStylePainter painter(this);
+    QStyleOptionFrame opt;
+    opt.init(this);
+    painter.drawPrimitive(QStyle::PE_PanelTipLabel, opt);
     painter.end();
+    QLabel::paintEvent(event);
 }
 

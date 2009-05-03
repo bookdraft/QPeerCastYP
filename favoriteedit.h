@@ -40,7 +40,7 @@ class ExpressionListWidget : public QTreeWidget
 {
     Q_OBJECT
 public:
-    enum Column { Pattern, Target, Point, Labels };
+    enum Column { Pattern, Target, Point, LabelCount };
     ExpressionListWidget(ChannelMatcher *matcher, QWidget *parent = 0);
     virtual ~ExpressionListWidget();
 

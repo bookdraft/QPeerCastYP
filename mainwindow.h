@@ -89,7 +89,7 @@ private:
     Actions *m_actions;
     QStackedWidget *m_stackedWidget;
     ChannelListTabWidget *m_channelListTabWidget;
-    ChannelListWidget *m_channelMergedList;
+    ChannelListWidget *m_mergedChannelList;
     ChannelListFindBar *m_channelListFindBar;
     bool m_autoUpdateEnabled;
     QTimer m_autoUpdateTimer;

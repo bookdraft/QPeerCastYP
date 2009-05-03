@@ -104,7 +104,7 @@ void ChannelListTabWidget::currentChanged(int index)
 void ChannelListTabWidget::findRequest(QString text, Qt::MatchFlags flags)
 {
     if (currentWidget())
-        currentWidget()->filterItems(text, flags);
+        currentWidget()->findItems(text, flags);
 }
 
 void ChannelListTabWidget::setActive(bool active)

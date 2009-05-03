@@ -16,6 +16,7 @@
 #include "commandaction.h"
 #include "process.h"
 #include "settings.h"
+#include "utils.h"
 
 Actions::Actions(MainWindow *mainWindow)
     : QObject(mainWindow), m_mainWindow(mainWindow), m_userActions(0)
@@ -212,24 +213,23 @@ void Actions::playChannel(Channel *channel)
         return;
     }
     QString player;
-    QString args;
+    QStringList args;
     Settings *s = qApp->settings();
     QString videoTypes = s->value("Player/VideoTypes").toString();
     QString soundTypes = s->value("Player/SoundTypes").toString();
     if (channel->type().contains(QRegExp(videoTypes, Qt::CaseInsensitive))) {
         player = s->value("Player/VideoPlayer").toString();
-        args = s->value("Player/VideoPlayerArgs").toString();
+        args = Utils::shellwords(s->value("Player/VideoPlayerArgs").toString());
     } else if (channel->type().contains(QRegExp(soundTypes, Qt::CaseInsensitive))) {
         player = s->value("Player/SoundPlayer").toString();
-        args = s->value("Player/SoundPlayerArgs").toString();
+        args = Utils::shellwords(s->value("Player/SoundPlayerArgs").toString());
     }
     if (player.isEmpty()) {
         m_mainWindow->showErrorMessage(
                 tr("%1 用のプレイヤが設定されていません。").arg(channel->type().toUpper()));
         return;
     }
-    QString program = "\"" + player + "\" " + args;
-    Process::start(program, channel);
+    startProcess(player, args, channel);
 }
 
 void Actions::setClipboardText(const QString &text)
@@ -245,8 +245,15 @@ void Actions::openUrl(const QUrl &url)
         QDesktopServices::openUrl(url);
     } else {
         QString browser = qApp->settings()->value("Program/WebBrowser").toString();
-        QProcess::startDetached(browser, QStringList(url.toString()));
+        startProcess(browser, QStringList(url.toString()));
     }
+}
+
+void Actions::startProcess(const QString &program, const QStringList &args, Channel *channel)
+{
+    if (!Process::start(program, args, channel))
+        QMessageBox::warning(QApplication::activeWindow(),
+                tr("エラー"), tr("プログラムの実行に失敗しました。"));
 }
 
 QAction *Actions::quitAction() const

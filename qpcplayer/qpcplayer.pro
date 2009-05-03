@@ -17,6 +17,6 @@ HEADERS += qpcplayer.h
 }
 
 bin.files += $$TARGET
-bin.path = $$PREFIX
+bin.path = $$BINDIR
 INSTALLS += bin
 

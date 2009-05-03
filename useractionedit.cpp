@@ -32,8 +32,7 @@ public:
         else
             setCheckState(UserActionListWidget::Name, Qt::Unchecked);
         QString baseName = QFileInfo(m_action->program()).baseName();
-        setText(UserActionListWidget::Program, baseName);
-        setText(UserActionListWidget::Args, m_action->arguments());
+        setText(UserActionListWidget::Command, baseName + " " + m_action->arguments());
     }
 
     CommandAction *action() const
@@ -50,10 +49,9 @@ private:
 UserActionListWidget::UserActionListWidget(UserActions *actions, QWidget *parent)
     : QTreeWidget(parent), m_actions(actions)
 {
-    QVector<QString> labels(Labels);
+    QVector<QString> labels(LabelCount);
     labels[Name] = tr("名前");
-    labels[Program] = tr("プログラム");
-    labels[Args] = tr("引数");
+    labels[Command] = tr("コマンド");
     setHeaderLabels(labels.toList());
     connect(this, SIGNAL(itemActivated(QTreeWidgetItem *, int)),
             this, SLOT(editCurrentItem()));
@@ -63,6 +61,12 @@ UserActionListWidget::UserActionListWidget(UserActions *actions, QWidget *parent
 
 UserActionListWidget::~UserActionListWidget()
 {
+}
+
+void UserActionListWidget::clear()
+{
+    emit changed(true);
+    QTreeWidget::clear();
 }
 
 void UserActionListWidget::loadActions()
@@ -161,7 +165,9 @@ void UserActionListWidget::removeCurrentItem()
 
 void UserActionListWidget::showEvent(QShowEvent *event)
 {
-    // TODO: ヘッダーセクションを調整
+    int width = header()->width();
+    header()->resizeSection(Name, (int)(width * 0.3));
+    header()->resizeSection(Command, (int)(width * 0.7));
     QTreeWidget::showEvent(event);
 }
 
@@ -213,7 +219,9 @@ void UserActionEdit::write()
 
 void UserActionEdit::setValue(bool reset)
 {
-    Q_UNUSED(reset);
-    m_listWidget->loadActions();
+    if (reset)
+        m_listWidget->clear();
+    else
+        m_listWidget->loadActions();
 }
 

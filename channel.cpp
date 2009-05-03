@@ -49,6 +49,11 @@ void Channel::setYellowPage(YellowPage *yellowPage)
     m_yellowPage = yellowPage;
 }
 
+bool Channel::isYPInfo() const
+{
+    return type().toUpper() == "RAW" or name().indexOf(QRegExp("^\\w+◆")) != -1;
+}
+
 bool Channel::isPlayable() const
 {
     return id() != "00000000000000000000000000000000";
@@ -228,8 +233,10 @@ void Channel::setUptime(qint32 uptime)
 void Channel::setUptime(const QString &uptime) {
     qint32 secs = 0;
     QStringList t = uptime.split(":");
-    secs += t[0].toInt() * 60 * 60;
-    secs += t[1].toInt() * 60;
+    if (t.size() == 2) {
+      secs += t[0].toInt() * 60 * 60;
+      secs += t[1].toInt() * 60;
+    }
     setUptime(secs); 
 }
 
@@ -305,7 +312,7 @@ QString Channel::bitrateString() const
 
 QDebug operator<<(QDebug dbg, const Channel &c)
 {
-    dbg << "Channel:"          << &c                 << endl
+    dbg << &c << endl
         << "    name:"         << c.name()           << endl
         << "    id:"           << c.id()             << endl
         << "    tip:"          << c.tip()            << endl
@@ -326,6 +333,9 @@ QDebug operator<<(QDebug dbg, const Channel &c)
 
 QDebug operator<<(QDebug dbg, Channel *c)
 {
-    return dbg << *c;
+    if (c)
+        return dbg << *c;
+    else
+        return dbg << "Null";
 }
 

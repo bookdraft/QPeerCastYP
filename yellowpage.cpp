@@ -107,7 +107,7 @@ void YellowPage::done(bool error)
             // 16: アイコンの状態
             // 17: メッセージ
             // 18: ダイレクトの有無 
-            if (fields.size() < 19)
+            if (fields.size() < 19 or fields[1].isEmpty())
                 continue;
             for (int i = 0; i < fields.count(); ++i)
                 fields[i] = Utils::unescape(fields[i]);
@@ -154,7 +154,7 @@ void YellowPage::done(bool error)
             if (score > 0)
                 channel->setStatus(channel->status() | Channel::Favorite);
             if (!(channel->status() & Channel::New)
-                    and channel->name().indexOf(QRegExp("◆(Status|帯域チェック)$")) == -1
+                    and !channel->isYPInfo()
                     and longDesc != channel->longDescription())
                 channel->setStatus(channel->status() | Channel::Changed);
             m_channels += channel;

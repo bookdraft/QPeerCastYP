@@ -54,7 +54,7 @@ SettingsDialog::SettingsDialog(Settings *settings, QWidget *parent)
 
     // m_advancedWidget = new AdvancedWidget(settings, m_tabWidget);
     // m_advancedWidget->setValues();
-    // m_tabWidget->insertTab(Advanced, m_advancedWidget, tr("詳細設定"));
+    // m_tabWidget->insertTab(Advanced, m_advancedWidget, tr("詳細"));
 
     m_buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
                                      | QDialogButtonBox::Cancel

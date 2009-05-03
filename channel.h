@@ -34,6 +34,8 @@ public:
     YellowPage *yellowPage() const;
     void setYellowPage(YellowPage *yellowPage);
 
+    bool isYPInfo() const;
+
     bool isPlayable() const;
     QUrl streamUrl(const QString &scheme = "http") const;
 

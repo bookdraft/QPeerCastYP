@@ -130,5 +130,49 @@ namespace Utils
         if (os.isEmpty()) os = "Unknown";
         return os;
     }
+
+    // Ruby の Shellwords.shellwords を書き直した
+    QStringList shellwords(const QString &line_)
+    {
+        QString line = line_;
+        QStringList words;
+        QRegExp rx("^\"(([^\"\\\\]|\\\\.)*)\"");
+        QRegExp rx2("^'([^']*)'");
+        QRegExp rx3("^\\\\(.)?");
+        QRegExp rx4("^([^\\s\\\\'\"]+)");
+        while (!line.isEmpty()) {
+            line.remove(QRegExp("^[\\s\\t\\r\\n\\f\\v]*"));
+            QString field;
+            forever {
+                QString snippet;
+                if (rx.indexIn(line) != -1) {
+                    snippet = rx.cap(1).replace(QRegExp("\\\\(.)"), "\\1");
+                    line.remove(rx);
+                } else if (line.startsWith('"')) {
+                    qWarning() << "Utils::shellwords: Unmatched double quote:" << line;
+                    return QStringList();
+                } else if (rx2.indexIn(line) != -1) {
+                    snippet = rx2.cap(1);
+                    line.remove(rx2);
+                } else if (line.startsWith('\'')) {
+                    qWarning() << "Utils::shellwords: Unmatched single quote:" << line;
+                    return QStringList();
+                } else if (rx3.indexIn(line) != -1) {
+                    snippet = rx3.cap(1);
+                    if (snippet.isEmpty())
+                        snippet = "\\\\";
+                    line.remove(rx3);
+                } else if (rx4.indexIn(line) != -1) {
+                    snippet = rx4.cap(1);
+                    line.remove(rx4);
+                } else {
+                    break;
+                }
+                field.append(snippet);
+            }
+            words.append(field);
+        }
+        return words;
+    }
 }
 

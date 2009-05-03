@@ -56,6 +56,7 @@ public slots:
     void playChannel(Channel *channel);
     void setClipboardText(const QString &text);
     void openUrl(const QUrl &url);
+    void startProcess(const QString &program, const QStringList &args, Channel *channel = 0);
 
 private slots:
     void updateYellowPageActionChanged();

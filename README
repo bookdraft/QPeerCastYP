@@ -20,8 +20,8 @@ QPeerCastYP - PeerCast 視聴補助プログラム
         $ sudo make install
 
     Windows:
-        Qt 4 をインストール (要静的ライブラリのコンパイル)
-            必要なら MinGW もインストール
+        Qt 4 をインストール (要静的ライブラリ構築)
+            参考: http://wiki.qtcentre.org/index.php?title=Building_static_Qt_on_Windows
         NSIS をインストール
         Qt Command Prompt を起動
         QPeerCastYP があるディレクトリに移動

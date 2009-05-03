@@ -40,7 +40,7 @@ class YellowPageListWidget : public QTreeWidget
 {
     Q_OBJECT
 public:
-    enum Column { Name, Url, NameSpace, Type, Headers };
+    enum Column { Name, Url, NameSpace, Type, LabelCount };
     YellowPageListWidget(YellowPageManager *manager, QWidget *parent);
     virtual ~YellowPageListWidget();
 

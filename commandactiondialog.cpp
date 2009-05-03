@@ -63,12 +63,19 @@ void CommandActionDialog::on_selectProgramButton_clicked()
 
 void CommandActionDialog::accept()
 {
+    QStringList error;
+    if (textEdit->text().isEmpty())
+        error += tr("アクションの名前を入力して下さい。");
+    if (programEdit->text().isEmpty())
+        error += tr("プログラムを選択して下さい。");
+    if (!error.isEmpty()) {
+        QMessageBox::warning(this, tr("エラー"), error.join("\n"));
+        return;
+    }
     if (!iconButton->icon().isNull())
         m_action->setIcon(m_iconFileName);
     if (!textEdit->text().isEmpty())
         m_action->setText(textEdit->text());
-    else
-        m_action->setText(tr("unnamed"));
     m_action->setShortcut(QKeySequence(shortcutEdit->text()));
     m_action->setCommand(programEdit->text(), argsEdit->text());
 

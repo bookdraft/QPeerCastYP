@@ -58,7 +58,7 @@ void QPCPlayer::start()
 {
     QString mplayer("mplayer");
     QStringList arguments = m_args;
-    arguments << "-dr" << "-v" << "-slave" << "-quiet" << "-zoom" << "-vo" << "x11"
+    arguments << "-dr" << "-v" << "-slave" << "-quiet" << "-zoom" << "-vo" << "vdpau,x11,"
               << "-wid" << QString::number(winId());
     QPoint oldPos = pos();
     m_process->start(mplayer, arguments, QIODevice::ReadWrite | QIODevice::Unbuffered);
@@ -216,6 +216,6 @@ void QPCPlayer::readyRead()
             qDebug() << m_videoSize;
             emit videoResolutionRecieved(m_videoSize);
         }
-            // disconnect(m_process, SIGNAL(readyRead()), this, SLOT(readyRead()));
+        // disconnect(m_process, SIGNAL(readyRead()), this, SLOT(readyRead()));
     }
 }

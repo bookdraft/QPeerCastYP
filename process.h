@@ -19,6 +19,7 @@ class Process : public QProcess
     Q_OBJECT
 public:
     static bool start(const QString &program, Channel *channel = 0);
+    static bool start(const QString &program, const QStringList &arguments, Channel *channel = 0);
     static QString expandVars(const QString &str, Channel *channel = 0);
 };
 

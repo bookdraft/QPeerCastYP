@@ -9,8 +9,10 @@
  */
 #include "commandaction.h"
 #include "mainwindow.h"
-#include "process.h"
 #include "application.h"
+#include "actions.h"
+#include "process.h"
+#include "utils.h"
 
 CommandAction::CommandAction(const QString &text, QObject *parent)
     : QAction(text, parent)
@@ -59,7 +61,9 @@ QString CommandAction::iconFileName() const
 
 void CommandAction::actionTriggered()
 {
+    if (m_program.isEmpty())
+        return;
     Channel *ch = qApp->mainWindow()->currentChannel();
-    Process::start(QString("\"%1\" %2").arg(m_program).arg(m_args), ch);
+    qApp->actions()->startProcess(m_program, Utils::shellwords(m_args), ch);
 }
 

@@ -19,7 +19,7 @@ class ChannelListWidget : public QTreeWidget
 {
     Q_OBJECT
 public:
-    enum Column { Status, Name, Description, Listeners, Relays, Score, Uptime, Bitrate, Type, Labels };
+    enum Column { Status, Name, Description, Listeners, Relays, Score, Uptime, Bitrate, Type, LabelCount };
     enum LinkType { ChannelLink, ContactLink };
 
     ChannelListWidget(QWidget *parent = 0, YellowPage *yellowPage = 0);
@@ -49,6 +49,9 @@ public:
     QString linkStatusTipFormat(LinkType type) const;
     void setLinkStatusTipFormat(LinkType type, const QString &format);
 
+    QList<int> sortOrder() const;
+    void setSortOrder(const QList<int> &order);
+
     int minimumItemHeight() const;
     void setMinimumItemHeight(int height);
 
@@ -61,19 +64,24 @@ public:
     bool isActive() const;
     void setActive(bool active);
     void updateActions();
+    void readSettings();
 
 public slots:
     void updateYellowPage();
     void updateItems();
     void updateLinks();
     void currentItemChanged(QTreeWidgetItem *current);
-    void filterItems(const QString &text, Qt::MatchFlags flags = Qt::MatchContains);
+    void findItems(const QString &text, Qt::MatchFlags flags = Qt::MatchContains);
     void playChannel(Channel *channel = 0);
     void addToFavorites();
     void openContactUrl();
     void copyStreamUrl();
     void copyContactUrl();
     void copyChannelInfo();
+
+signals:
+    void linkHovered(Channel *channel);
+    void linkClicked(Channel *channel);
 
 protected:
     void polish();
@@ -93,6 +101,8 @@ protected:
 
 private slots:
     void done(YellowPage *yp, bool error);
+    void onLinkHovered(Channel *channel);
+    void onLinkClicked(Channel *channel);
     void headerContextMenuRequested(const QPoint &pos);
 
 private:
@@ -106,10 +116,13 @@ private:
     bool m_linkEnabled;
     bool m_linkUnderline;
     bool m_linkBold;
-    bool m_linkHovering;
+    bool m_linkHovered;
     QColor m_linkColor;
+    Channel *m_pressedChannel;
+    Channel *m_lastHoveredLink;
     int m_minimumItemHeight;
     bool m_needClear;
+    QList<int> m_sortOrder;
 };
 
 #endif // CHANNELLISTWIDGET_H

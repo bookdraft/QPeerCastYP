@@ -64,7 +64,16 @@ void ExpressionDialog::accept()
 
     Qt::MatchFlags matchFlags = 0;
     switch (matchTypeComboBox->currentIndex()) {
-    case RegExp:     matchFlags |= Qt::MatchRegExp;     break;
+    case RegExp: {
+        QRegExp rx(patternEdit->text());
+        if (!rx.isValid()) {
+            QMessageBox::warning(this, tr("エラー"),
+                    tr("正規表現が正しくありません。\n\nQRegExp: %1").arg(rx.errorString()));
+            return;
+        }
+        matchFlags |= Qt::MatchRegExp;
+        break;
+    }
     case Contains:   matchFlags |= Qt::MatchContains;   break;
     case StartsWith: matchFlags |= Qt::MatchStartsWith; break;
     case Exactly:    matchFlags |= Qt::MatchExactly;    break;
@@ -91,7 +100,7 @@ void ExpressionDialog::accept()
 
     m_expression->pattern = patternEdit->text();
     if (matchCaseSensitiveBox->isChecked())
-        m_expression->matchFlags |= Qt::MatchCaseSensitive;
+        matchFlags |= Qt::MatchCaseSensitive;
     m_expression->matchFlags = matchFlags;
     m_expression->targetFlags = targetFlags;
     m_expression->point = pointSpinBox->value();

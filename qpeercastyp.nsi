@@ -1,7 +1,6 @@
 SetCompressor /FINAL /SOLID lzma
 
 !define PRODUCT_NAME "QPeerCastYP"
-# !define PRODUCT_VERSION "0.0.1"
 !define PRODUCT_PUBLISHER "ciao"
 !define PRODUCT_WEB_SITE "http://code.google.com/p/qpeercastyp/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\qpeercastyp.exe"
@@ -12,7 +11,7 @@ SetCompressor /FINAL /SOLID lzma
 !include "MUI.nsh"
 
 ; MUI Settings / Icons
-# !define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\orange-install.ico"
+; !define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\orange-install.ico"
 !define MUI_ICON "images\qpeercastyp.ico"
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\orange-uninstall.ico"
 
@@ -27,8 +26,8 @@ SetCompressor /FINAL /SOLID lzma
 !define MUI_UNWELCOMEFINISHPAGE_BITMAP "${NSISDIR}\Contrib\Graphics\Wizard\orange-uninstall.bmp"
 
 !insertmacro MUI_PAGE_WELCOME
-!define MUI_LICENSEPAGE_RADIOBUTTONS
-!insertmacro MUI_PAGE_LICENSE "COPYING"
+; !define MUI_LICENSEPAGE_RADIOBUTTONS
+; !insertmacro MUI_PAGE_LICENSE "COPYING"
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 !define MUI_FINISHPAGE_NOAUTOCLOSE
@@ -53,7 +52,6 @@ Section "MainSection" SEC01
   SetOverwrite ifnewer
   File "release\qpeercastyp.exe"
   File "pcraw\pcraw_proxy.exe"
-  File "bin\mingwm10.dll"
   File "README"
   File "ChangeLog"
   File "COPYING"
@@ -87,7 +85,6 @@ Section Uninstall
   Delete "$INSTDIR\README"
   Delete "$INSTDIR\COPYING"
   Delete "$INSTDIR\ChangeLog"
-  Delete "$INSTDIR\mingwm10.dll"
   Delete "$INSTDIR\pcraw_proxy.exe"
   Delete "$INSTDIR\qpeercastyp.exe"
 
@@ -103,3 +100,4 @@ Section Uninstall
   SetAutoClose false
 SectionEnd
 
+BrandingText "qpeercastyp.sourceforge.jp"

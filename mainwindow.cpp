@@ -53,8 +53,8 @@ void MainWindow::setup()
     setCentralWidget(centralWidget);
 
     QVBoxLayout *layout = new QVBoxLayout(centralWidget);
-    layout->setMargin(1);
-    layout->setSpacing(1);
+    layout->setContentsMargins(1, 1, 1, 1);
+    layout->setSpacing(0);
 
     m_stackedWidget = new QStackedWidget(centralWidget);
     layout->addWidget(m_stackedWidget);
@@ -75,9 +75,9 @@ void MainWindow::setupChannelListWidget()
 {
     setUpdatesEnabled(false);
     YellowPage *manager = qApp->yellowPageManager();
-    m_channelMergedList = new ChannelListWidget(m_channelListTabWidget, manager);
-    m_channelListTabWidget->addTab(m_channelMergedList, manager->name());
-    m_channelMergedList->setActive(true);
+    m_mergedChannelList = new ChannelListWidget(m_channelListTabWidget, manager);
+    m_channelListTabWidget->addTab(m_mergedChannelList, manager->name());
+    m_mergedChannelList->setActive(true);
     connect(m_channelListFindBar, SIGNAL(findRequest(QString, Qt::MatchFlags)),
             m_channelListTabWidget, SLOT(findRequest(QString, Qt::MatchFlags)));
 
@@ -95,7 +95,7 @@ void MainWindow::clearChannelListWidget()
 {
     setUpdatesEnabled(false);
     if (!m_channelListTabWidget->isVisible())
-        delete m_channelMergedList;
+        delete m_mergedChannelList;
     while (m_channelListTabWidget->currentWidget()) {
         ChannelListWidget *widget = m_channelListTabWidget->currentWidget();
         m_channelListTabWidget->removeTab(m_channelListTabWidget->currentIndex());
@@ -108,7 +108,7 @@ QList<ChannelListWidget *> MainWindow::channelListWidgets() const
 {
     QList<ChannelListWidget *> widgets;
     if (!m_channelListTabWidget->isVisible())
-        widgets += m_channelMergedList;
+        widgets += m_mergedChannelList;
     for (int i = 0; i < m_channelListTabWidget->count(); ++i)
         widgets += m_channelListTabWidget->widget(i);
     return widgets;
@@ -253,7 +253,7 @@ ChannelListWidget *MainWindow::currentChannelListWidget() const
     if (m_channelListTabWidget->isVisible())
         return qobject_cast<ChannelListWidget *>(m_channelListTabWidget->currentWidget());
     else
-        return m_channelMergedList;
+        return m_mergedChannelList;
 }
 
 Channel *MainWindow::currentChannel() const
@@ -379,10 +379,10 @@ void MainWindow::updateStatusBar(const QString &message)
             int listenerCount = list->listenerCount();
             int yellowPageCount = list->yellowPageCount();
             if (yellowPageCount > 1) {
-                m = tr("%1 チャンネル | 視聴者数 %2 | イエローページ数 %3")
+                m = tr("チャンネル %1 | 視聴者 %2 | イエローページ %3")
                              .arg(channelCount).arg(listenerCount).arg(yellowPageCount);
             } else {
-                m = tr("%1 チャンネル | 視聴者数 %2").arg(channelCount).arg(listenerCount);
+                m = tr("チャンネル %1 | 視聴者 %2").arg(channelCount).arg(listenerCount);
             }
             statusBar()->showMessage(m);
         }
@@ -418,24 +418,24 @@ void MainWindow::setTabBarVisible(bool shown)
         connect(m_channelListFindBar, SIGNAL(findRequest(QString, Qt::MatchFlags)),
                 m_channelListTabWidget, SLOT(findRequest(QString, Qt::MatchFlags)));
         disconnect(m_channelListFindBar, SIGNAL(findRequest(QString, Qt::MatchFlags)),
-                m_channelMergedList, SLOT(filterItems(QString, Qt::MatchFlags)));
+                m_mergedChannelList, SLOT(findItems(QString, Qt::MatchFlags)));
         m_stackedWidget->setCurrentWidget(m_channelListTabWidget);
-        m_stackedWidget->removeWidget(m_channelMergedList);
-        m_channelListTabWidget->insertTab(0, m_channelMergedList,
-                m_channelMergedList->yellowPage()->name());
-        m_channelListTabWidget->setCurrentWidget(m_channelMergedList);
+        m_stackedWidget->removeWidget(m_mergedChannelList);
+        m_channelListTabWidget->insertTab(0, m_mergedChannelList,
+                m_mergedChannelList->yellowPage()->name());
+        m_channelListTabWidget->setCurrentWidget(m_mergedChannelList);
         m_channelListTabWidget->setActive(true);
     } else {
         connect(m_channelListFindBar, SIGNAL(findRequest(QString, Qt::MatchFlags)),
-                m_channelMergedList, SLOT(filterItems(QString, Qt::MatchFlags)));
+                m_mergedChannelList, SLOT(findItems(QString, Qt::MatchFlags)));
         disconnect(m_channelListFindBar, SIGNAL(findRequest(QString, Qt::MatchFlags)),
                 m_channelListTabWidget, SLOT(findRequest(QString, Qt::MatchFlags)));
-        int index = m_channelListTabWidget->indexOf(m_channelMergedList);
+        int index = m_channelListTabWidget->indexOf(m_mergedChannelList);
         m_channelListTabWidget->removeTab(index);
-        m_stackedWidget->addWidget(m_channelMergedList);
-        m_stackedWidget->setCurrentWidget(m_channelMergedList);
+        m_stackedWidget->addWidget(m_mergedChannelList);
+        m_stackedWidget->setCurrentWidget(m_mergedChannelList);
         m_channelListTabWidget->setActive(false);
-        m_channelMergedList->setActive(true);
+        m_mergedChannelList->setActive(true);
     }
     setUpdatesEnabled(true);
     m_actions->showTabBarAction()->setChecked(shown);

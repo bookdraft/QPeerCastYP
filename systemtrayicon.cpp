@@ -18,7 +18,7 @@ SystemTrayIcon::SystemTrayIcon(QObject *parent)
     : QSystemTrayIcon(parent)
 {
     setIcon(qApp->windowIcon());
-    QMenu *menu = new QMenu;
+    QMenu *menu = new QMenu(qApp->mainWindow());
     Actions *actions = qApp->actions();
     menu->addAction(actions->updateYellowPageAction());
     menu->addAction(actions->toggleAutoUpdateAction());
@@ -35,7 +35,7 @@ SystemTrayIcon::~SystemTrayIcon()
 {
 }
 
-bool scoreMoreThan(Channel *c1, Channel *c2)
+bool scoreGreaterThan(Channel *c1, Channel *c2)
 {
     return c1->score() > c2->score();
 }
@@ -47,8 +47,8 @@ void SystemTrayIcon::showChannels(const QList<Channel *> &channels_)
     ChannelList channels = channels_;
     if (!channels.isEmpty()) {
         QStringList message;
-        qSort(channels.begin(), channels.end(), scoreMoreThan);
-        for (int i = 0; i < channels.count(); ++i) {
+        qSort(channels.begin(), channels.end(), scoreGreaterThan);
+        for (int i = 0; i < channels.count(); i++) {
             int index = i + 1;
             if (index > channels.count())
                 break;

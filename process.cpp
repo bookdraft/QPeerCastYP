@@ -11,15 +11,23 @@
 #include "application.h"
 #include "settings.h"
 #include "channel.h"
+#include "utils.h"
 
 bool Process::start(const QString &program, Channel *channel)
 {
-    QString p = expandVars(program, channel);
-    qDebug() << p;
-    if (startDetached(p))
+    QStringList words = Utils::shellwords(program);
+    if (words.isEmpty())
+        return false;
+    return start(words.takeFirst(), words, channel);
+}
+
+bool Process::start(const QString &program, const QStringList &arguments, Channel *channel)
+{
+    QStringList args;
+    foreach (QString arg, arguments)
+        args += expandVars(arg, channel);
+    if (startDetached(program, args))
         return true;
-    QMessageBox::warning(QApplication::activeWindow(),
-            tr("エラー"), tr("プログラムの実行に失敗しました。\n%1").arg(p));
     return false;
 }
 
