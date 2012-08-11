@@ -51,7 +51,7 @@ void Channel::setYellowPage(YellowPage *yellowPage)
 
 bool Channel::isYPInfo() const
 {
-    return type().toUpper() == "RAW" or name().indexOf(QRegExp("^\\w+◆")) != -1;
+    return type().toUpper() == "RAW" or name().indexOf(QRegExp("^[\\w\\s]+◆")) != -1;
 }
 
 bool Channel::isPlayable() const
