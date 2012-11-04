@@ -382,6 +382,7 @@ void ChannelListWidget::updateYellowPage()
     m_needClear = true;
     if (m_yellowPage->isUpdating())
         m_yellowPage->stopUpdate();
+    setSortingEnabled(false);
     m_yellowPage->update();
     updateCursor();
 }
@@ -398,8 +399,11 @@ void ChannelListWidget::done(YellowPage *yp, bool error)
     m_lastUpdatedTime = QDateTime::currentDateTime();
     updateActions();
     if (!m_yellowPage->isUpdating()) {
+        setSortingEnabled(true);
         updateCursor();
         qApp->mainWindow()->notifyChannels();
+    } else {
+        sortItems(sortColumn(), header()->sortIndicatorOrder());
     }
 }
 
@@ -418,8 +422,6 @@ void ChannelListWidget::updateItems()
 
 void ChannelListWidget::addItems(const ChannelList &channels)
 {
-    setUpdatesEnabled(false);
-    setSortingEnabled(false);
     bool showStoppedChannels =
         qApp->settings()->value("General/ShowStoppedChannels").toBool();
     bool dontShowMinusScoreChannels =
@@ -429,13 +431,8 @@ void ChannelListWidget::addItems(const ChannelList &channels)
             continue;
         if (dontShowMinusScoreChannels and channel->score() < 0)
             continue;
-        ChannelListWidgetItem *item = new ChannelListWidgetItem(this, channel);
-        bool disable = !channel->isPlayable() or channel->status() & Channel::Stopped;
-        item->setDisabled(disable);
+        new ChannelListWidgetItem(this, channel);
     }
-    sortItems(sortColumn(), header()->sortIndicatorOrder());
-    setSortingEnabled(true);
-    setUpdatesEnabled(true);
 }
 
 void ChannelListWidget::currentItemChanged(QTreeWidgetItem *current)
