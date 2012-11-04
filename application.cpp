@@ -36,9 +36,14 @@ Application::Application(int argc, char *argv[])
         if (qtTr->load("qt_" + locale, dir))
             break;
     installTranslator(qtTr);
-    foreach (QString dir, trDirs)
+    foreach (QString dir, trDirs) {
+#ifdef Q_WS_MAC
+        if (appTr->load("qpeercastyp_osx_" + locale, dir))
+#else
         if (appTr->load("qpeercastyp_" + locale, dir))
+#endif
             break;
+    }
     installTranslator(appTr);
 
     setWindowIcon(QIcon(":/images/qpeercastyp.png"));

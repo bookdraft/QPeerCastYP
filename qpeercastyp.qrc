@@ -15,6 +15,7 @@
     <file>images/reload.png</file>
     <file>images/close.png</file>
     <file>translations/qt_ja_jp.qm</file>
+    <file>translations/qpeercastyp_osx_ja_jp.qm</file>
     <file>default.conf</file>
 </qresource>
 </RCC>
