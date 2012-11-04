@@ -37,10 +37,10 @@ public:
     YellowPageManager *yellowPageManager() const;
     QProcess *peercast() const;
     PCRawProxy *pcrawProxy() const;
+    Settings *settings() const;
+    QIcon applicationIcon() const;
 
     static Application *instance();
-
-    Settings *settings() const;
 
 private:
     MainWindow *m_mainWindow;

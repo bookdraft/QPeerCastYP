@@ -46,8 +46,6 @@ Application::Application(int argc, char *argv[])
     }
     installTranslator(appTr);
 
-    setWindowIcon(QIcon(":/images/qpeercastyp.png"));
-
     QString appName = "QPeerCastYP";
     setApplicationName(appName);
     setOrganizationName(appName);
@@ -167,6 +165,11 @@ PCRawProxy *Application::pcrawProxy() const
 Settings *Application::settings() const
 {
     return m_settings;
+}
+
+QIcon Application::applicationIcon() const
+{
+    return QIcon(":/images/qpeercastyp.png");
 }
 
 Application *Application::instance()

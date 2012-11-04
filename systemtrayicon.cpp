@@ -17,7 +17,7 @@
 SystemTrayIcon::SystemTrayIcon(QObject *parent)
     : QSystemTrayIcon(parent)
 {
-    setIcon(qApp->windowIcon());
+    setIcon(qApp->applicationIcon());
     QMenu *menu = new QMenu(qApp->mainWindow());
     Actions *actions = qApp->actions();
     menu->addAction(actions->updateYellowPageAction());
