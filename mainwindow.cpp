@@ -223,6 +223,7 @@ void MainWindow::readSettings()
     Settings *settings = qApp->settings();
     resize(settings->value("MainWindow/Size").toSize());
     restoreState(settings->value("MainWindow/State").toByteArray());
+    restoreGeometry(settings->value("MainWindow/Geometry").toByteArray());
     setMenuBarVisible(settings->value("MainWindow/ShowMenuBar").toBool());
     setStatusBarVisible(settings->value("MainWindow/ShowStatusBar").toBool());
     setToolBarVisible(settings->value("MainWindow/ShowMainToolBar").toBool());
@@ -235,6 +236,7 @@ void MainWindow::writeSettings()
 {
     Settings *settings = qApp->settings();
     settings->setValue("MainWindow/State", saveState());
+    settings->setValue("MainWindow/Geometry", saveGeometry());
     settings->setValue("MainWindow/Size", size());
     settings->setValue("MainWindow/ShowMenuBar", m_actions->showMenuBarAction()->isChecked());
     settings->setValue("MainWindow/ShowStatusBar", m_actions->showStatusBarAction()->isChecked());
