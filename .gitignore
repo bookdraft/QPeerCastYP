@@ -1,6 +1,7 @@
 .DS_Store
 *.swp
+*.app
 build-*
 tags
 Makefile
-*.app
+TODO
