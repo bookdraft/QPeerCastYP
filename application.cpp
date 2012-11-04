@@ -50,6 +50,10 @@ Application::Application(int argc, char *argv[])
     setApplicationName(appName);
     setOrganizationName(appName);
 
+#ifndef Q_WS_MAC
+    setWindowIcon(applicationIcon());
+#endif
+
     Network::setUserAgent(QString("Mozilla/4.0 (%1/%2; %3; %4)")
             .arg(appName).arg(VERSION).arg(Utils::wsString()).arg(Utils::osString()));
 
@@ -95,6 +99,7 @@ Application::Application(int argc, char *argv[])
     m_mainWindow = new MainWindow();
     m_mainWindow->setup();
     m_mainWindow->show();
+    m_mainWindow->setUnifiedTitleAndToolBarOnMac(true);
 
     m_systemTrayIcon = new SystemTrayIcon(this);
     if (m_settings->value("SystemTrayIcon/Enabled").toBool())

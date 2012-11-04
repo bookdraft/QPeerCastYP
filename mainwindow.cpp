@@ -53,13 +53,14 @@ void MainWindow::setup()
     setCentralWidget(centralWidget);
 
     QVBoxLayout *layout = new QVBoxLayout(centralWidget);
-    layout->setContentsMargins(1, 1, 1, 1);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
 
     m_stackedWidget = new QStackedWidget(centralWidget);
     layout->addWidget(m_stackedWidget);
 
     m_channelListTabWidget = new ChannelListTabWidget(m_stackedWidget);
+    m_channelListTabWidget->setAttribute(Qt::WA_MacShowFocusRect, false);
     m_stackedWidget->addWidget(m_channelListTabWidget);
 
     m_channelListFindBar = new ChannelListFindBar(centralWidget);
@@ -76,6 +77,7 @@ void MainWindow::setupChannelListWidget()
     setUpdatesEnabled(false);
     YellowPage *manager = qApp->yellowPageManager();
     m_mergedChannelList = new ChannelListWidget(m_channelListTabWidget, manager);
+    m_mergedChannelList->setAttribute(Qt::WA_MacShowFocusRect, false);
     m_channelListTabWidget->addTab(m_mergedChannelList, manager->name());
     m_mergedChannelList->setActive(true);
     connect(m_channelListFindBar, SIGNAL(findRequest(QString, Qt::MatchFlags)),
@@ -85,6 +87,7 @@ void MainWindow::setupChannelListWidget()
         if (!yp->isEnabled())
             continue;
         ChannelListWidget *list = new ChannelListWidget(m_channelListTabWidget, yp);
+        list->setAttribute(Qt::WA_MacShowFocusRect, false);
         m_channelListTabWidget->addTab(list, yp->name());
     }
     setUpdatesEnabled(true);
@@ -176,14 +179,14 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::setupMenuBar()
 {
-    bool visible = menuBar()->isVisible();
-    setMenuBar(new QMenuBar(this));
+    setMenuBar(new QMenuBar(0));
     menuBar()->setContextMenuPolicy(Qt::CustomContextMenu);
     menuBar()->addMenu(m_actions->fileMenu(menuBar()));
-    menuBar()->addMenu(m_actions->yellowPageMenu(menuBar()));
+    QMenu *menu = m_actions->yellowPageMenu(menuBar());
+    menu->setIcon(QIcon());
+    menuBar()->addMenu(menu);
     menuBar()->addMenu(m_actions->settingsMenu(menuBar()));
     menuBar()->addMenu(m_actions->helpMenu(menuBar()));
-    menuBar()->setVisible(visible);
 }
 
 void MainWindow::setupToolBar()
@@ -215,6 +218,11 @@ void MainWindow::toolBarOrientationChanged(Qt::Orientation orientation)
 void MainWindow::setupStatusBar()
 {
     statusBar()->show();
+#ifdef Q_WS_MAC
+    QFont f(statusBar()->font());
+    f.setPointSize(f.pointSize() - 2);
+    statusBar()->setFont(f);
+#endif
     connect(statusBar(), SIGNAL(messageChanged(QString)), SLOT(updateStatusBar(QString)));
 }
 
@@ -224,7 +232,11 @@ void MainWindow::readSettings()
     resize(settings->value("MainWindow/Size").toSize());
     restoreState(settings->value("MainWindow/State").toByteArray());
     restoreGeometry(settings->value("MainWindow/Geometry").toByteArray());
+#ifdef Q_WS_MAC
+    setMenuBarVisible(true);
+#else
     setMenuBarVisible(settings->value("MainWindow/ShowMenuBar").toBool());
+#endif
     setStatusBarVisible(settings->value("MainWindow/ShowStatusBar").toBool());
     setToolBarVisible(settings->value("MainWindow/ShowMainToolBar").toBool());
     setTabBarVisible(settings->value("MainWindow/ShowTabBar").toBool());
@@ -485,10 +497,10 @@ void MainWindow::aboutQPeerCastYP()
     QDialog dialog(this);
     Ui::AboutQPeerCastYP ui;
     ui.setupUi(&dialog);
-    ui.iconLabel->setPixmap(qApp->windowIcon().pixmap(64, 64));
-    ui.label->setText("<p><b>QPeerCastYP " VERSION "</b></p>"
-                      "QPeerCastYP は、PeerCast の視聴を補助するプログラムです。"
-                      "Linux と Windows 上で動作します。");
+    ui.iconLabel->setPixmap(qApp->applicationIcon().pixmap(64, 64));
+    ui.label->setText("<center><p><b>QPeerCastYP</b></p></center>"
+                      "<center><p>バージョン " VERSION "</p></center>"
+                      "<center>© 2008-2012 bookdraft<center>");
     dialog.resize(dialog.minimumSizeHint().width() + 200, dialog.minimumSizeHint().height());
     dialog.exec();
 }

@@ -42,8 +42,6 @@ bool scoreGreaterThan(Channel *c1, Channel *c2)
 
 void SystemTrayIcon::showChannels(const QList<Channel *> &channels_)
 {
-    if (!isVisible())
-        return;
     ChannelList channels = channels_;
     if (!channels.isEmpty()) {
         QStringList message;

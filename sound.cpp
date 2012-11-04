@@ -11,7 +11,9 @@
 
 void Sound::play(const QString &filename)
 {
-#ifdef Q_OS_UNIX
+#if defined(Q_WS_WIN) || defined(Q_WS_MAC)
+    QSound::play(filename);
+#elif defined(Q_OS_UNIX)
     QString player;
     if (filename.endsWith(".wav"))
         player = "aplay";
@@ -21,9 +23,6 @@ void Sound::play(const QString &filename)
         player = "mpg123";
     if (!player.isEmpty())
         QProcess::startDetached(player, QStringList() << filename);
-#endif
-#ifdef Q_WS_WIN
-    QSound::play(filename);
 #endif
 }
 

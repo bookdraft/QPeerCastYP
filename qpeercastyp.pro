@@ -1,5 +1,4 @@
-TARGET = qpeercastyp
-VERSION = 0.4.1
+VERSION = 0.4.2
 DEBVERSION = 1
 CONFIG -= debug
 QT += network
@@ -10,7 +9,19 @@ INCLUDEPATH += .
 
 DEFINES += VERSION=\\\"$$VERSION\\\"
 
-unix {
+macx {
+    TARGET = QPeerCastYP
+    CONFIG += app_bundle
+    BUILD_DIR = build-macx
+    ICON = images/qpeercastyp.icns
+
+    run.target = all
+    run.commands = ./$${TARGET}.app/Contents/MacOS/QPeerCastYP
+    contains(CONFIG, debug):QMAKE_EXTRA_TARGETS += run
+}
+
+linux-* {
+    TARGET = qpeercastyp
     BUILD_DIR = build-linux
 
     PBUILDER_DISTS = intrepid hardy gutsy feisty
@@ -110,6 +121,7 @@ unix {
 }
 
 win32 {
+    TARGET = qpeercastyp
     BUILD_DIR = build-win32
     CONFIG += release
     CONFIG += static
@@ -121,6 +133,9 @@ win32 {
     QMAKE_EXTRA_TARGETS += nsis
 }
 
+isEmpty(BUILD_DIR) {
+    BUILD_DIR = build
+}
 MOC_DIR        = $$BUILD_DIR
 OBJECTS_DIR    = $$BUILD_DIR
 UI_DIR         = $$BUILD_DIR

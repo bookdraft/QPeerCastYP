@@ -24,6 +24,7 @@ Actions::Actions(MainWindow *mainWindow)
     // ファイル
     m_quitAction = new QAction(QIcon(":/images/exit.png"), tr("終了(&Q)"), this);
     m_quitAction->setShortcut(QKeySequence(tr("Ctrl+Q")));
+    m_quitAction->setMenuRole(QAction::QuitRole);
     m_mainWindow->addAction(m_quitAction);
     connect(m_quitAction, SIGNAL(triggered(bool)), m_mainWindow, SLOT(quit()));
 
@@ -42,8 +43,10 @@ Actions::Actions(MainWindow *mainWindow)
     m_updateYellowPageToolBarAction = new QAction(m_updateYellowPageAction->icon(),
                                                   m_updateYellowPageAction->text(), this);
     m_updateYellowPageToolBarAction->setIconText(tr("更新"));
+#ifndef Q_WS_MAC
     m_updateYellowPageToolBarAction->setMenu(new QMenu(m_mainWindow));
     m_updateYellowPageToolBarAction->menu()->addAction(m_toggleAutoUpdateAction);
+#endif
     m_mainWindow->addAction(m_updateYellowPageAction);
     connect(m_updateYellowPageToolBarAction, SIGNAL(triggered(bool)), m_mainWindow, SLOT(updateYellowPage()));
 
@@ -115,12 +118,14 @@ Actions::Actions(MainWindow *mainWindow)
 
     m_showSettingsAction = new QAction(QIcon(":/images/configure.png"), tr("%1 を設定(&C)...").arg(QApplication::applicationName()), this);
     m_showSettingsAction->setIconText(tr("設定"));
+    m_showSettingsAction->setMenuRole(QAction::PreferencesRole);
     m_mainWindow->addAction(m_showSettingsAction);
     connect(m_showSettingsAction, SIGNAL(triggered(bool)), m_mainWindow, SLOT(showSettings()));
 
     // ヘルプ
     m_aboutQPeerCastYPAction = new QAction(tr("Q&PeerCastYP について"), this);
     m_aboutQPeerCastYPAction->setIcon(QApplication::windowIcon());
+    m_aboutQPeerCastYPAction->setMenuRole(QAction::AboutRole);
     m_mainWindow->addAction(m_aboutQPeerCastYPAction);
     connect(m_aboutQPeerCastYPAction, SIGNAL(triggered(bool)), m_mainWindow, SLOT(aboutQPeerCastYP()));
 
@@ -189,11 +194,15 @@ QMenu *Actions::yellowPageMenu(QWidget *parent) const
 QMenu *Actions::settingsMenu(QWidget *parent) const
 {
     QMenu *menu = new QMenu(tr("設定(&S)"), parent);
+#ifndef Q_WS_MAC
     menu->addAction(m_showMenuBarAction);
     menu->addAction(m_showToolBarAction);
+#endif
     menu->addAction(m_showStatusBarAction);
     menu->addAction(m_showTabBarAction);
+#ifndef Q_WS_MAC
     menu->addSeparator();
+#endif
     menu->addAction(m_showSettingsAction);
     return menu;
 }

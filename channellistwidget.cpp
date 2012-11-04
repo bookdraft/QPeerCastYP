@@ -255,6 +255,11 @@ ChannelListWidget::ChannelListWidget(QWidget *parent, YellowPage *yellowPage)
     setSortingEnabled(true);
     setRootIsDecorated(false);
     setMouseTracking(linkEnabled());
+#ifdef Q_WS_MAC
+    QFont f(font());
+    f.setPointSize(f.pointSize() - 2);
+    setFont(f);
+#endif
 
     installEventFilter(new ViEmacsBindings(this));
     updateActions();

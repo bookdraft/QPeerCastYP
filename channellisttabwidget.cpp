@@ -69,6 +69,7 @@ ChannelListTabWidget::ChannelListTabWidget(QWidget *parent)
     : QTabWidget(parent)
 {
     setTabBar(new ChannelListTabBar(this));
+    setDocumentMode(true);
     connect(this, SIGNAL(currentChanged(int)), SLOT(currentChanged(int)));
 }
 

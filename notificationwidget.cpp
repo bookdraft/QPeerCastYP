@@ -71,6 +71,9 @@ void NotificationWidget::on_selectFileButton_clicked()
     if (!soundFileEdit->text().isEmpty()) {
         dir = QFileInfo(soundFileEdit->text()).dir().canonicalPath();
     } else {
+#ifdef Q_WS_MAC
+        dir = "/System/Library/Sounds";
+#endif
 #ifdef Q_WS_X11
         dir = "/usr/share/sounds";
 #endif
@@ -78,7 +81,7 @@ void NotificationWidget::on_selectFileButton_clicked()
         dir = "C:/WINDOWS/Media";
 #endif
     }
-    QString file = QFileDialog::getOpenFileName(this, tr("音声ファイルを選択"), dir, tr("音声ファイル (*.wav *.ogg *.mp3)"));
+    QString file = QFileDialog::getOpenFileName(this, tr("音声ファイルを選択"), dir, tr("音声ファイル (*.wav *.aiff *.ogg *.mp3)"));
     if (!file.isEmpty())
         soundFileEdit->setText(file);
 }
