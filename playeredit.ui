@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>PlayerEdit</class>
- <widget class="QWidget" name="PlayerEdit" >
-  <property name="geometry" >
+ <widget class="QWidget" name="PlayerEdit">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,199 +10,186 @@
     <height>398</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QVBoxLayout">
    <item>
-    <widget class="QGroupBox" name="groupBox_2" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Maximum" hsizetype="Preferred" >
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="title" >
+     <property name="title">
       <string>動画</string>
      </property>
-     <property name="flat" >
-      <bool>true</bool>
+     <property name="flat">
+      <bool>false</bool>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
-       <widget class="QLabel" name="label_3" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text" >
-         <string>プログラム</string>
-        </property>
-        <property name="alignment" >
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" >
-       <widget class="QLineEdit" name="videoPlayerEdit" />
-      </item>
-      <item row="0" column="2" >
-       <widget class="QPushButton" name="selectVideoPlayerButton" >
-        <property name="text" >
-         <string>選択...</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3" >
-       <widget class="QLabel" name="label_5" >
-        <property name="text" >
+     <layout class="QGridLayout">
+      <item row="0" column="3">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
          <string>種類</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="4" >
-       <widget class="QLineEdit" name="videoTypesEdit" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+      <item row="0" column="4">
+       <widget class="QLineEdit" name="videoTypesEdit">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="text" >
+        <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" colspan="4" >
-       <widget class="QLineEdit" name="videoPlayerArgsEdit" />
-      </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="label_2" >
-        <property name="text" >
-         <string>引数</string>
+      <item row="0" column="2">
+       <widget class="QPushButton" name="selectVideoPlayerButton">
+        <property name="text">
+         <string>選択...</string>
         </property>
-        <property name="alignment" >
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>プログラム</string>
+        </property>
+        <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>引数</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="4">
+       <widget class="QLineEdit" name="videoPlayerArgsEdit"/>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="videoPlayerEdit"/>
       </item>
      </layout>
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_3" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Maximum" hsizetype="Preferred" >
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="title" >
+     <property name="title">
       <string>音声</string>
      </property>
-     <property name="flat" >
-      <bool>true</bool>
+     <property name="flat">
+      <bool>false</bool>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
-       <widget class="QLabel" name="label_7" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text" >
-         <string>プログラム</string>
-        </property>
-        <property name="alignment" >
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
+     <layout class="QGridLayout">
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="soundPlayerEdit"/>
       </item>
-      <item row="0" column="1" >
-       <widget class="QLineEdit" name="soundPlayerEdit" />
-      </item>
-      <item row="0" column="2" >
-       <widget class="QPushButton" name="selectSoundPlayerButton" >
-        <property name="text" >
+      <item row="0" column="2">
+       <widget class="QPushButton" name="selectSoundPlayerButton">
+        <property name="text">
          <string>選択...</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="3" >
-       <widget class="QLabel" name="label_8" >
-        <property name="text" >
-         <string>種類</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4" >
-       <widget class="QLineEdit" name="soundTypesEdit" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="text" >
-         <string/>
+        <property name="text">
+         <string>プログラム</string>
         </property>
-       </widget>
-      </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="label_9" >
-        <property name="text" >
-         <string>引数</string>
-        </property>
-        <property name="alignment" >
+        <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" colspan="4" >
-       <widget class="QLineEdit" name="soundPlayerArgsEdit" />
+      <item row="0" column="4">
+       <widget class="QLineEdit" name="soundTypesEdit">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>引数</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>種類</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="4">
+       <widget class="QLineEdit" name="soundPlayerArgsEdit"/>
       </item>
      </layout>
     </widget>
    </item>
    <item>
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>20</width>
-       <height>119</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="title" >
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
       <string>変数</string>
      </property>
-     <property name="flat" >
-      <bool>true</bool>
+     <property name="flat">
+      <bool>false</bool>
      </property>
-     <layout class="QVBoxLayout" >
+     <layout class="QVBoxLayout">
       <item>
-       <widget class="QLabel" name="label" >
-        <property name="text" >
+       <widget class="QLabel" name="label">
+        <property name="text">
          <string>label</string>
         </property>
-        <property name="alignment" >
-         <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
         </property>
-        <property name="wordWrap" >
+        <property name="wordWrap">
          <bool>true</bool>
         </property>
-        <property name="textInteractionFlags" >
-         <set>Qt::LinksAccessibleByMouse|Qt::NoTextInteraction|Qt::TextSelectableByMouse</set>
+        <property name="textInteractionFlags">
+         <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
         </property>
        </widget>
       </item>

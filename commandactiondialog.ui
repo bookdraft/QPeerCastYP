@@ -1,124 +1,125 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>CommandActionDialog</class>
- <widget class="QDialog" name="CommandActionDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="CommandActionDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>429</width>
-    <height>228</height>
+    <height>263</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>アクションの編集</string>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QVBoxLayout">
    <item>
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="title" >
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
       <string>コマンド・アクション</string>
      </property>
-     <property name="flat" >
-      <bool>true</bool>
+     <property name="flat">
+      <bool>false</bool>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" colspan="3" >
-       <layout class="QGridLayout" >
-        <item rowspan="2" row="0" column="0" >
-         <widget class="QToolButton" name="iconButton" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+     <layout class="QGridLayout">
+      <item row="0" column="0" colspan="3">
+       <layout class="QGridLayout">
+        <item row="0" column="0" rowspan="2">
+         <widget class="QToolButton" name="iconButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="minimumSize" >
+          <property name="minimumSize">
            <size>
             <width>64</width>
             <height>64</height>
            </size>
           </property>
-          <property name="maximumSize" >
+          <property name="maximumSize">
            <size>
             <width>64</width>
             <height>64</height>
            </size>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>...</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="1" >
-         <widget class="QLabel" name="label" >
-          <property name="text" >
+        <item row="0" column="1">
+         <widget class="QLabel" name="label">
+          <property name="text">
            <string>名前</string>
           </property>
-          <property name="alignment" >
+          <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
          </widget>
         </item>
-        <item row="0" column="2" >
-         <widget class="QLineEdit" name="textEdit" />
+        <item row="0" column="2">
+         <widget class="QLineEdit" name="textEdit"/>
         </item>
-        <item row="1" column="1" >
-         <widget class="QLabel" name="label_4" >
-          <property name="text" >
+        <item row="1" column="1">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
            <string>ショートカット</string>
           </property>
-          <property name="alignment" >
+          <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
          </widget>
         </item>
-        <item row="1" column="2" >
-         <widget class="QLineEdit" name="shortcutEdit" />
+        <item row="1" column="2">
+         <widget class="QLineEdit" name="shortcutEdit"/>
         </item>
        </layout>
       </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="label_2" >
-        <property name="text" >
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
          <string>プログラム</string>
         </property>
-        <property name="alignment" >
+        <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" >
-       <widget class="QLineEdit" name="programEdit" />
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="programEdit"/>
       </item>
-      <item row="1" column="2" >
-       <widget class="QPushButton" name="selectProgramButton" >
-        <property name="text" >
+      <item row="1" column="2">
+       <widget class="QPushButton" name="selectProgramButton">
+        <property name="text">
          <string>選択...</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" >
-       <widget class="QLabel" name="label_3" >
-        <property name="text" >
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
          <string>引数</string>
         </property>
-        <property name="alignment" >
+        <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
-      <item row="2" column="1" colspan="2" >
-       <widget class="QLineEdit" name="argsEdit" />
+      <item row="2" column="1" colspan="2">
+       <widget class="QLineEdit" name="argsEdit"/>
       </item>
      </layout>
     </widget>
    </item>
    <item>
     <spacer>
-     <property name="orientation" >
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
        <height>91</height>
@@ -127,12 +128,12 @@
     </spacer>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="orientation" >
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -146,11 +147,11 @@
    <receiver>CommandActionDialog</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>248</x>
      <y>254</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>157</x>
      <y>274</y>
     </hint>
@@ -162,11 +163,11 @@
    <receiver>CommandActionDialog</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>316</x>
      <y>260</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
     </hint>

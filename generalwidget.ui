@@ -1,42 +1,43 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>GeneralWidget</class>
- <widget class="QWidget" name="GeneralWidget" >
-  <property name="geometry" >
+ <widget class="QWidget" name="GeneralWidget">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>534</width>
-    <height>439</height>
+    <width>545</width>
+    <height>442</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QVBoxLayout">
    <item>
-    <widget class="QGroupBox" name="groupBox_2" >
-     <property name="title" >
-      <string>起動時の動作</string>
-     </property>
-     <property name="flat" >
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="enabled">
       <bool>true</bool>
      </property>
-     <layout class="QVBoxLayout" >
-      <property name="leftMargin" >
-       <number>9</number>
-      </property>
-      <property name="topMargin" >
-       <number>9</number>
-      </property>
-      <property name="rightMargin" >
-       <number>9</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>9</number>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>起動時の動作</string>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+     <layout class="QVBoxLayout">
+      <property name="margin">
+       <number>12</number>
       </property>
       <item>
-       <widget class="QCheckBox" name="updateAtStartupCheckBox" >
-        <property name="text" >
+       <widget class="QCheckBox" name="updateAtStartupCheckBox">
+        <property name="text">
          <string>イエローページからチャンネルを取得する</string>
         </property>
        </widget>
@@ -45,49 +46,49 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_4" >
-     <property name="title" >
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="title">
       <string>チャンネル一覧</string>
      </property>
-     <property name="flat" >
-      <bool>true</bool>
+     <property name="flat">
+      <bool>false</bool>
      </property>
-     <layout class="QVBoxLayout" >
+     <layout class="QVBoxLayout">
       <item>
-       <widget class="QCheckBox" name="dontShowMinusScoreChannelCheckBox" >
-        <property name="text" >
+       <widget class="QCheckBox" name="dontShowMinusScoreChannelCheckBox">
+        <property name="text">
          <string>スコアがマイナスなチャンネルは表示しない</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="autoUpdateCheckBox" >
-        <property name="text" >
+       <widget class="QCheckBox" name="autoUpdateCheckBox">
+        <property name="text">
          <string>自動更新をデフォルトにする</string>
         </property>
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" >
+       <layout class="QHBoxLayout">
         <item>
-         <widget class="QLabel" name="label" >
-          <property name="text" >
+         <widget class="QLabel" name="label">
+          <property name="text">
            <string>自動更新の間隔</string>
           </property>
-          <property name="indent" >
+          <property name="indent">
            <number>20</number>
           </property>
          </widget>
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeType" >
+          <property name="sizeType">
            <enum>QSizePolicy::Preferred</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>40</width>
             <height>20</height>
@@ -96,33 +97,33 @@
          </spacer>
         </item>
         <item>
-         <widget class="QSpinBox" name="autoUpdateIntervalSpinBox" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Fixed" hsizetype="Maximum" >
+         <widget class="QSpinBox" name="autoUpdateIntervalSpinBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="alignment" >
+          <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
-          <property name="suffix" >
+          <property name="suffix">
            <string>分</string>
           </property>
-          <property name="minimum" >
+          <property name="minimum">
            <number>3</number>
           </property>
-          <property name="maximum" >
+          <property name="maximum">
            <number>999</number>
           </property>
          </widget>
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>217</width>
             <height>20</height>
@@ -133,37 +134,47 @@
        </layout>
       </item>
       <item>
-       <widget class="QCheckBox" name="customToolTipCheckBox" >
-        <property name="text" >
+       <widget class="QCheckBox" name="customToolTipCheckBox">
+        <property name="text">
          <string>独自ツールチップを使用する</string>
         </property>
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" >
+       <widget class="QCheckBox" name="linkEnabledCheckBox">
+        <property name="text">
+         <string>配信者をリンクとして表示</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QCheckBox" name="linkEnabledCheckBox" >
-          <property name="text" >
-           <string>リンクの有無／クリック時の動作</string>
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>クリック時の動作</string>
           </property>
-          <property name="checked" >
-           <bool>true</bool>
+          <property name="indent">
+           <number>20</number>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="linkTypeComboBox" >
-          <property name="enabled" >
+         <widget class="QComboBox" name="linkTypeComboBox">
+          <property name="enabled">
            <bool>true</bool>
           </property>
          </widget>
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>40</width>
             <height>20</height>
@@ -177,17 +188,17 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="title" >
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
       <string>システムトレイ／通知エリア</string>
      </property>
-     <property name="flat" >
-      <bool>true</bool>
+     <property name="flat">
+      <bool>false</bool>
      </property>
-     <layout class="QVBoxLayout" >
+     <layout class="QVBoxLayout">
       <item>
-       <widget class="QCheckBox" name="showSystemTrayIconCheckBox" >
-        <property name="text" >
+       <widget class="QCheckBox" name="showSystemTrayIconCheckBox">
+        <property name="text">
          <string>アイコンを表示する</string>
         </property>
        </widget>
@@ -196,41 +207,41 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_3" >
-     <property name="title" >
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
       <string>ウェブ・ブラウザ</string>
      </property>
-     <property name="flat" >
-      <bool>true</bool>
+     <property name="flat">
+      <bool>false</bool>
      </property>
-     <layout class="QHBoxLayout" >
+     <layout class="QHBoxLayout">
       <item>
-       <widget class="QRadioButton" name="useCommonWebBrowserRadioButton" >
-        <property name="text" >
+       <widget class="QRadioButton" name="useCommonWebBrowserRadioButton">
+        <property name="text">
          <string>デスクトップ環境の既定</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QRadioButton" name="useCustomWebBrowserRadioButton" >
-        <property name="text" >
+       <widget class="QRadioButton" name="useCustomWebBrowserRadioButton">
+        <property name="text">
          <string>その他</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="webBrowserEdit" >
-        <property name="enabled" >
+       <widget class="QLineEdit" name="webBrowserEdit">
+        <property name="enabled">
          <bool>false</bool>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="selectWebBrowserButton" >
-        <property name="enabled" >
+       <widget class="QPushButton" name="selectWebBrowserButton">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>選択...</string>
         </property>
        </widget>
@@ -240,10 +251,10 @@
    </item>
    <item>
     <spacer>
-     <property name="orientation" >
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
        <height>37</height>
@@ -261,11 +272,11 @@
    <receiver>webBrowserEdit</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>247</x>
      <y>373</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>424</x>
      <y>374</y>
     </hint>
@@ -277,11 +288,11 @@
    <receiver>selectWebBrowserButton</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>247</x>
      <y>373</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>515</x>
      <y>375</y>
     </hint>
@@ -293,11 +304,11 @@
    <receiver>linkTypeComboBox</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>89</x>
      <y>232</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>272</x>
      <y>232</y>
     </hint>

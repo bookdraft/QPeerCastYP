@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>NotificationWidget</class>
- <widget class="QWidget" name="NotificationWidget" >
-  <property name="geometry" >
+ <widget class="QWidget" name="NotificationWidget">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,47 +10,47 @@
     <height>487</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QVBoxLayout">
    <item>
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="title" >
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
       <string>通知するチャンネル</string>
      </property>
-     <property name="flat" >
-      <bool>true</bool>
+     <property name="flat">
+      <bool>false</bool>
      </property>
-     <layout class="QVBoxLayout" >
+     <layout class="QVBoxLayout">
       <item>
-       <layout class="QHBoxLayout" >
+       <layout class="QHBoxLayout">
         <item>
-         <widget class="QCheckBox" name="notifyFavoriteCheckBox" >
-          <property name="text" >
+         <widget class="QCheckBox" name="notifyFavoriteCheckBox">
+          <property name="text">
            <string>お気に入り</string>
           </property>
-          <property name="checked" >
+          <property name="checked">
            <bool>true</bool>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="notifyNewCheckBox" >
-          <property name="enabled" >
+         <widget class="QCheckBox" name="notifyNewCheckBox">
+          <property name="enabled">
            <bool>true</bool>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>新規</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="notifyChangedCheckBox" >
-          <property name="enabled" >
+         <widget class="QCheckBox" name="notifyChangedCheckBox">
+          <property name="enabled">
            <bool>true</bool>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>詳細変更あり</string>
           </property>
          </widget>
@@ -60,51 +61,51 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="favoriteGroupBox" >
-     <property name="enabled" >
+    <widget class="QGroupBox" name="favoriteGroupBox">
+     <property name="enabled">
       <bool>true</bool>
      </property>
-     <property name="title" >
+     <property name="title">
       <string>お気に入り通知</string>
      </property>
-     <property name="flat" >
-      <bool>true</bool>
+     <property name="flat">
+      <bool>false</bool>
      </property>
-     <layout class="QVBoxLayout" >
+     <layout class="QVBoxLayout">
       <item>
-       <widget class="QCheckBox" name="notifyChangedFavoriteCheckBox" >
-        <property name="enabled" >
+       <widget class="QCheckBox" name="notifyChangedFavoriteCheckBox">
+        <property name="enabled">
          <bool>true</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>詳細変更があったチャンネルも通知する</string>
         </property>
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" >
+       <layout class="QHBoxLayout">
         <item>
-         <widget class="QLabel" name="label_4" >
-          <property name="enabled" >
+         <widget class="QLabel" name="label_4">
+          <property name="enabled">
            <bool>true</bool>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>通知するチャンネルの最低スコア</string>
           </property>
-          <property name="indent" >
+          <property name="indent">
            <number>20</number>
           </property>
          </widget>
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeType" >
+          <property name="sizeType">
            <enum>QSizePolicy::Preferred</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>40</width>
             <height>20</height>
@@ -113,30 +114,30 @@
          </spacer>
         </item>
         <item>
-         <widget class="QSpinBox" name="minimumScoreSpinBox" >
-          <property name="enabled" >
+         <widget class="QSpinBox" name="minimumScoreSpinBox">
+          <property name="enabled">
            <bool>true</bool>
           </property>
-          <property name="alignment" >
+          <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
-          <property name="minimum" >
+          <property name="minimum">
            <number>0</number>
           </property>
-          <property name="maximum" >
+          <property name="maximum">
            <number>999</number>
           </property>
-          <property name="value" >
+          <property name="value">
            <number>3</number>
           </property>
          </widget>
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>40</width>
             <height>20</height>
@@ -150,45 +151,45 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="balloonGroupBox" >
-     <property name="title" >
+    <widget class="QGroupBox" name="balloonGroupBox">
+     <property name="title">
       <string>バルーン通知</string>
      </property>
-     <property name="flat" >
-      <bool>true</bool>
+     <property name="flat">
+      <bool>false</bool>
      </property>
-     <layout class="QVBoxLayout" >
+     <layout class="QVBoxLayout">
       <item>
-       <widget class="QCheckBox" name="showBalloonMessageCheckBox" >
-        <property name="text" >
+       <widget class="QCheckBox" name="showBalloonMessageCheckBox">
+        <property name="text">
          <string>システムトレイアイコンにメッセージを表示する</string>
         </property>
-        <property name="checked" >
+        <property name="checked">
          <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" >
+       <layout class="QHBoxLayout">
         <item>
-         <widget class="QLabel" name="label" >
-          <property name="text" >
+         <widget class="QLabel" name="label">
+          <property name="text">
            <string>一度に表示する最大チャンネル数</string>
           </property>
-          <property name="indent" >
+          <property name="indent">
            <number>20</number>
           </property>
          </widget>
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeType" >
+          <property name="sizeType">
            <enum>QSizePolicy::Preferred</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>40</width>
             <height>20</height>
@@ -197,21 +198,21 @@
          </spacer>
         </item>
         <item>
-         <widget class="QSpinBox" name="maxShowChannelsSpinBox" >
-          <property name="alignment" >
+         <widget class="QSpinBox" name="maxShowChannelsSpinBox">
+          <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
-          <property name="minimum" >
+          <property name="minimum">
            <number>1</number>
           </property>
          </widget>
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>40</width>
             <height>20</height>
@@ -225,46 +226,46 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="soundGroupBox" >
-     <property name="title" >
+    <widget class="QGroupBox" name="soundGroupBox">
+     <property name="title">
       <string>サウンド通知</string>
      </property>
-     <property name="flat" >
-      <bool>true</bool>
+     <property name="flat">
+      <bool>false</bool>
      </property>
-     <layout class="QVBoxLayout" >
+     <layout class="QVBoxLayout">
       <item>
-       <layout class="QHBoxLayout" >
+       <layout class="QHBoxLayout">
         <item>
-         <widget class="QCheckBox" name="playSoundCheckBox" >
-          <property name="text" >
+         <widget class="QCheckBox" name="playSoundCheckBox">
+          <property name="text">
            <string>ファイルを再生</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="soundFileEdit" >
-          <property name="enabled" >
+         <widget class="QLineEdit" name="soundFileEdit">
+          <property name="enabled">
            <bool>false</bool>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="selectFileButton" >
-          <property name="enabled" >
+         <widget class="QPushButton" name="selectFileButton">
+          <property name="enabled">
            <bool>false</bool>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>選択...</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="playSoundButton" >
-          <property name="enabled" >
+         <widget class="QPushButton" name="playSoundButton">
+          <property name="enabled">
            <bool>false</bool>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>♪</string>
           </property>
          </widget>
@@ -272,17 +273,17 @@
        </layout>
       </item>
       <item>
-       <widget class="QLabel" name="label_3" >
-        <property name="enabled" >
+       <widget class="QLabel" name="label_3">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>再生可能ファイルは WAV と OGG です。(Windows は WAV のみ)</string>
         </property>
-        <property name="wordWrap" >
+        <property name="wordWrap">
          <bool>true</bool>
         </property>
-        <property name="indent" >
+        <property name="indent">
          <number>20</number>
         </property>
        </widget>
@@ -292,10 +293,10 @@
    </item>
    <item>
     <spacer>
-     <property name="orientation" >
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
        <height>117</height>
@@ -313,11 +314,11 @@
    <receiver>label_3</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>134</x>
      <y>318</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>169</x>
      <y>343</y>
     </hint>
@@ -329,11 +330,11 @@
    <receiver>selectFileButton</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>134</x>
      <y>318</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>492</x>
      <y>320</y>
     </hint>
@@ -345,11 +346,11 @@
    <receiver>soundFileEdit</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>134</x>
      <y>318</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>401</x>
      <y>319</y>
     </hint>
@@ -361,11 +362,11 @@
    <receiver>playSoundButton</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>132</x>
      <y>318</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>583</x>
      <y>320</y>
     </hint>
@@ -377,11 +378,11 @@
    <receiver>selectFileButton</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>151</x>
      <y>294</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>492</x>
      <y>320</y>
     </hint>
@@ -393,11 +394,11 @@
    <receiver>favoriteGroupBox</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>117</x>
      <y>45</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>74</x>
      <y>84</y>
     </hint>
@@ -409,11 +410,11 @@
    <receiver>label</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>171</x>
      <y>222</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>171</x>
      <y>232</y>
     </hint>
@@ -425,11 +426,11 @@
    <receiver>maxShowChannelsSpinBox</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>192</x>
      <y>209</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>283</x>
      <y>236</y>
     </hint>
@@ -441,11 +442,11 @@
    <receiver>label</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>104</x>
      <y>215</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>69</x>
      <y>240</y>
     </hint>
