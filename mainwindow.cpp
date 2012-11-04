@@ -388,7 +388,7 @@ void MainWindow::updateStatusBar(const QString &message)
             }
             statusBar()->showMessage(m);
         }
-    } else {
+    } else if (statusBar()->currentMessage() != message) {
         statusBar()->showMessage(message, 5000);
     }
 }
