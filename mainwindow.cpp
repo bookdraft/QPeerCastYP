@@ -217,6 +217,7 @@ void MainWindow::toolBarOrientationChanged(Qt::Orientation orientation)
 
 void MainWindow::setupStatusBar()
 {
+    statusBar()->setSizeGripEnabled(false);
     statusBar()->show();
 #ifdef Q_WS_MAC
     QFont f(statusBar()->font());
