@@ -154,6 +154,7 @@ TRANSLATIONS = qpeercastyp.ts
 unix {
     HEADERS += proxystyle.h
     SOURCES += proxystyle.cpp
+    LIBS += -lX11
 }
 
 win32 {
