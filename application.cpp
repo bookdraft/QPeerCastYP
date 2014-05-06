@@ -19,7 +19,7 @@
 #include "network.h"
 #include "utils.h"
 
-Application::Application(int argc, char *argv[])
+Application::Application(int &argc, char *argv[])
     : QApplication(argc, argv)
 {
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
