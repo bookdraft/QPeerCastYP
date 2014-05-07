@@ -67,6 +67,13 @@ QUrl Channel::streamUrl(const QString &scheme) const
                         .arg(id()).arg(type().toLower()).arg(tip()));
 }
 
+QUrl Channel::playlistUrl() const
+{
+    QUrl url = qApp->settings()->value("PeerCast/ServerUrl").toString();
+    return QUrl(QString("http://%1:%2/pls/%3.pls?tip=%5")
+                        .arg(url.host()).arg(url.port()).arg(id()).arg(tip()));
+}
+
 Channel::Status Channel::status() const
 {
     return (Status)property("status").value<qint32>();

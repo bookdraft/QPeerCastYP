@@ -52,6 +52,8 @@ QString Process::expandVars(const QString &str, Channel *channel)
         if (channel) {
             if (name == "STREAM_URL") {
                 value = channel->streamUrl(arg.isEmpty() ? "http" : arg.toLower()).toEncoded();
+            } else if (name == "PLAYLIST_URL") {
+                value = channel->playlistUrl().toEncoded();
             } else if (name == "CHANNEL" and !arg.isEmpty()) {
                 if (arg == "STREAM_URL")
                     value = channel->streamUrl().toEncoded();

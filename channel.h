@@ -38,6 +38,7 @@ public:
 
     bool isPlayable() const;
     QUrl streamUrl(const QString &scheme = "http") const;
+    QUrl playlistUrl() const;
 
     Status status() const;
     void setStatus(Status status);
