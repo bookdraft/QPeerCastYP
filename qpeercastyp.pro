@@ -154,7 +154,9 @@ TRANSLATIONS = qpeercastyp.ts
 unix {
     HEADERS += proxystyle.h
     SOURCES += proxystyle.cpp
-    LIBS += -lX11
+    !macx {
+        LIBS += -lX11
+    }
 }
 
 win32 {
@@ -202,7 +204,7 @@ HEADERS += application.h \
            channel.h \
            channelmatcher.h \
            channellistwidget.h \
-           channellisttabwidget.h \ 
+           channellisttabwidget.h \
            channellistfindbar.h \
            yellowpage.h \
            yellowpagemanager.h \
@@ -234,7 +236,7 @@ SOURCES += main.cpp \
            channel.cpp \
            channelmatcher.cpp \
            channellistwidget.cpp \
-           channellisttabwidget.cpp \ 
+           channellisttabwidget.cpp \
            channellistfindbar.cpp \
            yellowpage.cpp \
            yellowpagemanager.cpp \
