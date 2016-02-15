@@ -27,8 +27,6 @@ linux-* {
     PBUILDER_DISTS = intrepid hardy gutsy feisty
     PBUILDER_DIR = /var/cache/pbuilder/
 
-    GOOGLECODE_UPLOAD = googlecode_upload.py -p qpeercastyp -u ciao.altern8
-
     !include(conf.pri) {
         PREFIX = /usr/local
         BINDIR = /usr/local/bin
@@ -79,20 +77,6 @@ linux-* {
             qpeercastyp_$${VERSION}-$${DEBVERSION}.dsc)
         eval(QMAKE_EXTRA_TARGETS += pd$${dist})
     }
-
-    # http://code.google.com/p/support/wiki/ScriptedUploads
-    uploadsrc.target = upload-src
-    uploadsrc.commands = $$GOOGLECODE_UPLOAD -s \"QPeerCastYP $$VERSION - Source\" \
-                         -l Type-Source,Featured qpeercastyp-$${VERSION}.tar.bz2
-    uploaddeb.target = upload-deb
-    uploaddeb.commands = $$GOOGLECODE_UPLOAD -s \"QPeerCastYP $$VERSION - Package for Ubuntu\" \
-                         -l OpSys-Linux,Type-Package,Featured qpeercastyp_$${VERSION}-$${DEBVERSION}_i386.deb
-    uploadexe.target = upload-installer
-    uploadexe.commands = $$GOOGLECODE_UPLOAD -s \"QPeerCastYP $$VERSION - Installer for Windows\" \
-                         -l OpSys-Windows,Type-Installer,Featured qpeercastyp-$${VERSION}.exe
-    uploadall.target = upload-all
-    uploadall.depends = uploadsrc uploaddeb uploadexe
-    QMAKE_EXTRA_TARGETS += uploadsrc uploaddeb uploadexe uploadall
 
     run.target = all
     run.commands = ./$$TARGET
