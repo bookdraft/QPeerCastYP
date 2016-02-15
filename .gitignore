@@ -4,4 +4,5 @@
 build-*
 tags
 Makefile
-TODO
+conf.log
+conf.pri
