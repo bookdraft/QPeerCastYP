@@ -56,6 +56,7 @@ public slots:
     void findChannel();
 
     void showErrorMessage(const QString &message);
+    void updateMenuBar();
     void updateStatusBar(const QString &message = QString());
 
     void setStatusBarVisible(bool shown);

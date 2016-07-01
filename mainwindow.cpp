@@ -179,14 +179,27 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::setupMenuBar()
 {
+#ifdef Q_WS_MAC
     setMenuBar(new QMenuBar(0));
+#endif
     menuBar()->setContextMenuPolicy(Qt::CustomContextMenu);
     menuBar()->addMenu(m_actions->fileMenu(menuBar()));
-    QMenu *menu = m_actions->yellowPageMenu(menuBar());
-    menu->setIcon(QIcon());
-    menuBar()->addMenu(menu);
+    menuBar()->addMenu(m_actions->yellowPageMenu(menuBar()));
     menuBar()->addMenu(m_actions->settingsMenu(menuBar()));
     menuBar()->addMenu(m_actions->helpMenu(menuBar()));
+}
+
+void MainWindow::updateMenuBar()
+{
+    QMenu *yellowPageMenu = m_actions->yellowPageMenu(menuBar());
+    QMenu *settingsMenu = m_actions->settingsMenu();
+    foreach (QAction *action, menuBar()->actions()) {
+        if (yellowPageMenu->title() == action->text())
+            menuBar()->removeAction(action);
+        if (settingsMenu->title() == action->text())
+            menuBar()->insertMenu(action, yellowPageMenu);
+    }
+    delete settingsMenu;
 }
 
 void MainWindow::setupToolBar()
@@ -469,8 +482,8 @@ void MainWindow::showSettings(SettingsDialog::WidgetIndex index)
             qApp->systemTrayIcon()->setVisible(settings->value("SystemTrayIcon/Enabled").toBool());
             foreach (ChannelListWidget *w, channelListWidgets()) {
                 w->setCustomToolTip(settings->value("ChannelListWidget/CustomToolTip").toBool());
-                w->setLinkEnabled(settings->value("ChannelListWidget/LinkEnabled").toBool()); 
-                w->setLinkType(settings->value("ChannelListWidget/LinkType").toInt()); 
+                w->setLinkEnabled(settings->value("ChannelListWidget/LinkEnabled").toBool());
+                w->setLinkType(settings->value("ChannelListWidget/LinkType").toInt());
             }
         }
         if (dialog.yellowPageEdit()->isDirty()) {
@@ -483,7 +496,7 @@ void MainWindow::showSettings(SettingsDialog::WidgetIndex index)
         }
         if (dialog.userActionEdit()->isDirty()) {
             qApp->actions()->loadUserActions();
-            setupMenuBar();
+            updateMenuBar();
         }
     }
 }
