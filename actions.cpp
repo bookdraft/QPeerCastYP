@@ -181,13 +181,14 @@ QMenu *Actions::yellowPageMenu(QWidget *parent) const
     menu->addAction(m_copyContactUrlAction);
     menu->addSeparator();
     menu->addAction(m_findChannelAction);
+#ifndef Q_WS_MAC
     if (m_mainWindow->menuBar()->isHidden()) {
         menu->addSeparator();
         menu->addMenu(settingsMenu(menu));
-        // menu->addMenu(helpMenu(menu));
         menu->addSeparator();
         menu->addAction(m_quitAction);
     }
+#endif
     return menu;
 }
 
@@ -196,8 +197,8 @@ QMenu *Actions::settingsMenu(QWidget *parent) const
     QMenu *menu = new QMenu(tr("設定(&S)"), parent);
 #ifndef Q_WS_MAC
     menu->addAction(m_showMenuBarAction);
-    menu->addAction(m_showToolBarAction);
 #endif
+    menu->addAction(m_showToolBarAction);
     menu->addAction(m_showStatusBarAction);
     menu->addAction(m_showTabBarAction);
 #ifndef Q_WS_MAC
