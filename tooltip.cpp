@@ -53,19 +53,12 @@ void ToolTip::show(const QPoint &pos, const QString &text, QWidget *widget)
 QSize ToolTip::sizeHint(const QPoint &pos, QWidget *widget)
 {
     QPoint p = widget ? widget->mapFromGlobal(pos) : pos;
-    int w = fontMetrics().width(text());
-    int h = fontMetrics().height();
     int l, t, r, b;
     getContentsMargins(&l, &t, &r, &b);
-    QSize size(w + l + r, h + t + b);
     QRect screen = widget ? widget->rect() : QApplication::desktop()->screenGeometry();
-    if (size.width() > screen.width() - p.x()) {
-        QRect rect(0, 0, screen.width() - p.x(), h);
-        rect = fontMetrics().boundingRect(rect, Qt::TextWordWrap, text());
-        size.setWidth(rect.width() + l + r);
-        size.setHeight(rect.height() + t + b);
-    }
-    return size;
+    QRect rect(0, 0, screen.width() - p.x(), screen.height() - p.y());
+    rect = fontMetrics().boundingRect(rect, Qt::TextWordWrap, text());
+    return QSize(rect.width() + l + r, rect.height() + t + b);
 }
 
 void ToolTip::mousePressEvent(QMouseEvent *event)
