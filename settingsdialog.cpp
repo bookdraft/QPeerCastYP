@@ -16,7 +16,6 @@
 #include "playeredit.h"
 #include "notificationwidget.h"
 #include "networkwidget.h"
-#include "advancedwidget.h"
 #include "useractionedit.h"
 
 SettingsDialog::SettingsDialog(Settings *settings, QWidget *parent)
@@ -51,10 +50,6 @@ SettingsDialog::SettingsDialog(Settings *settings, QWidget *parent)
     m_networkWidget = new NetworkWidget(settings, m_tabWidget);
     m_networkWidget->setValue();
     m_tabWidget->insertTab(Network, m_networkWidget, tr("ネットワーク"));
-
-    // m_advancedWidget = new AdvancedWidget(settings, m_tabWidget);
-    // m_advancedWidget->setValues();
-    // m_tabWidget->insertTab(Advanced, m_advancedWidget, tr("詳細"));
 
     m_buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
                                      | QDialogButtonBox::Cancel

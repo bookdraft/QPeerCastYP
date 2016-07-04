@@ -82,10 +82,6 @@ linux-* {
     run.commands = ./$$TARGET
     contains(CONFIG, debug):QMAKE_EXTRA_TARGETS += run
 
-    pcraw.target = pcraw-bin
-    pcraw.commands = @cd pcraw; make
-    QMAKE_EXTRA_TARGETS += pcraw
-
     bin.files = $$TARGET
     bin.path = $$BINDIR
 
@@ -96,12 +92,6 @@ linux-* {
     pixmap.path = $$DATADIR/pixmaps
 
     INSTALLS += bin desktop pixmap
-
-    exists(pcraw/pcraw_proxy) {
-        pcraw.files = pcraw/pcraw_proxy
-        pcraw.path = $$BINDIR
-        INSTALLS += pcraw
-    }
 }
 
 win32 {
@@ -184,15 +174,13 @@ HEADERS += application.h \
            useractions.h \
            useractionedit.h \
            commandactiondialog.h \
-           advancedwidget.h \
            channel.h \
            channelmatcher.h \
            channellistwidget.h \
            channellisttabwidget.h \
            channellistfindbar.h \
            yellowpage.h \
-           yellowpagemanager.h \
-           pcrawproxy.h
+           yellowpagemanager.h
 
 SOURCES += main.cpp \
            application.cpp \
@@ -216,15 +204,13 @@ SOURCES += main.cpp \
            useractionedit.cpp \
            commandactiondialog.cpp \
            networkwidget.cpp \
-           advancedwidget.cpp \
            channel.cpp \
            channelmatcher.cpp \
            channellistwidget.cpp \
            channellisttabwidget.cpp \
            channellistfindbar.cpp \
            yellowpage.cpp \
-           yellowpagemanager.cpp \
-           pcrawproxy.cpp
+           yellowpagemanager.cpp
 
 FORMS +=   channellistfindbar.ui \
            generalwidget.ui \
@@ -238,6 +224,5 @@ FORMS +=   channellistfindbar.ui \
            networkwidget.ui \
            useractionedit.ui \
            commandactiondialog.ui \
-           advancedwidget.ui \
            aboutqpeercastyp.ui
 

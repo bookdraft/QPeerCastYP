@@ -51,7 +51,6 @@ Section "MainSection" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
   File "release\qpeercastyp.exe"
-  File "pcraw\pcraw_proxy.exe"
   File "README"
   File "ChangeLog"
   File "COPYING"
@@ -85,7 +84,6 @@ Section Uninstall
   Delete "$INSTDIR\README"
   Delete "$INSTDIR\COPYING"
   Delete "$INSTDIR\ChangeLog"
-  Delete "$INSTDIR\pcraw_proxy.exe"
   Delete "$INSTDIR\qpeercastyp.exe"
 
   Delete "$SMPROGRAMS\QPeerCastYP\Uninstall.lnk"

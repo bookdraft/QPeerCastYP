@@ -20,7 +20,6 @@ YellowPageDialog::YellowPageDialog(YellowPage *yellowPage, QWidget *parent)
     nameSpaceEdit->setText(m_yellowPage->nameSpaces().join("|"));
     typeComboBox->insertItem(YellowPage::IndexTxt, YellowPage::typeString(YellowPage::IndexTxt));
     typeComboBox->setCurrentIndex(m_yellowPage->type());
-    usePCRawProxyCheckBox->setChecked(m_yellowPage->usePCRawProxy());
 
     resize(minimumSizeHint());
 }
@@ -49,7 +48,6 @@ void YellowPageDialog::accept()
     m_yellowPage->setUrl(url);
     m_yellowPage->setNameSpaces(nameSpaceEdit->text().split("|", QString::SkipEmptyParts));
     m_yellowPage->setType((YellowPage::Type)typeComboBox->currentIndex());
-    m_yellowPage->setUsePCRawProxy(usePCRawProxyCheckBox->isChecked());
 
     QDialog::accept();
 }

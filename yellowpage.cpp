@@ -32,7 +32,6 @@ void YellowPage::initialize()
     m_enabled = true;
     m_name = tr("unnamed");
     m_isManager = false;
-    m_usePCRawProxy = false;
     m_yellowPages += this;
     m_updating = false;
     m_lastUpdatedTime = QDateTime::currentDateTime();
@@ -202,13 +201,6 @@ QUrl YellowPage::channelListUrl() const
     QUrl url = m_url;
     if (m_type == IndexTxt) {
         url = url.resolved(QUrl("./index.txt"));
-        if (m_usePCRawProxy) {
-            QUrl serverUrl = qApp->settings()->value("PCRaw/ProxyServerUrl").toString();
-            QString path = url.toString();
-            url.setHost(serverUrl.host());
-            url.setPort(serverUrl.port());
-            url.setPath(path);
-        }
         QList<QPair<QString, QString> > query;
         QUrl pcUrl(qApp->settings()->value("PeerCast/ServerUrl").toString());
         query << QPair<QString, QString>("host", "localhost:" + QString::number(pcUrl.port()));
@@ -236,17 +228,6 @@ ChannelList YellowPage::channels(Channel::Status status) const
 YellowPageList &YellowPage::yellowPages()
 {
     return m_yellowPages;
-}
-
-
-bool YellowPage::usePCRawProxy() const
-{
-    return m_usePCRawProxy;
-}
-
-void YellowPage::setUsePCRawProxy(bool enabled)
-{
-    m_usePCRawProxy = enabled;
 }
 
 bool YellowPage::isManager() const

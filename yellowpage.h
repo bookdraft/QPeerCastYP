@@ -38,9 +38,6 @@ public:
     virtual ChannelList channels(Channel::Status status) const;
     virtual QList<YellowPage *> &yellowPages();
 
-    bool usePCRawProxy() const;
-    void setUsePCRawProxy(bool enabled);
-
     bool isManager() const;
 
     bool isEnabled() const;
@@ -83,7 +80,6 @@ private:
     QStringList m_nameSpaces;
     QUrl m_url;
     Type m_type;
-    int m_usePCRawProxy;
     QHttp *m_http;
     QTimer m_httpTimer;
     bool m_updating;

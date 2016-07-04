@@ -114,7 +114,6 @@ void YellowPageManager::loadYellowPages()
         yp->setName(m_settings->value("Name").toString());
         yp->setType((YellowPage::Type)m_settings->value("Type").toInt());
         yp->setNameSpaces(m_settings->value("NameSpaces").toStringList());
-        yp->setUsePCRawProxy(m_settings->value("UsePCRawProxy").toBool());
         addYellowPage(yp);
     }
     m_settings->endArray();
@@ -134,7 +133,6 @@ void YellowPageManager::saveYellowPages()
         m_settings->setValue("Type", yp->type());
         m_settings->setValue("Url", yp->url().toString());
         m_settings->setValue("NameSpaces", yp->nameSpaces());
-        m_settings->setValue("UsePCRawProxy", yp->usePCRawProxy());
     }
     m_settings->endArray();
 }

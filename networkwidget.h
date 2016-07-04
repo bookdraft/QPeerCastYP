@@ -29,7 +29,6 @@ public:
 
 private slots:
     void on_selectPeerCastProgramButton_clicked();
-    void on_selectPCRawProxyProgramButton_clicked();
 
 private:
     Settings *m_settings;

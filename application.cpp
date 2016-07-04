@@ -12,7 +12,6 @@
 #include "actions.h"
 #include "systemtrayicon.h"
 #include "yellowpagemanager.h"
-#include "pcrawproxy.h"
 #include "settings.h"
 #include "settingsdialog.h"
 #include "settingsconverter.h"
@@ -113,13 +112,6 @@ Application::Application(int &argc, char *argv[])
         }
     }
 
-    QString pcrawProgram = m_settings->value("Program/PCRawProxy").toString();
-    int pcrawPort = QUrl(m_settings->value("PCRaw/ProxyServerUrl").toString()).port();
-    QUrl serverUrl = m_settings->value("PeerCast/ServerUrl").toString();
-    m_pcrawProxy = new PCRawProxy(pcrawProgram, pcrawPort, serverUrl);
-    if (m_settings->value("AtStartup/RunPCRawProxy").toBool())
-        m_pcrawProxy->start();
-
     if (m_settings->value("AtStartup/UpdateYellowPage").toBool())
         QTimer::singleShot(1 * 1000, m_mainWindow->actions()->updateYellowPageAction(), SLOT(trigger()));
 }
@@ -154,11 +146,6 @@ YellowPageManager *Application::yellowPageManager() const
 QProcess *Application::peercast() const
 {
     return m_peercast;
-}
-
-PCRawProxy *Application::pcrawProxy() const
-{
-    return m_pcrawProxy;
 }
 
 Settings *Application::settings() const

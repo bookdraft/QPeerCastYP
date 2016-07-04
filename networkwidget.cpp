@@ -32,12 +32,6 @@ void NetworkWidget::setValue(bool reset)
     peerCastServerPortSpinBox->setValue(pcUrl.port());
     runPeerCastAtStartupCheckBox->setChecked(settings->value("AtStartup/RunPeerCast").toBool());
     peerCastProgramEdit->setText(settings->value("Program/PeerCast").toString());
-
-    QUrl pcrUrl(settings->value("PCRaw/ProxyServerUrl").toString());
-    pcrawProxyServerHostEdit->setText(pcrUrl.host());
-    pcrawProxyServerPortSpinBox->setValue(pcrUrl.port());
-    runPCRawProxyAtStartup->setChecked(settings->value("AtStartup/RunPCRawProxy").toBool());
-    pcrawProxyProgramEdit->setText(settings->value("Program/PCRawProxy").toString());
 }
 
 void NetworkWidget::write()
@@ -47,10 +41,6 @@ void NetworkWidget::write()
             .arg(peerCastServerHostEdit->text()).arg(peerCastServerPortSpinBox->value()));
     m_settings->setValue("AtStartup/RunPeerCast", runPeerCastAtStartupCheckBox->isChecked());
     m_settings->setValue("Program/PeerCast", peerCastProgramEdit->text());
-    m_settings->setValue("PCRaw/ProxyServerUrl", QString("http://%1:%2/")
-            .arg(pcrawProxyServerHostEdit->text()).arg(pcrawProxyServerPortSpinBox->value()));
-    m_settings->setValue("AtStartup/RunPCRawProxy", runPCRawProxyAtStartup->isChecked());
-    m_settings->setValue("Program/PCRawProxy", pcrawProxyProgramEdit->text());
 }
 
 void NetworkWidget::on_selectPeerCastProgramButton_clicked()
@@ -58,12 +48,5 @@ void NetworkWidget::on_selectPeerCastProgramButton_clicked()
     QString file = QFileDialog::getOpenFileName(this, tr("プログラムを選択"));
     if (!file.isEmpty())
         peerCastProgramEdit->setText(file);
-}
-
-void NetworkWidget::on_selectPCRawProxyProgramButton_clicked()
-{
-    QString file = QFileDialog::getOpenFileName(this, tr("プログラムを選択"));
-    if (!file.isEmpty())
-        pcrawProxyProgramEdit->setText(file);
 }
 

@@ -17,7 +17,6 @@ class SystemTrayIcon;
 class Actions;
 class YellowPageManager;
 class Settings;
-class PCRawProxy;
 
 #if defined(qApp)
 #undef qApp
@@ -36,7 +35,6 @@ public:
     Actions *actions() const;
     YellowPageManager *yellowPageManager() const;
     QProcess *peercast() const;
-    PCRawProxy *pcrawProxy() const;
     Settings *settings() const;
     QIcon applicationIcon() const;
 
@@ -48,7 +46,6 @@ private:
     Settings *m_settings;
     YellowPageManager *m_yellowPageManager;
     QProcess *m_peercast;
-    PCRawProxy *m_pcrawProxy;
 };
 
 #endif // APPLICATION_H

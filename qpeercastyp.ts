@@ -233,11 +233,6 @@
         <source>起動時に PeerCast を実行する</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="advancedwidget.ui" line="168"/>
-        <source>起動時に PCRawProxy を実行する</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Application</name>
@@ -772,16 +767,6 @@ QRegExp: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="networkwidget.ui" line="119"/>
-        <source>PCRaw プロキシサーバ (ホスト:ポート)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="networkwidget.ui" line="158"/>
-        <source>起動時に PCRaw プロキシサーバを起動する</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="networkwidget.ui" line="190"/>
         <source>HTTP 接続</source>
         <translation type="unfinished"></translation>
@@ -893,41 +878,6 @@ QRegExp: %1</source>
     <message>
         <location filename="notificationwidget.cpp" line="84"/>
         <source>音声ファイル (*.wav *.aiff *.ogg *.mp3)</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>PCRawProxy</name>
-    <message>
-        <location filename="pcrawproxy.cpp" line="37"/>
-        <location filename="pcrawproxy.cpp" line="65"/>
-        <source>エラー</source>
-        <oldsource>ã¨ã©ã¼</oldsource>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="pcrawproxy.cpp" line="38"/>
-        <source>PCRaw プロキシサーバの起動に失敗しました。
-PCRaw プロキシサーバプログラムの場所を確認して下さい。</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="pcrawproxy.cpp" line="66"/>
-        <source>PCRaw プロキシサーバの起動に失敗しました。
-既に PCRaw プロキシサーバが起動しているかもしれません。
-
-メモ：ターミナルで killall pcraw_proxy を実行すると終了</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="pcrawproxy.cpp" line="73"/>
-        <source>PCRaw プロキシサーバを再起動しますか？</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="pcrawproxy.cpp" line="74"/>
-        <source>PCRaw プロキシサーバがクラッシュしました。
-PCRaw プロキシサーバを再起動しますか？</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1267,11 +1217,6 @@ PCRaw プロキシサーバを再起動しますか？</source>
         <location filename="yellowpagedialog.ui" line="108"/>
         <source>複数指定する場合は | (バーティカルバー/縦線) で区切ってください。</source>
         <comment>複数指定する場合は | (パイプ) で区切ってください。</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="yellowpagedialog.ui" line="85"/>
-        <source>PCRaw プロキシを使用する</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -17,7 +17,6 @@
 #include "channellistwidget.h"
 #include "channellisttabwidget.h"
 #include "channellistfindbar.h"
-#include "pcrawproxy.h"
 #include "network.h"
 #include "sound.h"
 #include "settings.h"
@@ -162,7 +161,6 @@ void MainWindow::quit()
     writeSettings();
     qApp->peercast()->terminate();
     qApp->peercast()->waitForFinished();
-    qApp->pcrawProxy()->stop();
     clearChannelListWidget();
     qApp->quit();
 }
