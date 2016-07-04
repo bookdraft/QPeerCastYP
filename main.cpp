@@ -8,21 +8,9 @@
  *
  */
 #include "application.h"
-#ifdef Q_WS_X11
-#include "proxystyle.h"
-#endif
-#ifdef Q_WS_WIN
-#include "explorerstyle.h"
-#endif
 
 int main(int argc, char *argv[]) {
     Application app(argc, argv);
-#ifdef Q_WS_X11
-    app.setStyle(new ProxyStyle(app.style()->objectName()));
-#endif
-#ifdef Q_WS_WIN
-    app.setStyle(new ExplorerStyle);
-#endif
     int code = app.exec();
     return code;
 }

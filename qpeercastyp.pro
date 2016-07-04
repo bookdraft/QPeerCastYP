@@ -126,16 +126,12 @@ CODECFORTR = UTF-8
 TRANSLATIONS = qpeercastyp.ts
 
 unix {
-    HEADERS += proxystyle.h
-    SOURCES += proxystyle.cpp
     !macx {
         LIBS += -lX11
     }
 }
 
 win32 {
-    HEADERS += explorerstyle.h
-    SOURCES += explorerstyle.cpp
     LIBS += -lgdi32
 }
 
