@@ -4,8 +4,8 @@ CONFIG -= debug
 QT += network
 TEMPLATE = app
 
-DEPENDPATH += .
-INCLUDEPATH += .
+DEPENDPATH += . src
+INCLUDEPATH += . src
 
 DEFINES += VERSION=\\\"$$VERSION\\\"
 
@@ -35,7 +35,7 @@ unix:!macx {
     bin.files = $$TARGET
     bin.path = $$BINDIR
 
-    desktop.files = qpeercastyp.desktop
+    desktop.files = src/qpeercastyp.desktop
     desktop.path = $$DATADIR/applications
 
     pixmap.files = images/qpeercastyp.png
