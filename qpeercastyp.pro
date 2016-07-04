@@ -14,30 +14,44 @@ macx {
     CONFIG += app_bundle
     BUILD_DIR = build-macx
     ICON = images/qpeercastyp.icns
-
-    run.target = all
-    run.commands = ./$${TARGET}.app/Contents/MacOS/QPeerCastYP
-    contains(CONFIG, debug):QMAKE_EXTRA_TARGETS += run
 }
 
-linux-* {
+unix:!macx {
     TARGET = qpeercastyp
-    BUILD_DIR = build-linux
+    BUILD_DIR = build-unix
+    LIBS += -lX11
 
-    PBUILDER_DISTS = intrepid hardy gutsy feisty
-    PBUILDER_DIR = /var/cache/pbuilder/
-
-    !include(conf.pri) {
+    include(conf.pri)
+    isEmpty(PREFIX) {
         PREFIX = /usr/local
-        BINDIR = /usr/local/bin
-        DATADIR = /usr/local/share
+    }
+    isEmpty(BINDIR) {
+        BINDIR = $$PREFIX/bin
+    }
+    isEmpty(DATADIR) {
+        DATADIR = $$PREFIX/share
     }
 
+    bin.files = $$TARGET
+    bin.path = $$BINDIR
+
+    desktop.files = qpeercastyp.desktop
+    desktop.path = $$DATADIR/applications
+
+    pixmap.files = images/qpeercastyp.png
+    pixmap.path = $$DATADIR/pixmaps
+
+    INSTALLS += bin desktop pixmap
+}
+
+unix {
     archive.target = archive
     archive.commands = git archive --format=tar --prefix=qpeercastyp-$${VERSION}/ HEAD \
                        | bzip2 > qpeercastyp-$${VERSION}.tar.bz2
     QMAKE_EXTRA_TARGETS += archive
+}
 
+linux-* {
     debchg.target = debchange
     debchg.commands = debchange -v $${VERSION}-$${DEBVERSION}
     QMAKE_EXTRA_TARGETS += debchg
@@ -53,45 +67,6 @@ linux-* {
                    cd qpeercastyp-$${VERSION}/ && \
                    debuild -e MAKE=\"make -j3\" -b
     QMAKE_EXTRA_TARGETS += deb
-
-    # pbuilder
-    for(dist, PBUILDER_DISTS) {
-        # create
-        eval(pc$${dist}.target = pbuilder-create-$${dist})
-        eval(pc$${dist}.commands = pbuilder create --distribution $$dist \
-            --othermirror \\\"deb http://archive.ubuntu.com/ubuntu $$dist universe multiverse\\\" \
-            --basetgz \\\"$${PBUILDER_DIR}/base-$${dist}.tgz\\\")
-        eval(QMAKE_EXTRA_TARGETS += pc$${dist})
-
-        # update
-        eval(pu$${dist}.target = pbuilder-update-$${dist})
-        eval(pu$${dist}.commands = pbuilder update \
-            --basetgz \\\"$${PBUILDER_DIR}/base-$${dist}.tgz\\\")
-        eval(QMAKE_EXTRA_TARGETS += pu$${dist})
-
-        # build
-        eval(pd$${dist}.target = pbuilder-build-$${dist})
-        eval(pd$${dist}.commands = MAKE=\\\"make -j3\\\" pbuilder build \
-            --basetgz \\\"$${PBUILDER_DIR}/base-$${dist}.tgz\\\" \
-            --buildresult $${PBUILDER_DIR}/result-$${dist} \
-            qpeercastyp_$${VERSION}-$${DEBVERSION}.dsc)
-        eval(QMAKE_EXTRA_TARGETS += pd$${dist})
-    }
-
-    run.target = all
-    run.commands = ./$$TARGET
-    contains(CONFIG, debug):QMAKE_EXTRA_TARGETS += run
-
-    bin.files = $$TARGET
-    bin.path = $$BINDIR
-
-    desktop.files = qpeercastyp.desktop
-    desktop.path = $$DATADIR/applications
-
-    pixmap.files = images/qpeercastyp.png
-    pixmap.path = $$DATADIR/pixmaps
-
-    INSTALLS += bin desktop pixmap
 }
 
 win32 {
@@ -99,6 +74,7 @@ win32 {
     BUILD_DIR = build-win32
     CONFIG += release
     CONFIG += static
+    LIBS += -lgdi32
     # contains(CONFIG, debug):CONFIG += console
     RC_FILE = qpeercastyp_resource.rc
 
@@ -124,16 +100,6 @@ RESOURCES = qpeercastyp.qrc
 
 CODECFORTR = UTF-8
 TRANSLATIONS = qpeercastyp.ts
-
-unix {
-    !macx {
-        LIBS += -lX11
-    }
-}
-
-win32 {
-    LIBS += -lgdi32
-}
 
 HEADERS += network.h \
            utils.h \
