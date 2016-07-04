@@ -9,6 +9,7 @@
  */
 #include "playeredit.h"
 #include "settings.h"
+#include "utils.h"
 
 PlayerEdit::PlayerEdit(Settings *settings, QWidget *parent)
     : SettingWidget(parent), m_settings(settings)
@@ -31,38 +32,39 @@ PlayerEdit::~PlayerEdit()
 
 void PlayerEdit::setValue(bool reset)
 {
-    Settings *settings = reset ? m_settings->defaultSettings() : m_settings;
+    Settings *s = reset ? m_settings->defaultSettings() : m_settings;
     if (reset) {
-#ifdef Q_WS_X11
-        videoPlayerEdit->setText(settings->value("Player/Linux/VideoPlayer").toString());
-        videoPlayerArgsEdit->setText(settings->value("Player/Linux/VideoPlayerArgs").toString());
-        soundPlayerEdit->setText(settings->value("Player/Linux/SoundPlayer").toString());
-        soundPlayerArgsEdit->setText(settings->value("Player/Linux/SoundPlayerArgs").toString());
-#endif
-#ifdef Q_WS_WIN
-        videoPlayerEdit->setText(settings->value("Player/Windows/VideoPlayer").toString());
-        videoPlayerArgsEdit->setText(settings->value("Player/Windows/VideoPlayerArgs").toString());
-        soundPlayerEdit->setText(settings->value("Player/Windows/SoundPlayer").toString());
-        soundPlayerArgsEdit->setText(settings->value("Player/Windows/SoundPlayerArgs").toString());
-#endif
+        QString ws = Utils::wsString();
+        s->beginReadArray(QString("Player%1/Items").arg(ws));
     } else {
-        videoPlayerEdit->setText(settings->value("Player/VideoPlayer").toString());
-        videoPlayerArgsEdit->setText(settings->value("Player/VideoPlayerArgs").toString());
-        soundPlayerEdit->setText(settings->value("Player/SoundPlayer").toString());
-        soundPlayerArgsEdit->setText(settings->value("Player/SoundPlayerArgs").toString());
+        s->beginReadArray("Player/Items");
     }
-    videoTypesEdit->setText(settings->value("Player/VideoTypes").toString());
-    soundTypesEdit->setText(settings->value("Player/SoundTypes").toString());
+
+    s->setArrayIndex(0);
+    videoPlayerEdit->setText(s->value("Program").toString());
+    videoPlayerArgsEdit->setText(s->value("Args").toString());
+    videoTypesEdit->setText(s->value("Types").toString());
+
+    s->setArrayIndex(1);
+    soundPlayerEdit->setText(s->value("Program").toString());
+    soundPlayerArgsEdit->setText(s->value("Args").toString());
+    soundTypesEdit->setText(s->value("Types").toString());
+
+    s->endArray();
 }
 
 void PlayerEdit::write()
 {
-    m_settings->setValue("Player/VideoPlayer", videoPlayerEdit->text());
-    m_settings->setValue("Player/VideoPlayerArgs", videoPlayerArgsEdit->text());
-    m_settings->setValue("Player/VideoTypes", videoTypesEdit->text());
-    m_settings->setValue("Player/SoundPlayer", soundPlayerEdit->text());
-    m_settings->setValue("Player/SoundPlayerArgs", soundPlayerArgsEdit->text());
-    m_settings->setValue("Player/SoundTypes", soundTypesEdit->text());
+    m_settings->beginWriteArray("Player/Items");
+    m_settings->setArrayIndex(0);
+    m_settings->setValue("Program", videoPlayerEdit->text());
+    m_settings->setValue("Args", videoPlayerArgsEdit->text());
+    m_settings->setValue("Types", videoTypesEdit->text());
+    m_settings->setArrayIndex(1);
+    m_settings->setValue("Program", soundPlayerEdit->text());
+    m_settings->setValue("Args", soundPlayerArgsEdit->text());
+    m_settings->setValue("Types", soundTypesEdit->text());
+    m_settings->endArray();
 }
 
 void PlayerEdit::on_selectVideoPlayerButton_clicked()

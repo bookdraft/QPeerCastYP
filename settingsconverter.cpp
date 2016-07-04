@@ -13,14 +13,14 @@
 void SettingsConverter::convert(Settings *settings)
 {
     if (settings->value("General/Version").toString().isEmpty())
-        convertV020ToV030(settings);
+        convertToV030(settings);
+    if ("0.5.0" > settings->value("General/Version").toString())
+        convertToV050(settings);
     settings->sync();
 }
 
-void SettingsConverter::convertV020ToV030(Settings *settings)
+void SettingsConverter::convertToV030(Settings *settings)
 {
-    qDebug() << "convert settings: v0.2.0 to v0.3.0";
-
     // イエローページ
     for (int i = 0; i < 100; ++i) {
         QString key1 = QString("YellowPage/Item%1/").arg(i, 2, 10, QChar('0'));
@@ -53,5 +53,34 @@ void SettingsConverter::convertV020ToV030(Settings *settings)
     }
 
     settings->setValue("General/Version", "0.3.0");
+}
+
+void SettingsConverter::convertToV050(Settings *settings)
+{
+    QString program = settings->value("Player/VideoPlayer").toString();
+    QString args = settings->value("Player/VideoPlayerArgs").toString();
+    QString types = settings->value("Player/VideoTypes").toString();
+    settings->beginWriteArray("Player/Items");
+    settings->setArrayIndex(0);
+    settings->setValue("Program", program);
+    settings->setValue("Args", args);
+    settings->setValue("Types", types);
+    settings->endArray();
+    settings->remove("Player/VideoPlayer");
+    settings->remove("Player/VideoPlayerArgs");
+    settings->remove("Player/VideoTypes");
+
+    program = settings->value("Player/SoundPlayer").toString();
+    args = settings->value("Player/SoundPlayerArgs").toString();
+    types = settings->value("Player/SoundTypes").toString();
+    settings->beginWriteArray("Player/Items");
+    settings->setArrayIndex(1);
+    settings->setValue("Program", program);
+    settings->setValue("Args", args);
+    settings->setValue("Types", types);
+    settings->endArray();
+    settings->remove("Player/SoundPlayer");
+    settings->remove("Player/SoundPlayerArgs");
+    settings->remove("Player/SoundTypes");
 }
 

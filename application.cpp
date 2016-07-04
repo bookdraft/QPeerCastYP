@@ -66,33 +66,27 @@ Application::Application(int &argc, char *argv[])
                               organizationName(), applicationName(), defaultSettings);
 #endif // Q_WS_WIN
 
+    SettingsConverter::convert(m_settings);
+    m_settings->setValue("General/Version", VERSION);
+
     bool firstRun = m_settings->value("General/FirstRun").toBool();
     if (firstRun) {
         m_settings->setValue("General/FirstRun", false);
-#ifdef Q_WS_X11
-        m_settings->setValue("Player/VideoPlayer",
-                defaultSettings->value("Player/Linux/VideoPlayer"));
-        m_settings->setValue("Player/VideoPlayerArgs",
-                defaultSettings->value("Player/Linux/VideoPlayerArgs"));
-        m_settings->setValue("Player/SoundPlayer",
-                defaultSettings->value("Player/Linux/SoundPlayer"));
-        m_settings->setValue("Player/SoundPlayerArgs",
-                defaultSettings->value("Player/Linux/SoundPlayerArgs"));
-#endif // Q_WS_X11
-#ifdef Q_WS_WIN
-        m_settings->setValue("Player/VideoPlayer",
-                defaultSettings->value("Player/Windows/VideoPlayer"));
-        m_settings->setValue("Player/VideoPlayerArgs",
-                defaultSettings->value("Player/Windows/VideoPlayerArgs"));
-        m_settings->setValue("Player/SoundPlayer",
-                defaultSettings->value("Player/Windows/SoundPlayer"));
-        m_settings->setValue("Player/SoundPlayerArgs",
-                defaultSettings->value("Player/Windows/SoundPlayerArgs"));
-#endif // Q_WS_WIN
+        QString ws = Utils::wsString();
+        if (ws != "Unknown") {
+            int size = defaultSettings->beginReadArray(QString("Player%1/Items").arg(ws));
+            m_settings->beginWriteArray("Player/Items");
+            for (int i = 0; i < size; ++i) {
+                defaultSettings->setArrayIndex(i);
+                m_settings->setArrayIndex(i);
+                m_settings->setValue("Types", defaultSettings->value("Types"));
+                m_settings->setValue("Program", defaultSettings->value("Program"));
+                m_settings->setValue("Args", defaultSettings->value("Args"));
+            }
+            defaultSettings->endArray();
+            m_settings->endArray();
+        }
     }
-
-    SettingsConverter::convert(m_settings);
-    m_settings->setValue("General/Version", VERSION);
 
     m_yellowPageManager = new YellowPageManager(m_settings);
 

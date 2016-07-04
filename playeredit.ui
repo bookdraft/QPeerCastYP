@@ -23,7 +23,7 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>動画</string>
+      <string>プレイヤ1</string>
      </property>
      <property name="flat">
       <bool>false</bool>
@@ -100,7 +100,7 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>音声</string>
+      <string>プレイヤ2</string>
      </property>
      <property name="flat">
       <bool>false</bool>

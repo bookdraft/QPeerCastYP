@@ -16,7 +16,8 @@ class SettingsConverter
 {
 public:
     static void convert(Settings *settings);
-    static void convertV020ToV030(Settings *settings);
+    static void convertToV030(Settings *settings);
+    static void convertToV050(Settings *settings);
 };
 
 #endif // SETTINGSCONVERTER_H

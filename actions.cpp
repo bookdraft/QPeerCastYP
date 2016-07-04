@@ -222,24 +222,22 @@ void Actions::playChannel(Channel *channel)
         m_mainWindow->showErrorMessage(tr("このチャンネルは再生できません。"));
         return;
     }
-    QString player;
-    QStringList args;
     Settings *s = qApp->settings();
-    QString videoTypes = s->value("Player/VideoTypes").toString();
-    QString soundTypes = s->value("Player/SoundTypes").toString();
-    if (channel->type().contains(QRegExp(videoTypes, Qt::CaseInsensitive))) {
-        player = s->value("Player/VideoPlayer").toString();
-        args = Utils::shellwords(s->value("Player/VideoPlayerArgs").toString());
-    } else if (channel->type().contains(QRegExp(soundTypes, Qt::CaseInsensitive))) {
-        player = s->value("Player/SoundPlayer").toString();
-        args = Utils::shellwords(s->value("Player/SoundPlayerArgs").toString());
+    int size = s->beginReadArray("Player/Items");
+    for (int i = 0; i < size; ++i) {
+        s->setArrayIndex(i);
+        if (channel->type().contains(QRegExp(s->value("Types").toString(), Qt::CaseInsensitive))) {
+            QString program = s->value("Program").toString();
+            QStringList args = Utils::shellwords(s->value("Args").toString());
+            s->endArray();
+            startProcess(program, args, channel);
+            return;
+        }
     }
-    if (player.isEmpty()) {
-        m_mainWindow->showErrorMessage(
-                tr("%1 用のプレイヤが設定されていません。").arg(channel->type().toUpper()));
-        return;
-    }
-    startProcess(player, args, channel);
+    s->endArray();
+    m_mainWindow->showErrorMessage(
+            tr("%1 用のプレイヤが設定されていません。").arg(channel->type().toUpper()));
+    return;
 }
 
 void Actions::setClipboardText(const QString &text)
